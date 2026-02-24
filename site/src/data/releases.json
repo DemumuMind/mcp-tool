@@ -1,5 +1,25 @@
 [
   {
+    "repo": "NextLedger",
+    "toolName": "NextLedger",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [],
+    "publishedAt": "2026-02-23T15:38:35Z",
+    "url": "https://github.com/mcp-tool-shop-org/NextLedger/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "runforge-vscode",
+    "toolName": "Runforge Vscode",
+    "tag": "v0.4.2",
+    "name": "v0.4.2",
+    "body": [],
+    "publishedAt": "2026-02-23T15:01:26Z",
+    "url": "https://github.com/mcp-tool-shop-org/runforge-vscode/releases/tag/v0.4.2",
+    "prerelease": false
+  },
+  {
     "repo": "websketch-mcp",
     "toolName": "Websketch Mcp",
     "tag": "v0.2.1",
@@ -707,34 +727,6 @@
     ],
     "publishedAt": "2026-02-23T11:00:18Z",
     "url": "https://github.com/mcp-tool-shop-org/InControl-Desktop/releases/tag/v1.4.1",
-    "prerelease": false
-  },
-  {
-    "repo": "dev-op-typer",
-    "toolName": "Dev Op Typer",
-    "tag": "v1.0.1",
-    "name": "v1.0.1",
-    "body": [
-      "Harden CI: add concurrency group, broaden paths filter, remove master branch",
-      "Add GitHub Pages landing page"
-    ],
-    "publishedAt": "2026-02-23T11:00:15Z",
-    "url": "https://github.com/mcp-tool-shop-org/dev-op-typer/releases/tag/v1.0.1",
-    "prerelease": false
-  },
-  {
-    "repo": "control-room",
-    "toolName": "Control Room",
-    "tag": "v1.0.1",
-    "name": "Control Room v1.0.1",
-    "body": [
-      "1. Download `ControlRoom-win-x64.zip`",
-      "2. Extract to a folder",
-      "3. Run `ControlRoom.App.exe`",
-      "See [CHANGELOG.md](https://github.com/mcp-tool-shop-org/control-room/blob/main/CHANGELOG.md) for details."
-    ],
-    "publishedAt": "2026-02-23T10:49:03Z",
-    "url": "https://github.com/mcp-tool-shop-org/control-room/releases/tag/v1.0.1",
     "prerelease": false
   }
 ]

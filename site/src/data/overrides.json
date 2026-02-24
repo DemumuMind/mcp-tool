@@ -125,6 +125,22 @@
     "tagline": "A token-based lease governor for AI calls — small enough to embed anywhere, strict...",
     "needsHumanReview": true
   },
+  "a11y-ci": {
+    "tags": [
+      "accessibility",
+      "ci",
+      "developer-tools",
+      "lint",
+      "python",
+      "wcag"
+    ],
+    "category": "devtools",
+    "stability": "beta",
+    "kind": "library",
+    "install": "pip install a11y-ci",
+    "tagline": "CI gate for a11y-lint scorecards. Low-vision-first output with strict policy enforcement.",
+    "needsHumanReview": true
+  },
   "accessibility-suite": {
     "screenshot": "/screenshots/accessibility-suite.png",
     "screenshotType": "placeholder"
@@ -151,6 +167,18 @@
     "tagline": "Music notation",
     "needsHumanReview": true
   },
+  "ally-demo-python": {
+    "tags": [
+      "accessibility",
+      "demo",
+      "python"
+    ],
+    "category": "devtools",
+    "stability": "beta",
+    "kind": "template",
+    "tagline": "Python demonstration of accessibility framework capabilities.",
+    "needsHumanReview": true
+  },
   "aspire-ai": {
     "tags": [
       "ml",
@@ -163,6 +191,19 @@
     "tagline": "Adversarial student-professor training engine.",
     "screenshot": "/screenshots/aspire-ai.png",
     "screenshotType": "placeholder"
+  },
+  "audiobooker": {
+    "tags": [
+      "audio",
+      "ebook",
+      "generation"
+    ],
+    "category": "voice",
+    "stability": "beta",
+    "kind": "library",
+    "install": "pip install audiobooker",
+    "tagline": "Audio book generation and management system.",
+    "needsHumanReview": true
   },
   "backpropagate": {
     "tags": [
@@ -370,6 +411,19 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Package manager"
+  },
+  "integradio": {
+    "tags": [
+      "gradio",
+      "ui",
+      "framework"
+    ],
+    "category": "devtools",
+    "stability": "beta",
+    "kind": "library",
+    "install": "pip install integradio",
+    "tagline": "Structure layer for building maintainable Gradio apps (UI + execution separation).",
+    "needsHumanReview": true
   },
   "jam-session-plugin": {
     "tags": [
@@ -832,6 +886,13 @@
     "kind": "mcp-server",
     "install": "npx websketch-mcp",
     "tagline": "MCP server for AI-assisted web analysis.",
+    "needsHumanReview": true
+  },
+  "websketch-vscode": {
+    "category": "web",
+    "stability": "experimental",
+    "kind": "vscode-extension",
+    "tagline": "VS Code extension — capture web pages as grammar-based IR for LLMs.",
     "needsHumanReview": true
   },
   "witness": {

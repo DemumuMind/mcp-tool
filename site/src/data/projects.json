@@ -10,7 +10,7 @@
     "featured": true,
     "stars": 1,
     "language": "Python",
-    "updatedAt": "2026-02-23T12:38:14Z",
+    "updatedAt": "2026-02-23T16:10:18Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -211,7 +211,7 @@
     "featured": false,
     "stars": 1,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T11:36:07Z",
+    "updatedAt": "2026-02-23T14:55:29Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -234,7 +234,7 @@
     "featured": false,
     "stars": 1,
     "language": "Python",
-    "updatedAt": "2026-02-23T13:50:14Z",
+    "updatedAt": "2026-02-23T14:37:49Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -290,7 +290,7 @@
     "featured": false,
     "stars": 1,
     "language": "C#",
-    "updatedAt": "2026-02-23T11:50:24Z",
+    "updatedAt": "2026-02-23T15:48:44Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -466,7 +466,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T11:47:43Z",
+    "updatedAt": "2026-02-24T06:32:10Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -474,8 +474,8 @@
     "stability": "stable",
     "kind": "library",
     "install": "npm install ai-jam-sessions",
-    "needsHumanReview": true,
-    "tagline": "Music sessions"
+    "tagline": "Music sessions",
+    "needsHumanReview": true
   },
   {
     "name": "Ai Music Sheets",
@@ -495,8 +495,8 @@
     "stability": "stable",
     "kind": "library",
     "install": "npm install ai-music-sheets",
-    "needsHumanReview": true,
-    "tagline": "Music notation"
+    "tagline": "Music notation",
+    "needsHumanReview": true
   },
   {
     "name": "Ally Demo Python",
@@ -596,7 +596,7 @@
     "featured": false,
     "stars": 0,
     "language": "GDScript",
-    "updatedAt": "2026-02-19T06:47:26Z",
+    "updatedAt": "2026-02-23T20:00:51Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -620,7 +620,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T04:01:00Z",
+    "updatedAt": "2026-02-24T03:49:04Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -702,7 +702,7 @@
     "featured": false,
     "stars": 0,
     "language": "HTML",
-    "updatedAt": "2026-02-23T08:37:14Z",
+    "updatedAt": "2026-02-23T18:27:09Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false
@@ -721,10 +721,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Session management",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Session management"
   },
   {
     "name": "Clearance Opinion Engine",
@@ -759,8 +759,7 @@
       "code-runner",
       "content-addressed",
       "deterministic",
-      "python",
-      "sharding"
+      "python"
     ],
     "featured": false,
     "stars": 0,
@@ -768,7 +767,13 @@
     "updatedAt": "2026-02-23T13:22:31Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "devtools",
+    "stability": "beta",
+    "kind": "cli",
+    "install": "pipx install code-batch",
+    "tagline": "Content-addressed batch execution engine — deterministic sharding, queryable outputs,...",
+    "needsHumanReview": true
   },
   {
     "name": "Code Covered",
@@ -818,15 +823,15 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-22T14:00:36Z",
+    "updatedAt": "2026-02-23T21:13:10Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
     "ecosystem": "codeteam",
-    "tagline": "Clone detection",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Clone detection"
   },
   {
     "name": "CodeComfy VS Code",
@@ -840,7 +845,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T11:47:49Z",
+    "updatedAt": "2026-02-23T20:36:09Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -881,7 +886,7 @@
     "featured": false,
     "stars": 0,
     "language": "C#",
-    "updatedAt": "2026-02-23T10:50:56Z",
+    "updatedAt": "2026-02-23T18:31:38Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -902,7 +907,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T12:08:37Z",
+    "updatedAt": "2026-02-23T16:14:01Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -927,10 +932,10 @@
     "registered": true,
     "unlisted": false,
     "deprecated": false,
-    "tagline": "Context optimization",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Context optimization"
   },
   {
     "name": "Control Room",
@@ -986,10 +991,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Editor context",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Editor context"
   },
   {
     "name": "DeterministicMouseTrainingEngine",
@@ -1030,7 +1035,7 @@
     "featured": false,
     "stars": 0,
     "language": "C#",
-    "updatedAt": "2026-02-23T10:59:28Z",
+    "updatedAt": "2026-02-23T15:07:11Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -1049,10 +1054,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Feature mining",
     "category": "ml",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Feature mining"
   },
   {
     "name": "Flexiflow",
@@ -1068,10 +1073,10 @@
     "registered": true,
     "unlisted": false,
     "deprecated": false,
-    "tagline": "Workflow orchestration",
     "category": "infrastructure",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Workflow orchestration"
   },
   {
     "name": "Game Dev Mcp",
@@ -1111,7 +1116,13 @@
     "updatedAt": "2026-02-23T13:20:00Z",
     "registered": true,
     "unlisted": false,
-    "deprecated": false
+    "deprecated": false,
+    "category": "devtools",
+    "stability": "beta",
+    "kind": "cli",
+    "install": "pipx install headless-wheel-builder",
+    "tagline": "CLI-first build/validate/release tooling for Python wheels and sdists.",
+    "needsHumanReview": true
   },
   {
     "name": "Homebrew Mcp Tools",
@@ -1127,10 +1138,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Package manager",
     "category": "infrastructure",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Package manager"
   },
   {
     "name": "InControl Desktop",
@@ -1184,14 +1195,14 @@
     "featured": false,
     "stars": 0,
     "language": "",
-    "updatedAt": "2026-02-22T15:52:59Z",
+    "updatedAt": "2026-02-23T18:33:28Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "AI music composition",
     "category": "devtools",
     "stability": "beta",
-    "kind": "plugin"
+    "kind": "plugin",
+    "tagline": "AI music composition"
   },
   {
     "name": "LeaseGate",
@@ -1251,10 +1262,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Linux automation",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Linux automation"
   },
   {
     "name": "LoKey Typer",
@@ -1271,7 +1282,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-22T13:50:14Z",
+    "updatedAt": "2026-02-23T19:27:22Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -1299,7 +1310,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-03T01:24:21Z",
+    "updatedAt": "2026-02-23T21:13:07Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -1318,10 +1329,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Async event system",
     "category": "infrastructure",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Async event system"
   },
   {
     "name": "Mcp Bouncer",
@@ -1392,7 +1403,7 @@
     "featured": false,
     "stars": 0,
     "language": "C++",
-    "updatedAt": "2026-02-22T07:26:53Z",
+    "updatedAt": "2026-02-23T20:04:54Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -1407,14 +1418,14 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-22T13:56:27Z",
+    "updatedAt": "2026-02-23T19:04:47Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Deployment checker",
     "category": "devtools",
     "stability": "beta",
-    "kind": "mcp-server"
+    "kind": "mcp-server",
+    "tagline": "Deployment checker"
   },
   {
     "name": "MCP Stress Test",
@@ -1451,7 +1462,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T13:01:49Z",
+    "updatedAt": "2026-02-23T16:13:46Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -1550,10 +1561,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Mouse automation",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Mouse automation"
   },
   {
     "name": "Nameops",
@@ -1571,7 +1582,7 @@
     "featured": false,
     "stars": 0,
     "language": "JavaScript",
-    "updatedAt": "2026-02-22T14:54:18Z",
+    "updatedAt": "2026-02-23T19:07:14Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -1604,14 +1615,14 @@
     "featured": false,
     "stars": 0,
     "language": "C#",
-    "updatedAt": "2026-02-23T10:59:56Z",
+    "updatedAt": "2026-02-23T15:34:56Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Financial ledger system",
     "category": "infrastructure",
     "stability": "stable",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Financial ledger system"
   },
   {
     "name": "Nexus Attest",
@@ -1636,7 +1647,7 @@
     "featured": false,
     "stars": 0,
     "language": "Python",
-    "updatedAt": "2026-02-23T06:45:55Z",
+    "updatedAt": "2026-02-23T16:19:28Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -1747,10 +1758,10 @@
     "unlisted": false,
     "deprecated": false,
     "ecosystem": "nexus",
-    "tagline": "Dev suite",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Dev suite"
   },
   {
     "name": "Pathway",
@@ -1789,10 +1800,10 @@
     "registered": true,
     "unlisted": false,
     "deprecated": false,
-    "tagline": "Payroll processing",
     "category": "infrastructure",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Payroll processing"
   },
   {
     "name": "Pocket Ledger",
@@ -1853,7 +1864,7 @@
     "featured": false,
     "stars": 0,
     "language": "Python",
-    "updatedAt": "2026-02-23T08:48:15Z",
+    "updatedAt": "2026-02-23T19:11:09Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -1975,7 +1986,7 @@
     "featured": false,
     "stars": 0,
     "language": "Python",
-    "updatedAt": "2026-02-23T11:35:06Z",
+    "updatedAt": "2026-02-23T20:36:06Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -2023,10 +2034,10 @@
     "registered": false,
     "unlisted": true,
     "deprecated": false,
-    "tagline": "Load testing",
     "category": "devtools",
     "stability": "beta",
-    "kind": "library"
+    "kind": "library",
+    "tagline": "Load testing"
   },
   {
     "name": "Site Theme",
@@ -2038,7 +2049,7 @@
     "featured": false,
     "stars": 0,
     "language": "Astro",
-    "updatedAt": "2026-02-23T06:09:40Z",
+    "updatedAt": "2026-02-23T15:48:48Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -2124,7 +2135,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T13:05:02Z",
+    "updatedAt": "2026-02-23T16:20:55Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -2217,10 +2228,16 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T13:00:57Z",
+    "updatedAt": "2026-02-23T16:19:23Z",
     "registered": true,
     "unlisted": false,
-    "deprecated": false
+    "deprecated": false,
+    "category": "security",
+    "stability": "stable",
+    "kind": "library",
+    "install": "npm install training-studio",
+    "tagline": "TensorFlow.js ML bundle validator with security-first design and zero code execution.",
+    "needsHumanReview": true
   },
   {
     "name": "VectorCaliper",
@@ -2256,7 +2273,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T12:47:45Z",
+    "updatedAt": "2026-02-23T16:03:17Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -2282,7 +2299,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-22T13:56:26Z",
+    "updatedAt": "2026-02-23T19:15:53Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -2327,7 +2344,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T06:09:28Z",
+    "updatedAt": "2026-02-23T20:36:13Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -2349,7 +2366,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T13:04:40Z",
+    "updatedAt": "2026-02-23T16:04:41Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -2391,11 +2408,16 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T13:04:33Z",
+    "updatedAt": "2026-02-23T16:03:58Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
-    "ecosystem": "websketch"
+    "ecosystem": "websketch",
+    "category": "web",
+    "stability": "beta",
+    "kind": "library",
+    "tagline": "Browser extension for web page analysis and code generation.",
+    "needsHumanReview": true
   },
   {
     "name": "WebSketch IR",
@@ -2409,7 +2431,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-02-23T13:04:53Z",
+    "updatedAt": "2026-02-24T04:28:14Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
@@ -2433,11 +2455,30 @@
     "featured": false,
     "stars": 0,
     "language": "JavaScript",
-    "updatedAt": "2026-02-23T13:05:38Z",
+    "updatedAt": "2026-02-23T16:03:07Z",
     "registered": true,
     "unlisted": false,
     "deprecated": false,
-    "ecosystem": "websketch"
+    "ecosystem": "websketch",
+    "category": "web",
+    "stability": "beta",
+    "kind": "mcp-server",
+    "install": "npx websketch-mcp",
+    "tagline": "MCP server for AI-assisted web analysis.",
+    "needsHumanReview": true
+  },
+  {
+    "name": "Websketch Vscode",
+    "repo": "websketch-vscode",
+    "description": "VS Code extension — capture web pages as grammar-based IR for LLMs",
+    "tags": [],
+    "featured": false,
+    "stars": 0,
+    "language": "TypeScript",
+    "updatedAt": "2026-02-24T07:58:05Z",
+    "registered": false,
+    "unlisted": true,
+    "deprecated": false
   },
   {
     "name": "Winget Packages",
