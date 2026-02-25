@@ -257,6 +257,18 @@
     "tagline": "A policy layer that makes agent behavior preference-governed instead of purely...",
     "needsHumanReview": true
   },
+  "claude-collaborate": {
+    "tags": [
+      "claude",
+      "agents",
+      "collaboration"
+    ],
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "library",
+    "tagline": "Collaboration primitives for multi-agent and human-in-the-loop Claude workflows.",
+    "needsHumanReview": true
+  },
   "claude-session-copilot": {
     "tags": [
       "mcp"
@@ -345,6 +357,21 @@
     "stability": "stable",
     "kind": "desktop-app",
     "tagline": "Dashboard and monitoring for MCP tool ecosystems.",
+    "needsHumanReview": true
+  },
+  "dev-op-typer": {
+    "tags": [
+      "accessibility",
+      "adaptive-learning",
+      "code-snippets",
+      "csharp",
+      "desktop-app",
+      "developer-tools"
+    ],
+    "category": "games",
+    "stability": "experimental",
+    "kind": "desktop-app",
+    "tagline": "Developer-focused typing practice for Windows — type real code across 6 languages, with...",
     "needsHumanReview": true
   },
   "feature-reacher": {
@@ -442,6 +469,22 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Linux automation"
+  },
+  "mcp-app-builder": {
+    "tags": [
+      "developer-tools",
+      "mcp",
+      "mcp-apps",
+      "mcp-server",
+      "model-context-protocol",
+      "scaffolding"
+    ],
+    "category": "ml",
+    "stability": "experimental",
+    "kind": "mcp-server",
+    "install": "npx mcp-app-builder",
+    "tagline": "Build MCP servers with interactive UI components — from VS Code.",
+    "needsHumanReview": true
   },
   "mcp-aside": {
     "tags": [
@@ -582,6 +625,22 @@
     "tagline": "Shared content system for typing-practice apps — lessons, progression, and adaptive...",
     "needsHumanReview": true
   },
+  "nexus-attest": {
+    "tags": [
+      "approval-workflow",
+      "attestation",
+      "audit",
+      "audit-trail",
+      "cryptographic-proof",
+      "cryptography"
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "pipx install nexus-attest",
+    "tagline": "Deterministic attestation with verifiable evidence — governance, audit packages, and...",
+    "needsHumanReview": true
+  },
   "nexus-suite": {
     "tags": [
       "devops"
@@ -612,6 +671,22 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Payroll processing"
+  },
+  "polyglot-mcp": {
+    "tags": [
+      "gpu",
+      "local-ai",
+      "mcp",
+      "ollama",
+      "translategemma",
+      "translation"
+    ],
+    "category": "mcp-core",
+    "stability": "experimental",
+    "kind": "mcp-server",
+    "install": "npx polyglot-mcp",
+    "tagline": "Local GPU translation MCP server — TranslateGemma via Ollama, 55 languages, zero cloud...",
+    "needsHumanReview": true
   },
   "prov-engine-js": {
     "tags": [
