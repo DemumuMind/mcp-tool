@@ -1,5 +1,37 @@
 [
   {
+    "repo": "brand",
+    "toolName": "Brand",
+    "tag": "v0.1.1",
+    "name": "v0.1.1",
+    "body": [
+      "Bug fixes:**",
+      "`brand audit` and `brand migrate` resolved repo paths incorrectly (`../slug` instead of `slug` relative to `--repos`), breaking when pointed at a directory of repo clones",
+      "`brand audit` now accepts `--logos <path>` instead of assuming logos live inside the repos directory",
+      "All four CLI commands (`verify`, `manifest`, `audit`, `migrate`) verified end-to-end against 81 real repos."
+    ],
+    "publishedAt": "2026-02-26T09:32:05Z",
+    "url": "https://github.com/mcp-tool-shop-org/brand/releases/tag/v0.1.1",
+    "prerelease": false
+  },
+  {
+    "repo": "brand",
+    "toolName": "Brand",
+    "tag": "v0.1.0",
+    "name": "v0.1.0",
+    "body": [
+      "First release of `@mcptoolshop/brand` — centralized brand asset management for GitHub orgs.",
+      "CLI commands:**",
+      "`brand verify` — check logo integrity against SHA-256 manifest",
+      "`brand manifest` — generate/validate integrity hashes",
+      "`brand audit` — scan repos for broken refs, badge collisions, indentation traps",
+      "`brand migrate` — rewrite README logo references with dry-run support"
+    ],
+    "publishedAt": "2026-02-26T09:28:16Z",
+    "url": "https://github.com/mcp-tool-shop-org/brand/releases/tag/v0.1.0",
+    "prerelease": false
+  },
+  {
     "repo": "NextLedger",
     "toolName": "NextLedger",
     "tag": "v1.0.2",
@@ -696,37 +728,6 @@
     ],
     "publishedAt": "2026-02-23T11:00:25Z",
     "url": "https://github.com/mcp-tool-shop-org/meta-content-system/releases/tag/v1.0.1",
-    "prerelease": false
-  },
-  {
-    "repo": "linux-dev-typer",
-    "toolName": "Linux Dev Typer",
-    "tag": "v1.0.1",
-    "name": "v1.0.1",
-    "body": [
-      "Harden CI: add concurrency, broaden paths filter",
-      "Add environment: nuget to NuGet publish job",
-      "Add GitHub Pages landing page"
-    ],
-    "publishedAt": "2026-02-23T11:00:22Z",
-    "url": "https://github.com/mcp-tool-shop-org/linux-dev-typer/releases/tag/v1.0.1",
-    "prerelease": false
-  },
-  {
-    "repo": "InControl-Desktop",
-    "toolName": "InControl Desktop",
-    "tag": "v1.4.1",
-    "name": "InControl-Desktop v1.4.1",
-    "body": [
-      "1. Download the MSIX package below",
-      "2. Verify the SHA256 checksum",
-      "3. Double-click to install",
-      "```powershell",
-      "(Get-FileHash InControl-Desktop-1.4.1-unsigned.msix -Algorithm SHA256).Hash",
-      "```"
-    ],
-    "publishedAt": "2026-02-23T11:00:18Z",
-    "url": "https://github.com/mcp-tool-shop-org/InControl-Desktop/releases/tag/v1.4.1",
     "prerelease": false
   }
 ]

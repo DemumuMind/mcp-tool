@@ -1,5 +1,5 @@
 {
-  "date": "2026-02-25",
+  "date": "2026-02-26",
   "picks": [
     {
       "slug": "websketch-ir",
@@ -9,36 +9,36 @@
       ]
     },
     {
-      "slug": "witness",
-      "reason": "Attestation witness and verification tooling",
+      "slug": "ally-demo-python",
+      "reason": "Python demonstration of accessibility framework capabilities",
       "signals": [
         "popular"
       ]
     },
     {
-      "slug": "synthesis",
-      "reason": "Composable tool framework for building complex AI workflows",
+      "slug": "tool-scan",
+      "reason": "Static inspection utilities for MCP tools and repositories",
       "signals": [
         "popular"
       ]
     },
     {
-      "slug": "tool-compass",
-      "reason": "Discovery, classification, and ranking utilities for MCP-compatible tools",
+      "slug": "accessibility-suite",
+      "reason": "Unified monorepo for accessibility testing, evidence generation, and WCAG compliance tooling",
       "signals": [
-        "featured"
-      ]
-    },
-    {
-      "slug": "comfy-headless",
-      "reason": "Run ComfyUI workflows without the UI — headless execution for automation",
-      "signals": [
-        "featured"
+        "popular"
       ]
     },
     {
       "slug": "file-compass",
       "reason": "Deterministic file-system navigation and inspection for large repos",
+      "signals": [
+        "featured"
+      ]
+    },
+    {
+      "slug": "tool-compass",
+      "reason": "Discovery, classification, and ranking utilities for MCP-compatible tools",
       "signals": [
         "featured"
       ]

@@ -241,6 +241,21 @@
     ],
     "screenshot": "/screenshots/brain-dev.png"
   },
+  "brand": {
+    "tags": [
+      "assets",
+      "brand",
+      "cli",
+      "integrity",
+      "typescript"
+    ],
+    "category": "security",
+    "stability": "beta",
+    "kind": "cli",
+    "install": "npx brand",
+    "tagline": "Centralized brand asset management — migration, audit, and integrity verification for...",
+    "needsHumanReview": true
+  },
   "civility-kernel": {
     "tags": [
       "agents",
@@ -277,6 +292,22 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Session management"
+  },
+  "clearance-opinion-engine": {
+    "tags": [
+      "clearance",
+      "cli",
+      "deterministic",
+      "developer-tools",
+      "naming",
+      "nodejs"
+    ],
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "npx clearance-opinion-engine",
+    "tagline": "Deterministic name-availability and clearance-opinion engine.",
+    "needsHumanReview": true
   },
   "code-batch": {
     "tags": [
@@ -416,6 +447,22 @@
     "kind": "library",
     "tagline": "Workflow orchestration"
   },
+  "game-dev-mcp": {
+    "tags": [
+      "ai",
+      "developer-tools",
+      "game-development",
+      "game-engine",
+      "level-design",
+      "mcp"
+    ],
+    "category": "ml",
+    "stability": "experimental",
+    "kind": "mcp-server",
+    "install": "npx game-dev-mcp",
+    "tagline": "MCP server giving any LLM control over game engines. Unreal Engine 5 today, more tomorrow.",
+    "needsHumanReview": true
+  },
   "headless-wheel-builder": {
     "tags": [
       "python",
@@ -460,6 +507,19 @@
     "stability": "beta",
     "kind": "plugin",
     "tagline": "AI music composition"
+  },
+  "ledger-suite": {
+    "tags": [
+      "provenance",
+      "cryptography",
+      "monorepo",
+      "dotnet"
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "library",
+    "tagline": "Unified monorepo for cryptographic provenance ledgers — ClaimLedger and CreatorLedger.",
+    "needsHumanReview": true
   },
   "linux-dev-typer": {
     "tags": [
@@ -639,6 +699,22 @@
     "kind": "cli",
     "install": "pipx install nexus-attest",
     "tagline": "Deterministic attestation with verifiable evidence — governance, audit packages, and...",
+    "needsHumanReview": true
+  },
+  "nexus-control": {
+    "tags": [
+      "approval",
+      "audit",
+      "developer-tools",
+      "event-sourcing",
+      "governance",
+      "mcp"
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "pipx install nexus-control",
+    "tagline": "Orchestration and approval layer for nexus-router executions.",
     "needsHumanReview": true
   },
   "nexus-suite": {

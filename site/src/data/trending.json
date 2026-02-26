@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-02-25",
+  "asOf": "2026-02-26",
   "windowDays": 7,
   "items": [
     {
@@ -15,17 +15,17 @@
     {
       "slug": "brain-dev",
       "reason": "Top 2 starred repo",
-      "deltaStars": 0
+      "deltaStars": 3
     },
     {
       "slug": "file-compass",
       "reason": "Top 3 starred repo",
-      "deltaStars": 3
+      "deltaStars": 1
     },
     {
       "slug": "tool-compass",
       "reason": "Top 5 starred repo",
-      "deltaStars": 3
+      "deltaStars": 4
     }
   ]
 }
