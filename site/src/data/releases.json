@@ -1,733 +1,632 @@
 [
   {
-    "repo": "brand",
-    "toolName": "Brand",
-    "tag": "v0.1.1",
-    "name": "v0.1.1",
-    "body": [
-      "Bug fixes:**",
-      "`brand audit` and `brand migrate` resolved repo paths incorrectly (`../slug` instead of `slug` relative to `--repos`), breaking when pointed at a directory of repo clones",
-      "`brand audit` now accepts `--logos <path>` instead of assuming logos live inside the repos directory",
-      "All four CLI commands (`verify`, `manifest`, `audit`, `migrate`) verified end-to-end against 81 real repos."
-    ],
-    "publishedAt": "2026-02-26T09:32:05Z",
-    "url": "https://github.com/mcp-tool-shop-org/brand/releases/tag/v0.1.1",
-    "prerelease": false
-  },
-  {
-    "repo": "brand",
-    "toolName": "Brand",
-    "tag": "v0.1.0",
-    "name": "v0.1.0",
-    "body": [
-      "First release of `@mcptoolshop/brand` — centralized brand asset management for GitHub orgs.",
-      "CLI commands:**",
-      "`brand verify` — check logo integrity against SHA-256 manifest",
-      "`brand manifest` — generate/validate integrity hashes",
-      "`brand audit` — scan repos for broken refs, badge collisions, indentation traps",
-      "`brand migrate` — rewrite README logo references with dry-run support"
-    ],
-    "publishedAt": "2026-02-26T09:28:16Z",
-    "url": "https://github.com/mcp-tool-shop-org/brand/releases/tag/v0.1.0",
-    "prerelease": false
-  },
-  {
-    "repo": "NextLedger",
-    "toolName": "NextLedger",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [],
-    "publishedAt": "2026-02-23T15:38:35Z",
-    "url": "https://github.com/mcp-tool-shop-org/NextLedger/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "runforge-vscode",
-    "toolName": "Runforge Vscode",
-    "tag": "v0.4.2",
-    "name": "v0.4.2",
-    "body": [],
-    "publishedAt": "2026-02-23T15:01:26Z",
-    "url": "https://github.com/mcp-tool-shop-org/runforge-vscode/releases/tag/v0.4.2",
-    "prerelease": false
-  },
-  {
-    "repo": "websketch-mcp",
-    "toolName": "Websketch Mcp",
-    "tag": "v0.2.1",
-    "name": "v0.2.1",
-    "body": [
-      "Consolidate 3 CI workflows into 2",
-      "Merge security into CI",
-      "Fix dependabot, trim Node matrix",
-      "Bump to 0.2.1"
-    ],
-    "publishedAt": "2026-02-23T13:03:14Z",
-    "url": "https://github.com/mcp-tool-shop-org/websketch-mcp/releases/tag/v0.2.1",
-    "prerelease": false
-  },
-  {
-    "repo": "websketch-ir",
-    "toolName": "Websketch Ir",
-    "tag": "v0.4.1",
-    "name": "v0.4.1",
-    "body": [
-      "Merge security into CI workflow",
-      "Add workflow_dispatch",
-      "Remove master refs, trim Node matrix",
-      "Fix dependabot",
-      "Add docs landing page",
-      "Bump to 0.4.1"
-    ],
-    "publishedAt": "2026-02-23T13:03:05Z",
-    "url": "https://github.com/mcp-tool-shop-org/websketch-ir/releases/tag/v0.4.1",
-    "prerelease": false
-  },
-  {
-    "repo": "ThrottleAI",
-    "toolName": "ThrottleAI",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Consolidate 5 CI workflows into 2 (ci.yml + publish.yml)",
-      "Fix dependabot to monthly schedule",
-      "Add CI badge to README",
-      "Add docs landing page (docs/index.md)",
-      "Bump to 1.0.2"
-    ],
-    "publishedAt": "2026-02-23T13:03:02Z",
-    "url": "https://github.com/mcp-tool-shop-org/ThrottleAI/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "websketch-cli",
-    "toolName": "Websketch Cli",
-    "tag": "v0.4.1",
-    "name": "v0.4.1",
-    "body": [
-      "Consolidate 3 CI workflows into 2 (ci.yml + publish.yml)",
-      "Merge security scanning into CI pipeline",
-      "Fix dependabot to monthly schedule with groups",
-      "Trim Node matrix to 20 + 22",
-      "Add CI badge, fix site URL in README",
-      "Add docs landing page"
-    ],
-    "publishedAt": "2026-02-23T13:02:57Z",
-    "url": "https://github.com/mcp-tool-shop-org/websketch-cli/releases/tag/v0.4.1",
-    "prerelease": false
-  },
-  {
-    "repo": "mcp-tool-registry",
-    "toolName": "Mcp Tool Registry",
-    "tag": "v1.1.1",
-    "name": "v1.1.1",
-    "body": [
-      "Consolidate 5 CI workflows into 2",
-      "Fix dependabot schedule",
-      "Add docs landing page",
-      "Bump to 1.1.1"
-    ],
-    "publishedAt": "2026-02-23T13:02:52Z",
-    "url": "https://github.com/mcp-tool-shop-org/mcp-tool-registry/releases/tag/v1.1.1",
-    "prerelease": false
-  },
-  {
-    "repo": "websketch-extension",
-    "toolName": "Websketch Extension",
-    "tag": "v0.1.1",
-    "name": "v0.1.1",
-    "body": [
-      "Merge security into CI workflow",
-      "Remove master refs",
-      "Fix dependabot",
-      "Add docs landing page",
-      "Bump to 0.1.1"
-    ],
-    "publishedAt": "2026-02-23T13:02:21Z",
-    "url": "https://github.com/mcp-tool-shop-org/websketch-extension/releases/tag/v0.1.1",
-    "prerelease": false
-  },
-  {
-    "repo": "mcp-voice-engine",
-    "toolName": "Mcp Voice Engine",
-    "tag": "v0.0.3",
-    "name": "v0.0.3",
-    "body": [
-      "Consolidate 3 CI workflows into 2",
-      "Trim Node.js matrix",
-      "Add docs landing page",
-      "Bump voice-engine-dsp to 0.0.3"
-    ],
-    "publishedAt": "2026-02-23T13:01:56Z",
-    "url": "https://github.com/mcp-tool-shop-org/mcp-voice-engine/releases/tag/v0.0.3",
-    "prerelease": false
-  },
-  {
-    "repo": "training-studio",
-    "toolName": "Training Studio",
+    "repo": "backpropagate",
+    "toolName": "Backpropagate",
     "tag": "v1.0.1",
     "name": "v1.0.1",
     "body": [
-      "Add concurrency to publish workflow",
-      "Bump to 1.0.1"
+      "Ship Gate remediation — all hard gates pass (23/31 checked, 14 skipped, 100%)."
     ],
-    "publishedAt": "2026-02-23T13:01:05Z",
-    "url": "https://github.com/mcp-tool-shop-org/training-studio/releases/tag/v1.0.1",
+    "publishedAt": "2026-02-27T13:08:35Z",
+    "url": "https://github.com/mcp-tool-shop-org/backpropagate/releases/tag/v1.0.1",
     "prerelease": false
   },
   {
-    "repo": "tool-compass",
-    "toolName": "Tool Compass",
-    "tag": "v2.0.5",
-    "name": "v2.0.5",
+    "repo": "shipcheck",
+    "toolName": "Shipcheck",
+    "tag": "v1.0.1",
+    "name": "v1.0.1",
     "body": [
-      "Consolidate 3 CI workflows into 2",
-      "Switch to trusted publishing (OIDC)",
-      "Fix dependabot to monthly",
-      "Add GitHub Pages landing page",
-      "Bump to 2.0.5"
+      "Ship Gate remediation — all hard gates pass (23/31 checked, 14 skipped, 100%)."
     ],
-    "publishedAt": "2026-02-23T12:38:29Z",
-    "url": "https://github.com/mcp-tool-shop-org/tool-compass/releases/tag/v2.0.5",
+    "publishedAt": "2026-02-27T12:52:11Z",
+    "url": "https://github.com/mcp-tool-shop-org/shipcheck/releases/tag/v1.0.1",
     "prerelease": false
   },
   {
-    "repo": "file-compass",
-    "toolName": "File Compass",
-    "tag": "v0.1.3",
-    "name": "v0.1.3",
+    "repo": "vscode-voice-soundboard",
+    "toolName": "Vscode Voice Soundboard",
+    "tag": "v1.0.0",
+    "name": "v1.0.0",
     "body": [
-      "Consolidate 3 CI workflows into 2",
-      "Trim test matrix (ubuntu-only, 2 Python versions)",
-      "Fix dependabot to monthly",
-      "Add GitHub Pages landing page",
-      "Bump to 0.1.3",
-      "Add PyPI Trusted Publishers workflow by @mcp-tool-shop in https://github.com/mcp-tool-shop-org/file-compass/pull/4"
+      "Stable release — production-ready."
     ],
-    "publishedAt": "2026-02-23T12:37:44Z",
-    "url": "https://github.com/mcp-tool-shop-org/file-compass/releases/tag/v0.1.3",
-    "prerelease": false
-  },
-  {
-    "repo": "feature-reacher",
-    "toolName": "Feature Reacher",
-    "tag": "v0.2.1",
-    "name": "v0.2.1",
-    "body": [
-      "Add CI workflow for tests, lint, typecheck",
-      "Consolidate deploy workflows",
-      "Add concurrency, paths filters",
-      "Add GitHub Pages landing page",
-      "Bump to 0.2.1"
-    ],
-    "publishedAt": "2026-02-23T12:37:25Z",
-    "url": "https://github.com/mcp-tool-shop-org/feature-reacher/releases/tag/v0.2.1",
-    "prerelease": false
-  },
-  {
-    "repo": "comfy-headless",
-    "toolName": "Comfy Headless",
-    "tag": "v2.5.4",
-    "name": "v2.5.4",
-    "body": [
-      "Consolidate 4 CI workflows into 2 (`ci.yml` + `publish.yml`)",
-      "Merge security + test pipelines into single CI workflow",
-      "Merge docker + publish into single publish workflow",
-      "Remove macOS runners from publish test matrix (10x cost savings)",
-      "Drop Python 3.10 from publish test matrix (keep 3.11 + 3.12)",
-      "Add GitHub Pages landing page (`docs/index.md`)"
-    ],
-    "publishedAt": "2026-02-23T12:37:22Z",
-    "url": "https://github.com/mcp-tool-shop-org/comfy-headless/releases/tag/v2.5.4",
-    "prerelease": false
-  },
-  {
-    "repo": "headless-wheel-builder",
-    "toolName": "Headless Wheel Builder",
-    "tag": "v0.3.5",
-    "name": "v0.3.5",
-    "body": [
-      "Consolidate 5 CI workflows into 2 (ci.yml + publish.yml)",
-      "Remove macOS runners (10x cost savings)",
-      "Trim test matrices to 2 Python versions (3.11, 3.12)",
-      "Merge docs build into CI, merge docker/release into publish",
-      "Fix badge and URL references",
-      "Bump to 0.3.5"
-    ],
-    "publishedAt": "2026-02-23T12:37:15Z",
-    "url": "https://github.com/mcp-tool-shop-org/headless-wheel-builder/releases/tag/v0.3.5",
+    "publishedAt": "2026-02-27T12:30:11Z",
+    "url": "https://github.com/mcp-tool-shop-org/vscode-voice-soundboard/releases/tag/v1.0.0",
     "prerelease": false
   },
   {
     "repo": "backpropagate",
     "toolName": "Backpropagate",
-    "tag": "v0.1.6",
-    "name": "v0.1.6",
+    "tag": "v1.0.0",
+    "name": "v1.0.0",
     "body": [
-      "Consolidate 4 CI workflows into 2 (ci.yml + publish.yml)",
-      "Merge security scanning into CI",
-      "Fix paths filters, trim matrix",
-      "Add GitHub Pages landing page",
-      "Bump to 0.1.6"
+      "Stable release — production-ready."
     ],
-    "publishedAt": "2026-02-23T12:36:58Z",
-    "url": "https://github.com/mcp-tool-shop-org/backpropagate/releases/tag/v0.1.6",
+    "publishedAt": "2026-02-27T12:26:14Z",
+    "url": "https://github.com/mcp-tool-shop-org/backpropagate/releases/tag/v1.0.0",
     "prerelease": false
   },
   {
-    "repo": "context-window-manager",
-    "toolName": "Context Window Manager",
-    "tag": "v0.6.4",
-    "name": "v0.6.4",
+    "repo": "vscode-voice-soundboard",
+    "toolName": "Vscode Voice Soundboard",
+    "tag": "v0.3.2",
+    "name": "v0.3.2",
     "body": [
-      "Consolidate 3 CI workflows into 2 (ci.yml + publish.yml)",
-      "Merge Docker publishing into publish pipeline",
-      "Fix paths filters to include src/ and tests/",
-      "Add GitHub Pages landing page (docs/index.md)",
-      "Fix clone URL in README",
-      "Bump to 0.6.4"
+      "SECURITY.md, Codecov coverage, quality scorecard (45/50), privacy section, updated translations."
     ],
-    "publishedAt": "2026-02-23T12:36:47Z",
-    "url": "https://github.com/mcp-tool-shop-org/context-window-manager/releases/tag/v0.6.4",
+    "publishedAt": "2026-02-27T12:02:19Z",
+    "url": "https://github.com/mcp-tool-shop-org/vscode-voice-soundboard/releases/tag/v0.3.2",
     "prerelease": false
   },
   {
-    "repo": "code-batch",
-    "toolName": "Code Batch",
-    "tag": "v0.1.1",
-    "name": "v0.1.1",
+    "repo": "backpropagate",
+    "toolName": "Backpropagate",
+    "tag": "v0.1.7",
+    "name": "v0.1.7",
     "body": [
-      "Consolidate 3 CI workflows into 2",
-      "Fix paths filters, trim matrix",
-      "Add GitHub Pages landing page",
-      "Bump to 0.1.1"
+      "Codecov badge, quality scorecard, privacy section, brand logo URL, updated translations."
     ],
-    "publishedAt": "2026-02-23T12:36:10Z",
-    "url": "https://github.com/mcp-tool-shop-org/code-batch/releases/tag/v0.1.1",
+    "publishedAt": "2026-02-27T11:54:06Z",
+    "url": "https://github.com/mcp-tool-shop-org/backpropagate/releases/tag/v0.1.7",
     "prerelease": false
   },
   {
-    "repo": "accessibility-suite",
-    "toolName": "Accessibility Suite",
-    "tag": "v0.2.1",
-    "name": "v0.2.1",
-    "body": [
-      "Consolidate 5 CI workflows into single ci.yml",
-      "Add concurrency, paths filters, workflow_dispatch",
-      "Add GitHub Pages landing page",
-      "Bump to 0.2.1"
-    ],
-    "publishedAt": "2026-02-23T12:36:04Z",
-    "url": "https://github.com/mcp-tool-shop-org/accessibility-suite/releases/tag/v0.2.1",
-    "prerelease": false
-  },
-  {
-    "repo": "voice-soundboard",
-    "toolName": "Voice Soundboard",
-    "tag": "v2.6.1",
-    "name": "v2.6.1",
-    "body": [
-      "Harden CI workflows (paths, dispatch, trim matrix)",
-      "Add CI badge to README",
-      "Add GitHub Pages landing page",
-      "Bump to 2.6.1"
-    ],
-    "publishedAt": "2026-02-23T12:09:00Z",
-    "url": "https://github.com/mcp-tool-shop-org/voice-soundboard/releases/tag/v2.6.1",
-    "prerelease": false
-  },
-  {
-    "repo": "ConsensusOS",
-    "toolName": "ConsensusOS",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Harden CI workflows (concurrency groups)",
-      "Add GitHub Pages landing page",
-      "Bump to 1.0.2"
-    ],
-    "publishedAt": "2026-02-23T12:08:43Z",
-    "url": "https://github.com/mcp-tool-shop-org/ConsensusOS/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "venvkit",
-    "toolName": "Venvkit",
-    "tag": "v0.2.2",
-    "name": "v0.2.2",
-    "body": [
-      "Harden CI workflows (concurrency, paths, dispatch, remove master refs)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.2.2"
-    ],
-    "publishedAt": "2026-02-23T12:07:36Z",
-    "url": "https://github.com/mcp-tool-shop-org/venvkit/releases/tag/v0.2.2",
-    "prerelease": false
-  },
-  {
-    "repo": "flexiflow",
-    "toolName": "Flexiflow",
-    "tag": "v0.3.4",
-    "name": "v0.3.4",
-    "body": [
-      "Harden CI workflows (concurrency, paths, dispatch)",
-      "Add CI badge to README",
-      "Add GitHub Pages landing page",
-      "Bump to 0.3.4"
-    ],
-    "publishedAt": "2026-02-23T12:07:19Z",
-    "url": "https://github.com/mcp-tool-shop-org/flexiflow/releases/tag/v0.3.4",
-    "prerelease": false
-  },
-  {
-    "repo": "pathway",
-    "toolName": "Pathway",
+    "repo": "polyglot-vscode",
+    "toolName": "Polyglot Vscode",
     "tag": "v0.1.3",
     "name": "v0.1.3",
     "body": [
-      "Harden CI workflows (concurrency, broader paths, dispatch)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.1.3"
+      "The treatment — SECURITY.md, scorecard, coverage CI, VS Marketplace badge, standard footer, re-translated 7 languages."
     ],
-    "publishedAt": "2026-02-23T12:06:53Z",
-    "url": "https://github.com/mcp-tool-shop-org/pathway/releases/tag/v0.1.3",
+    "publishedAt": "2026-02-27T11:27:37Z",
+    "url": "https://github.com/mcp-tool-shop-org/polyglot-vscode/releases/tag/v0.1.3",
     "prerelease": false
   },
   {
-    "repo": "payroll-engine",
-    "toolName": "Payroll Engine",
-    "tag": "v0.2.2",
-    "name": "v0.2.2",
-    "body": [
-      "Fix org URLs in documentation",
-      "Bump to 0.2.2"
-    ],
-    "publishedAt": "2026-02-23T12:06:44Z",
-    "url": "https://github.com/mcp-tool-shop-org/payroll-engine/releases/tag/v0.2.2",
+    "repo": "websketch-vscode",
+    "toolName": "Websketch Vscode",
+    "tag": "v0.2.4",
+    "name": "v0.2.4",
+    "body": [],
+    "publishedAt": "2026-02-27T06:25:19Z",
+    "url": "https://github.com/mcp-tool-shop-org/websketch-vscode/releases/tag/v0.2.4",
     "prerelease": false
   },
   {
-    "repo": "mcp-voice-soundboard",
-    "toolName": "Mcp Voice Soundboard",
-    "tag": "v2.5.1",
-    "name": "v2.5.1",
-    "body": [
-      "Add GitHub Pages landing page",
-      "Bump to 2.5.1"
-    ],
-    "publishedAt": "2026-02-23T12:06:41Z",
-    "url": "https://github.com/mcp-tool-shop-org/mcp-voice-soundboard/releases/tag/v2.5.1",
-    "prerelease": false
-  },
-  {
-    "repo": "a11y-ci",
-    "toolName": "A11y Ci",
-    "tag": "v0.3.1",
-    "name": "v0.3.1",
-    "body": [
-      "Add workflow_dispatch to publish workflow",
-      "Add GitHub Pages landing page",
-      "Bump to 0.3.1"
-    ],
-    "publishedAt": "2026-02-23T12:06:11Z",
-    "url": "https://github.com/mcp-tool-shop-org/a11y-ci/releases/tag/v0.3.1",
-    "prerelease": false
-  },
-  {
-    "repo": "codecomfy-vscode",
-    "toolName": "Codecomfy Vscode",
-    "tag": "v0.5.2",
-    "name": "v0.5.2",
-    "body": [
-      "Add CI badge to README",
-      "Bump to 0.5.2"
-    ],
-    "publishedAt": "2026-02-23T11:47:49Z",
-    "url": "https://github.com/mcp-tool-shop-org/codecomfy-vscode/releases/tag/v0.5.2",
-    "prerelease": false
-  },
-  {
-    "repo": "ai-jam-sessions",
-    "toolName": "Ai Jam Sessions",
-    "tag": "v0.1.3",
-    "name": "v0.1.3",
-    "body": [
-      "Add CI badge to README",
-      "Bump to 0.1.3"
-    ],
-    "publishedAt": "2026-02-23T11:47:44Z",
-    "url": "https://github.com/mcp-tool-shop-org/ai-jam-sessions/releases/tag/v0.1.3",
-    "prerelease": false
-  },
-  {
-    "repo": "mcpt",
-    "toolName": "Mcpt",
-    "tag": "v1.0.5",
-    "name": "v1.0.5",
-    "body": [
-      "Add CI badge to README",
-      "Bump to 1.0.5"
-    ],
-    "publishedAt": "2026-02-23T11:47:39Z",
-    "url": "https://github.com/mcp-tool-shop-org/mcpt/releases/tag/v1.0.5",
-    "prerelease": false
-  },
-  {
-    "repo": "audiobooker",
-    "toolName": "Audiobooker",
-    "tag": "v0.5.2",
-    "name": "v0.5.2",
-    "body": [
-      "Add CI badge to README",
-      "Bump to 0.5.2"
-    ],
-    "publishedAt": "2026-02-23T11:47:34Z",
-    "url": "https://github.com/mcp-tool-shop-org/audiobooker/releases/tag/v0.5.2",
-    "prerelease": false
-  },
-  {
-    "repo": "ally-demo-python",
-    "toolName": "Ally Demo Python",
-    "tag": "v0.2.2",
-    "name": "v0.2.2",
-    "body": [
-      "Add CI badge to README",
-      "Bump to 0.2.2"
-    ],
-    "publishedAt": "2026-02-23T11:47:28Z",
-    "url": "https://github.com/mcp-tool-shop-org/ally-demo-python/releases/tag/v0.2.2",
-    "prerelease": false
-  },
-  {
-    "repo": "Attestia",
-    "toolName": "Attestia",
-    "tag": "v0.2.1",
-    "name": "v0.2.1",
-    "body": [
-      "Harden CI workflows (concurrency, paths, dispatch)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.2.1"
-    ],
-    "publishedAt": "2026-02-23T11:36:13Z",
-    "url": "https://github.com/mcp-tool-shop-org/Attestia/releases/tag/v0.2.1",
-    "prerelease": false
-  },
-  {
-    "repo": "ai-jam-sessions",
-    "toolName": "Ai Jam Sessions",
-    "tag": "v0.1.2",
-    "name": "v0.1.2",
-    "body": [
-      "Harden CI workflows (node matrix, dispatch)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.1.2"
-    ],
-    "publishedAt": "2026-02-23T11:36:07Z",
-    "url": "https://github.com/mcp-tool-shop-org/ai-jam-sessions/releases/tag/v0.1.2",
-    "prerelease": false
-  },
-  {
-    "repo": "codecomfy-vscode",
-    "toolName": "Codecomfy Vscode",
-    "tag": "v0.5.1",
-    "name": "v0.5.1",
-    "body": [
-      "Harden CI workflows (broaden paths)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.5.1"
-    ],
-    "publishedAt": "2026-02-23T11:36:02Z",
-    "url": "https://github.com/mcp-tool-shop-org/codecomfy-vscode/releases/tag/v0.5.1",
-    "prerelease": false
-  },
-  {
-    "repo": "witness",
-    "toolName": "Witness",
-    "tag": "v0.1.2",
-    "name": "v0.1.2",
-    "body": [
-      "Local-first, append-only event journal",
-      "Offline verification",
-      "Canonical JSON + SHA-256 + Ed25519",
-      "See:",
-      "CONTRACT.md",
-      "IMPLEMENTATION_NOTES.md"
-    ],
-    "publishedAt": "2026-02-23T11:36:00Z",
-    "url": "https://github.com/mcp-tool-shop-org/witness/releases/tag/v0.1.2",
-    "prerelease": false
-  },
-  {
-    "repo": "mcpt",
-    "toolName": "Mcpt",
-    "tag": "v1.0.4",
-    "name": "v1.0.4",
-    "body": [
-      "Harden CI workflows (paths, concurrency, dispatch)",
-      "Trim Python matrix to 3.11/3.12",
-      "Add GitHub Pages landing page",
-      "Bump to 1.0.4"
-    ],
-    "publishedAt": "2026-02-23T11:35:39Z",
-    "url": "https://github.com/mcp-tool-shop-org/mcpt/releases/tag/v1.0.4",
+    "repo": "websketch-vscode",
+    "toolName": "Websketch Vscode",
+    "tag": "v0.2.3",
+    "name": "v0.2.3",
+    "body": [],
+    "publishedAt": "2026-02-27T06:22:05Z",
+    "url": "https://github.com/mcp-tool-shop-org/websketch-vscode/releases/tag/v0.2.3",
     "prerelease": false
   },
   {
     "repo": "runforge-vscode",
     "toolName": "Runforge Vscode",
-    "tag": "v0.4.1",
-    "name": "v0.4.1",
+    "tag": "v0.4.5",
+    "name": "v0.4.5",
     "body": [
-      "Harden CI workflows (broaden paths)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.4.1"
+      "Added 82 new tests covering previously untested modules:",
+      "`formatters.test.ts` — all observability format* functions (44 tests)",
+      "`run-manager-pure.test.ts` — OOM detection patterns, duration formatting, run state (27 tests)",
+      "`metadata.test.ts` — path helpers, provenance index, run metadata loading (11 tests)",
+      "Exported `isOomError` and `formatDuration` from run-manager for testability",
+      "Full suite: **187 tests**, all passing (was 105)"
     ],
-    "publishedAt": "2026-02-23T11:35:13Z",
-    "url": "https://github.com/mcp-tool-shop-org/runforge-vscode/releases/tag/v0.4.1",
+    "publishedAt": "2026-02-27T05:00:17Z",
+    "url": "https://github.com/mcp-tool-shop-org/runforge-vscode/releases/tag/v0.4.5",
     "prerelease": false
   },
   {
-    "repo": "integradio",
-    "toolName": "Integradio",
-    "tag": "v0.3.3",
-    "name": "v0.3.3",
+    "repo": "codecomfy-vscode",
+    "toolName": "Codecomfy Vscode",
+    "tag": "v0.5.5",
+    "name": "v0.5.5",
     "body": [
-      "Harden CI workflows (concurrency, dispatch)",
-      "Add GitHub Pages landing page",
-      "Bump to 0.3.3"
+      "Added 80 new unit tests covering previously untested modules:",
+      "`comfy-server-engine.test.ts` — constructor, buildWorkflow logic (21 tests)",
+      "`job-router.test.ts` — run ID generation, workspace keys, index creation (17 tests)",
+      "`ffmpeg-utils.test.ts` — cleanupPartialVideo, interface shapes (10 tests)",
+      "`types.test.ts` — constants, type contracts, schema guards (17 tests)",
+      "Full suite: **235 tests**, all passing (was 155)"
     ],
-    "publishedAt": "2026-02-23T11:35:09Z",
-    "url": "https://github.com/mcp-tool-shop-org/integradio/releases/tag/v0.3.3",
+    "publishedAt": "2026-02-27T04:48:56Z",
+    "url": "https://github.com/mcp-tool-shop-org/codecomfy-vscode/releases/tag/v0.5.5",
     "prerelease": false
   },
   {
-    "repo": "audiobooker",
-    "toolName": "Audiobooker",
-    "tag": "v0.5.1",
-    "name": "v0.5.1",
-    "body": [
-      "Harden CI workflows (concurrency, paths)",
-      "Trim Python matrix to 3.11/3.12",
-      "Add GitHub Pages landing page",
-      "Bump to 0.5.1"
-    ],
-    "publishedAt": "2026-02-23T11:34:56Z",
-    "url": "https://github.com/mcp-tool-shop-org/audiobooker/releases/tag/v0.5.1",
-    "prerelease": false
-  },
-  {
-    "repo": "ally-demo-python",
-    "toolName": "Ally Demo Python",
+    "repo": "mcp-app-builder",
+    "toolName": "Mcp App Builder",
     "tag": "v0.2.1",
     "name": "v0.2.1",
     "body": [
-      "Harden CI workflows (concurrency)",
-      "Trim Python matrix to 3.11/3.12",
-      "Fix GitHub URLs",
-      "Add GitHub Pages landing page",
-      "Bump to 0.2.1"
+      "Added 7 new test files covering previously untested modules:",
+      "Logger** (9 tests): message formatting, log levels, error detail handling",
+      "UI Primitives Extended** (27 tests): list, input, select, checkbox, tabs, accordion, dialog, image, custom",
+      "UI Builders** (31 tests): searchResults, dashboard, wizard, confirmation, statusDisplay, emptyState, errorDisplay",
+      "Config Provider** (9 tests): workspace detection, config loading, event emission",
+      "Extension Lifecycle** (9 tests): activation, command registration, disposables, deactivation"
     ],
-    "publishedAt": "2026-02-23T11:34:46Z",
-    "url": "https://github.com/mcp-tool-shop-org/ally-demo-python/releases/tag/v0.2.1",
+    "publishedAt": "2026-02-27T04:31:56Z",
+    "url": "https://github.com/mcp-tool-shop-org/mcp-app-builder/releases/tag/v0.2.1",
     "prerelease": false
   },
   {
-    "repo": "soundboard-plugin",
-    "toolName": "Soundboard Plugin",
-    "tag": "v1.1.1",
-    "name": "v1.1.1",
+    "repo": "backprop",
+    "toolName": "Backprop",
+    "tag": "v0.3.4",
+    "name": "v0.3.4",
     "body": [
-      "Harden CI workflows (concurrency)",
-      "Add GitHub Pages landing page",
-      "Bump to 1.1.1"
+      "Added 8 new test files covering schema validation, config loader, nvidia/rocm probes, GPU probe dispatch, governor edge cases, experiment store, token bucket, and resource monitor",
+      "Fixed pre-existing bug in `init.test.ts` where `minFreeRamGB` was referenced under `gpu` sub-object instead of at root schema level",
+      "Added `rocm` to GPU probe enum in config schema",
+      "Wired rocm probe into dispatcher with auto-fallback chain: nvidia-smi → rocm-smi → null",
+      "Committed previously untracked source files: `rocmProbe.ts`, `format.ts`"
     ],
-    "publishedAt": "2026-02-23T11:34:32Z",
-    "url": "https://github.com/mcp-tool-shop-org/soundboard-plugin/releases/tag/v1.1.1",
+    "publishedAt": "2026-02-27T04:21:25Z",
+    "url": "https://github.com/mcp-tool-shop-org/backprop/releases/tag/v0.3.4",
     "prerelease": false
   },
   {
-    "repo": "soundboard-maui",
-    "toolName": "Soundboard Maui",
-    "tag": "v1.2.1",
-    "name": "v1.2.1",
+    "repo": "vscode-voice-soundboard",
+    "toolName": "Vscode Voice Soundboard",
+    "tag": "v0.3.1",
+    "name": "v0.3.1",
     "body": [
-      "Fix environment: publishing → environment: nuget",
-      "Add concurrency to publish workflow",
-      "Add GitHub Pages landing page"
+      "102 unit tests** across 7 test files covering all extension modules",
+      "Vitest configuration with comprehensive vscode module mock",
+      "Exported `parseToolResult` and `formatVttTime` for testability"
     ],
-    "publishedAt": "2026-02-23T11:00:46Z",
-    "url": "https://github.com/mcp-tool-shop-org/soundboard-maui/releases/tag/v1.2.1",
+    "publishedAt": "2026-02-27T04:08:54Z",
+    "url": "https://github.com/mcp-tool-shop-org/vscode-voice-soundboard/releases/tag/v0.3.1",
     "prerelease": false
   },
   {
-    "repo": "ScalarScope-Desktop",
-    "toolName": "ScalarScope Desktop",
-    "tag": "v1.4.1",
-    "name": "v1.4.1",
+    "repo": "codeclone-suite",
+    "toolName": "Codeclone Suite",
+    "tag": "v0.2.0",
+    "name": "v0.2.0",
     "body": [
-      "Harden CI: add concurrency to all 3 workflows, broaden paths filter",
-      "Add workflow_dispatch to release workflow",
-      "Add environment: nuget to NuGet publish job",
-      "Fix README URLs (mcp-tool-shop → mcp-tool-shop-org)",
-      "Add GitHub Pages landing page"
+      "62 Python unit tests** for CLI core — coverage report parsing, diagnostics, staleness checks, file discovery",
+      "37 TypeScript unit tests** for VS Code extension — CLI output parsing, JSON validation, diagnostic publishing, CLI discovery",
+      "CI integration** — unit test steps (pytest + vitest) added to CI workflow",
+      "CLI discovery converted from blocking `execSync` to async `execFile`",
+      "Typo `bySevertity` → `bySeverity` in results tree provider",
+      "Extension version aligned with CLI engine (both now 0.2.0)"
     ],
-    "publishedAt": "2026-02-23T11:00:43Z",
-    "url": "https://github.com/mcp-tool-shop-org/ScalarScope-Desktop/releases/tag/v1.4.1",
+    "publishedAt": "2026-02-27T03:55:07Z",
+    "url": "https://github.com/mcp-tool-shop-org/codeclone-suite/releases/tag/v0.2.0",
     "prerelease": false
   },
   {
-    "repo": "runforge-desktop",
-    "toolName": "Runforge Desktop",
-    "tag": "v0.5.1",
-    "name": "v0.5.1",
+    "repo": "polyglot-vscode",
+    "toolName": "Polyglot Vscode",
+    "tag": "v0.1.2",
+    "name": "v0.1.2",
     "body": [
-      "Add concurrency to publish workflow",
-      "Add environment: nuget to NuGet publish job",
-      "Add GitHub Pages landing page"
+      "readmeTranslator** (37 tests): segmentReadme parser, cleanTranslation quirk removal for 10+ languages, translateReadme integration",
+      "util** (15 tests): getConfig, pickLanguage/pickLanguages, log, friendlyError with contextual error detection",
+      "commands** (17 tests): translateSelection, translateFile, checkStatus — edge cases, cancellation, error paths",
+      "statusBar** (9 tests): all 4 polling states (ready, Ollama down, model missing, connection error)",
+      "statusTree** (10 tests): tree provider states, dispose cleanup, model filtering",
+      "Exported `segmentReadme` and `cleanTranslation` for testability"
     ],
-    "publishedAt": "2026-02-23T11:00:39Z",
-    "url": "https://github.com/mcp-tool-shop-org/runforge-desktop/releases/tag/v0.5.1",
+    "publishedAt": "2026-02-27T03:42:23Z",
+    "url": "https://github.com/mcp-tool-shop-org/polyglot-vscode/releases/tag/v0.1.2",
     "prerelease": false
   },
   {
-    "repo": "NextLedger",
-    "toolName": "NextLedger",
-    "tag": "v1.0.1",
-    "name": "v1.0.1",
+    "repo": "polyglot-vscode",
+    "toolName": "Polyglot Vscode",
+    "tag": "v0.1.1",
+    "name": "v0.1.1",
     "body": [
-      "Add concurrency to release workflow",
-      "Add GitHub Pages landing page"
+      "First published release of Polyglot for VS Code — local GPU translation powered by TranslateGemma 12B via Ollama.",
+      "Translate Selection** — Select text, press `Ctrl+Alt+T`, pick a language",
+      "Translate File** — Translate an entire file into a new `file.ja.ext` alongside the original",
+      "Translate README** — Batch-translate README.md into 7 languages, preserving code blocks, tables, and badges",
+      "Sidebar Panel** — Globe icon in the activity bar with action buttons and live Ollama status",
+      "Status Bar** — Real-time Ollama connection status with auto-polling"
     ],
-    "publishedAt": "2026-02-23T11:00:36Z",
-    "url": "https://github.com/mcp-tool-shop-org/NextLedger/releases/tag/v1.0.1",
+    "publishedAt": "2026-02-27T03:03:26Z",
+    "url": "https://github.com/mcp-tool-shop-org/polyglot-vscode/releases/tag/v0.1.1",
+    "prerelease": false
+  },
+  {
+    "repo": "mcp-app-builder",
+    "toolName": "Mcp App Builder",
+    "tag": "v0.2.0",
+    "name": "v0.2.0",
+    "body": [],
+    "publishedAt": "2026-02-27T02:31:40Z",
+    "url": "https://github.com/mcp-tool-shop-org/mcp-app-builder/releases/tag/v0.2.0",
+    "prerelease": false
+  },
+  {
+    "repo": "websketch-vscode",
+    "toolName": "Websketch Vscode",
+    "tag": "v0.2.2",
+    "name": "v0.2.2",
+    "body": [],
+    "publishedAt": "2026-02-27T01:00:18Z",
+    "url": "https://github.com/mcp-tool-shop-org/websketch-vscode/releases/tag/v0.2.2",
+    "prerelease": false
+  },
+  {
+    "repo": "vscode-voice-soundboard",
+    "toolName": "Vscode Voice Soundboard",
+    "tag": "v0.2.2",
+    "name": "v0.2.2",
+    "body": [
+      "ci: allow vitest to pass with no tests by @mcp-tool-shop in https://github.com/mcp-tool-shop-org/vscode-voice-soundboard/pull/2",
+      "@mcp-tool-shop made their first contribution in https://github.com/mcp-tool-shop-org/vscode-voice-soundboard/pull/2"
+    ],
+    "publishedAt": "2026-02-27T01:00:14Z",
+    "url": "https://github.com/mcp-tool-shop-org/vscode-voice-soundboard/releases/tag/v0.2.2",
+    "prerelease": false
+  },
+  {
+    "repo": "codecomfy-vscode",
+    "toolName": "Codecomfy Vscode",
+    "tag": "v0.5.4",
+    "name": "v0.5.4",
+    "body": [],
+    "publishedAt": "2026-02-27T00:54:07Z",
+    "url": "https://github.com/mcp-tool-shop-org/codecomfy-vscode/releases/tag/v0.5.4",
+    "prerelease": false
+  },
+  {
+    "repo": "runforge-vscode",
+    "toolName": "Runforge Vscode",
+    "tag": "v0.4.4",
+    "name": "v0.4.4",
+    "body": [],
+    "publishedAt": "2026-02-27T00:52:51Z",
+    "url": "https://github.com/mcp-tool-shop-org/runforge-vscode/releases/tag/v0.4.4",
+    "prerelease": false
+  },
+  {
+    "repo": "Attestia-Desktop",
+    "toolName": "Attestia Desktop",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch bump for Attestia.Core, Attestia.Client, Attestia.Sidecar"
+    ],
+    "publishedAt": "2026-02-27T00:42:23Z",
+    "url": "https://github.com/mcp-tool-shop-org/Attestia-Desktop/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "CursorAssist",
+    "toolName": "CursorAssist",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch bump + CI fix for MAUI workload and NuGet trusted publishing"
+    ],
+    "publishedAt": "2026-02-27T00:36:39Z",
+    "url": "https://github.com/mcp-tool-shop-org/CursorAssist/releases/tag/v1.0.2",
     "prerelease": false
   },
   {
     "repo": "MouseTrainer",
     "toolName": "MouseTrainer",
-    "tag": "v1.1.1",
-    "name": "v1.1.1",
+    "tag": "v1.1.2",
+    "name": "v1.1.2",
     "body": [
-      "Add concurrency to publish workflow",
-      "Add environment: nuget to NuGet publish job",
-      "Add GitHub Pages landing page"
+      "Patch bump + fix concurrent disk write race condition in SessionStore"
     ],
-    "publishedAt": "2026-02-23T11:00:28Z",
-    "url": "https://github.com/mcp-tool-shop-org/MouseTrainer/releases/tag/v1.1.1",
+    "publishedAt": "2026-02-27T00:14:41Z",
+    "url": "https://github.com/mcp-tool-shop-org/MouseTrainer/releases/tag/v1.1.2",
+    "prerelease": false
+  },
+  {
+    "repo": "runforge-desktop",
+    "toolName": "Runforge Desktop",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:49:25Z",
+    "url": "https://github.com/mcp-tool-shop-org/runforge-desktop/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "ClaimLedger",
+    "toolName": "ClaimLedger",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:49:22Z",
+    "url": "https://github.com/mcp-tool-shop-org/ClaimLedger/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "soundboard-maui",
+    "toolName": "Soundboard Maui",
+    "tag": "v1.2.2",
+    "name": "v1.2.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:49:13Z",
+    "url": "https://github.com/mcp-tool-shop-org/soundboard-maui/releases/tag/v1.2.2",
+    "prerelease": false
+  },
+  {
+    "repo": "CodeClone-Desktop",
+    "toolName": "CodeClone Desktop",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:49:10Z",
+    "url": "https://github.com/mcp-tool-shop-org/CodeClone-Desktop/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "linux-dev-typer",
+    "toolName": "Linux Dev Typer",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:49:06Z",
+    "url": "https://github.com/mcp-tool-shop-org/linux-dev-typer/releases/tag/v1.0.2",
     "prerelease": false
   },
   {
     "repo": "meta-content-system",
     "toolName": "Meta Content System",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:49:03Z",
+    "url": "https://github.com/mcp-tool-shop-org/meta-content-system/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "InControl-Desktop",
+    "toolName": "InControl Desktop",
+    "tag": "v1.2.2",
+    "name": "InControl-Desktop v1.2.2",
+    "body": [
+      "1. Download the MSIX package below",
+      "2. Verify the SHA256 checksum",
+      "3. Double-click to install",
+      "```powershell",
+      "(Get-FileHash InControl-Desktop-1.2.2-unsigned.msix -Algorithm SHA256).Hash",
+      "```"
+    ],
+    "publishedAt": "2026-02-26T23:48:59Z",
+    "url": "https://github.com/mcp-tool-shop-org/InControl-Desktop/releases/tag/v1.2.2",
+    "prerelease": false
+  },
+  {
+    "repo": "CreatorLedger",
+    "toolName": "CreatorLedger",
+    "tag": "v1.1.2",
+    "name": "v1.1.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:48:56Z",
+    "url": "https://github.com/mcp-tool-shop-org/CreatorLedger/releases/tag/v1.1.2",
+    "prerelease": false
+  },
+  {
+    "repo": "ScalarScope-Desktop",
+    "toolName": "ScalarScope Desktop",
+    "tag": "v1.0.3",
+    "name": "v1.0.3",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:48:52Z",
+    "url": "https://github.com/mcp-tool-shop-org/ScalarScope-Desktop/releases/tag/v1.0.3",
+    "prerelease": false
+  },
+  {
+    "repo": "build-governor",
+    "toolName": "Build Governor",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [
+      "Patch version bump for NuGet republish."
+    ],
+    "publishedAt": "2026-02-26T23:48:49Z",
+    "url": "https://github.com/mcp-tool-shop-org/build-governor/releases/tag/v1.0.2",
+    "prerelease": false
+  },
+  {
+    "repo": "Attestia-Desktop",
+    "toolName": "Attestia Desktop",
     "tag": "v1.0.1",
     "name": "v1.0.1",
     "body": [
-      "Harden CI: add push/PR triggers with paths filter, add concurrency",
-      "Add environment: nuget to NuGet publish job",
-      "Add GitHub Pages landing page"
+      "Patch version bump for NuGet republish."
     ],
-    "publishedAt": "2026-02-23T11:00:25Z",
-    "url": "https://github.com/mcp-tool-shop-org/meta-content-system/releases/tag/v1.0.1",
+    "publishedAt": "2026-02-26T23:45:33Z",
+    "url": "https://github.com/mcp-tool-shop-org/Attestia-Desktop/releases/tag/v1.0.1",
+    "prerelease": false
+  },
+  {
+    "repo": "tool-compass",
+    "toolName": "Tool Compass",
+    "tag": "v2.0.6",
+    "name": "v2.0.6",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:07:06Z",
+    "url": "https://github.com/mcp-tool-shop-org/tool-compass/releases/tag/v2.0.6",
+    "prerelease": false
+  },
+  {
+    "repo": "nexus-attest",
+    "toolName": "Nexus Attest",
+    "tag": "v0.7.1",
+    "name": "v0.7.1",
+    "body": [
+      "Publish to PyPI."
+    ],
+    "publishedAt": "2026-02-26T23:05:36Z",
+    "url": "https://github.com/mcp-tool-shop-org/nexus-attest/releases/tag/v0.7.1",
+    "prerelease": false
+  },
+  {
+    "repo": "a11y-ci",
+    "toolName": "A11y Ci",
+    "tag": "v0.3.2",
+    "name": "v0.3.2",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:34Z",
+    "url": "https://github.com/mcp-tool-shop-org/a11y-ci/releases/tag/v0.3.2",
+    "prerelease": false
+  },
+  {
+    "repo": "code-covered",
+    "toolName": "Code Covered",
+    "tag": "v0.5.3",
+    "name": "v0.5.3",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:32Z",
+    "url": "https://github.com/mcp-tool-shop-org/code-covered/releases/tag/v0.5.3",
+    "prerelease": false
+  },
+  {
+    "repo": "context-window-manager",
+    "toolName": "Context Window Manager",
+    "tag": "v0.6.5",
+    "name": "v0.6.5",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:30Z",
+    "url": "https://github.com/mcp-tool-shop-org/context-window-manager/releases/tag/v0.6.5",
+    "prerelease": false
+  },
+  {
+    "repo": "flexiflow",
+    "toolName": "Flexiflow",
+    "tag": "v0.3.5",
+    "name": "v0.3.5",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:28Z",
+    "url": "https://github.com/mcp-tool-shop-org/flexiflow/releases/tag/v0.3.5",
+    "prerelease": false
+  },
+  {
+    "repo": "headless-wheel-builder",
+    "toolName": "Headless Wheel Builder",
+    "tag": "v0.3.6",
+    "name": "v0.3.6",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:25Z",
+    "url": "https://github.com/mcp-tool-shop-org/headless-wheel-builder/releases/tag/v0.3.6",
+    "prerelease": false
+  },
+  {
+    "repo": "integradio",
+    "toolName": "Integradio",
+    "tag": "v0.3.4",
+    "name": "v0.3.4",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:23Z",
+    "url": "https://github.com/mcp-tool-shop-org/integradio/releases/tag/v0.3.4",
+    "prerelease": false
+  },
+  {
+    "repo": "mcpt",
+    "toolName": "Mcpt",
+    "tag": "v1.0.6",
+    "name": "v1.0.6",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:21Z",
+    "url": "https://github.com/mcp-tool-shop-org/mcpt/releases/tag/v1.0.6",
+    "prerelease": false
+  },
+  {
+    "repo": "nexus-router-adapter-http",
+    "toolName": "Nexus Router Adapter Http",
+    "tag": "v0.2.1",
+    "name": "v0.2.1",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:18Z",
+    "url": "https://github.com/mcp-tool-shop-org/nexus-router-adapter-http/releases/tag/v0.2.1",
+    "prerelease": false
+  },
+  {
+    "repo": "pathway",
+    "toolName": "Pathway",
+    "tag": "v0.1.4",
+    "name": "v0.1.4",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:16Z",
+    "url": "https://github.com/mcp-tool-shop-org/pathway/releases/tag/v0.1.4",
+    "prerelease": false
+  },
+  {
+    "repo": "payroll-engine",
+    "toolName": "Payroll Engine",
+    "tag": "v0.2.3",
+    "name": "v0.2.3",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:14Z",
+    "url": "https://github.com/mcp-tool-shop-org/payroll-engine/releases/tag/v0.2.3",
+    "prerelease": false
+  },
+  {
+    "repo": "nexus-router-adapter-stdout",
+    "toolName": "Nexus Router Adapter Stdout",
+    "tag": "v0.2.1",
+    "name": "v0.2.1",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:10Z",
+    "url": "https://github.com/mcp-tool-shop-org/nexus-router-adapter-stdout/releases/tag/v0.2.1",
+    "prerelease": false
+  },
+  {
+    "repo": "nexus-router",
+    "toolName": "Nexus Router",
+    "tag": "v1.1.1",
+    "name": "v1.1.1",
+    "body": [
+      "Patch version bump for PyPI republish."
+    ],
+    "publishedAt": "2026-02-26T23:05:08Z",
+    "url": "https://github.com/mcp-tool-shop-org/nexus-router/releases/tag/v1.1.1",
     "prerelease": false
   }
 ]

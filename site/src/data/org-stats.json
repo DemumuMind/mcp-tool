@@ -1,5 +1,5 @@
 {
-  "repoCount": 117,
+  "repoCount": 118,
   "registeredCount": 45,
   "totalStars": 7,
   "languages": [
@@ -13,13 +13,13 @@
     "C++"
   ],
   "recentReleases": 50,
-  "updatedAt": "2026-02-26T14:09:53.731Z",
+  "updatedAt": "2026-02-27T14:00:21.312Z",
   "registryHealth": {
     "registryToolCount": 48,
     "registeredInProjects": 45,
-    "orgOnlyRepos": 72,
-    "registryArchived": 1,
-    "registryMissing": 1,
+    "orgOnlyRepos": 73,
+    "registryArchived": 0,
+    "registryMissing": 2,
     "ignoredRepos": 6,
     "aliasCount": 2,
     "warnings": 2

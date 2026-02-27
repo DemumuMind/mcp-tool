@@ -1,18 +1,17 @@
 {
-  "generatedAt": "2026-02-26T14:09:53.732Z",
-  "archived": [
-    {
-      "registryId": "winget-pkgs",
-      "repoName": "winget-pkgs",
-      "repo": "https://github.com/mcp-tool-shop-org/winget-pkgs",
-      "action": "remove or mark deprecated in registry"
-    }
-  ],
+  "generatedAt": "2026-02-27T14:00:21.312Z",
+  "archived": [],
   "missing": [
     {
       "registryId": "next-gallery",
       "repoName": "next-gallery",
       "repo": "https://github.com/mcp-tool-shop-org/next-gallery",
+      "action": "verify repo exists or remove from registry"
+    },
+    {
+      "registryId": "winget-pkgs",
+      "repoName": "winget-pkgs",
+      "repo": "https://github.com/mcp-tool-shop-org/winget-pkgs",
       "action": "verify repo exists or remove from registry"
     }
   ],

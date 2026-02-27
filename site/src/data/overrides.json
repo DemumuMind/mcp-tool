@@ -12,6 +12,33 @@
     "screenshot": "/screenshots/Attestia.png",
     "screenshotType": "placeholder"
   },
+  "Attestia-Desktop": {
+    "tags": [
+      "attestation",
+      "blockchain",
+      "compliance",
+      "csharp",
+      "desktop-app",
+      "dotnet"
+    ],
+    "category": "infrastructure",
+    "stability": "stable",
+    "kind": "desktop-app",
+    "tagline": "Financial intent verification for Windows — WinUI 3 app and .NET SDK for blockchain...",
+    "needsHumanReview": true
+  },
+  "ClaimLedger": {
+    "tags": [
+      "provenance",
+      "cryptography",
+      "dotnet"
+    ],
+    "category": "infrastructure",
+    "stability": "stable",
+    "kind": "library",
+    "tagline": "Scientific claim provenance and verification ledger.",
+    "needsHumanReview": true
+  },
   "ConsensusOS": {
     "tags": [
       "consensus",
@@ -203,6 +230,22 @@
     "kind": "library",
     "install": "pip install audiobooker",
     "tagline": "Audio book generation and management system.",
+    "needsHumanReview": true
+  },
+  "backprop": {
+    "tags": [
+      "checkpointing",
+      "cli",
+      "developer-tools",
+      "gpu",
+      "machine-learning",
+      "nodejs"
+    ],
+    "category": "infrastructure",
+    "stability": "beta",
+    "kind": "cli",
+    "install": "npx backprop",
+    "tagline": "CLI-first ML trainer with intelligent resource governance — timeboxed runs, GPU...",
     "needsHumanReview": true
   },
   "backpropagate": {
@@ -764,6 +807,21 @@
     "tagline": "Local GPU translation MCP server — TranslateGemma via Ollama, 55 languages, zero cloud...",
     "needsHumanReview": true
   },
+  "polyglot-vscode": {
+    "tags": [
+      "gpu",
+      "i18n",
+      "local-gpu",
+      "ollama",
+      "translategemma",
+      "translation"
+    ],
+    "category": "devtools",
+    "stability": "beta",
+    "kind": "vscode-extension",
+    "tagline": "VS Code extension for local GPU translation — TranslateGemma via Ollama, 55 languages,...",
+    "needsHumanReview": true
+  },
   "prov-engine-js": {
     "tags": [
       "provenance",
@@ -819,6 +877,22 @@
     "stability": "beta",
     "kind": "vscode-extension",
     "tagline": "VS Code extension for AI workflow execution.",
+    "needsHumanReview": true
+  },
+  "shipcheck": {
+    "tags": [
+      "checklist",
+      "developer-tools",
+      "error-contract",
+      "mcp",
+      "model-context-protocol",
+      "quality"
+    ],
+    "category": "ml",
+    "stability": "stable",
+    "kind": "library",
+    "install": "npm install shipcheck",
+    "tagline": "Product standards for MCP Tool Shop — Ship Gate checklist, error contract, templates,...",
     "needsHumanReview": true
   },
   "siege-kit": {
