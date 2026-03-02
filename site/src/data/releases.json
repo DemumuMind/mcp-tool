@@ -1,5 +1,140 @@
 [
   {
+    "repo": "sovereignty",
+    "toolName": "Sovereignty",
+    "tag": "v1.4.1",
+    "name": "v1.4.1",
+    "body": [
+      "Shipcheck compliance + full treatment.",
+      "Structured errors**: SovError with code/message/hint — replaces 47 raw exit points",
+      "Threat model**: 5-row table in README covering seed leakage, state tampering, anchor spoofing",
+      "Landing page**: [mcp-tool-shop-org.github.io/sovereignty](https://mcp-tool-shop-org.github.io/sovereignty/)",
+      "143 tests**, lint clean, shipcheck 100%",
+      "7 translations**: Japanese, Chinese, Spanish, French, Hindi, Italian, Portuguese"
+    ],
+    "publishedAt": "2026-03-02T08:55:33Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.1",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-camp",
+    "toolName": "Xrpl Camp",
+    "tag": "v1.0.0",
+    "name": "v1.0.0",
+    "body": [
+      "First stable release — promoted from v0.2.0 after shipcheck compliance.",
+      "4 lessons**: Wallet, Payment, Verification, Certificate — learn the XRP Ledger in one sitting",
+      "Structured errors**: CampError with code/message/hint for every failure mode",
+      "Round proofs**: SHA-256 fingerprints, optional XRPL Testnet anchoring",
+      "Landing page**: [mcp-tool-shop-org.github.io/xrpl-camp](https://mcp-tool-shop-org.github.io/xrpl-camp/)",
+      "91 tests**, lint clean, shipcheck 100%"
+    ],
+    "publishedAt": "2026-03-02T08:55:29Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.0",
+    "prerelease": false
+  },
+  {
+    "repo": "sovereignty",
+    "toolName": "Sovereignty",
+    "tag": "v1.4.0",
+    "name": "v1.4.0 — Canon & Craft",
+    "body": [
+      "Core rules frozen through v1.x.** The learning ladder is set. Most changes from here are content. See [roadmap](docs/roadmap.md).",
+      "Scenario lint available.** `sov scenario lint` validates scenario files against the template contract — structure, fields, content, and deck tag counts. Exit 0 on warnings, exit 1 on errors.",
+      "Canon vs community pipeline.** Official packs are playtested, lint-passing, and postcard-proven. Community packs welcome in `docs/scenarios/community/`. See [CANON.md](docs/scenarios/CANON.md).",
+      "130 tests. No engine changes. No new mechanics.",
+      "The commit narrative now reads:",
+      "```"
+    ],
+    "publishedAt": "2026-03-02T07:07:39Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.0",
+    "prerelease": false
+  },
+  {
+    "repo": "sovereignty",
+    "toolName": "Sovereignty",
+    "tag": "v1.3.0",
+    "name": "v1.3.0 — Community Season (Share Codes)",
+    "body": [
+      "Ecosystem hooks for strangers to adopt, remix, and report back.",
+      "Turn \"let's all play the same setup\" into one line:",
+      "```bash",
+      "sov scenario code cozy-night --seed 42",
+      "sov new --code \"SOV|cozy-night|campfire|cozy|s42\" -p Alice -p Bob",
+      "```"
+    ],
+    "publishedAt": "2026-03-02T06:49:02Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.3.0",
+    "prerelease": false
+  },
+  {
+    "repo": "sovereignty",
+    "toolName": "Sovereignty",
+    "tag": "v1.2.0",
+    "name": "v1.2.0 — Scenario Season",
+    "body": [
+      "Replayability as content, not mechanics.",
+      "Four themed play sessions — zero new rules. Each one sets a tier, recipe, and mood.",
+      "| Scenario | Tier | Vibe |",
+      "|----------|------|------|",
+      "| **Cozy Night** | Campfire / Market Day | Warm drinks, easy laughs, toasts |",
+      "| **Market Panic** | Town Hall | Scarcity bites, the market decides |"
+    ],
+    "publishedAt": "2026-03-02T06:37:45Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.2.0",
+    "prerelease": false
+  },
+  {
+    "repo": "sovereignty",
+    "toolName": "Sovereignty",
+    "tag": "v1.1.0",
+    "name": "v1.1.0 — Full Game (4 tiers)",
+    "body": [
+      "All four tiers are playable. Print the cards, grab a die, sit down.",
+      "Treaty Table (Tier 3)** — Promises with teeth. Escrow coins or resources as collateral. Break a treaty: lose your stake and 3 Rep. Keep it: get everything back plus 1 Rep. The table decides.",
+      "Market Day (Tier 2)** — A gentler market tier. Fixed prices, no scarcity. Learn to buy and trade resources before Town Hall adds the drama.",
+      "Host Mode** — Toast ceremony, one-Offer-per-turn rule, session recipes (cozy / spicy / market), doctor pre-flight, season postcards, league night guide. Everything a Console Host needs.",
+      "Stranger-ready docs** — Start Here routing page, card-first CONTRIBUTING guide, SECURITY for wallet seed hygiene.",
+      "113 tests, all passing"
+    ],
+    "publishedAt": "2026-03-02T06:25:03Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.1.0",
+    "prerelease": false
+  },
+  {
+    "repo": "claude-toolstack",
+    "toolName": "Claude Toolstack",
+    "tag": "v1.0.1",
+    "name": "v1.0.1 — Handbook + Publish Workflow",
+    "body": [
+      "HANDBOOK.md** — complete operational reference (13 chapters + 3 appendices) covering architecture, commands, performance model, Docker execution, resource governance, security, tuning, troubleshooting, and design decisions",
+      "Publish workflow** — 3-channel automated release (PyPI via OIDC, GHCR gateway image, GitHub Release artifacts)",
+      "```bash",
+      "pip install --upgrade claude-toolstack-cli",
+      "```"
+    ],
+    "publishedAt": "2026-03-01T20:36:39Z",
+    "url": "https://github.com/mcp-tool-shop-org/claude-toolstack/releases/tag/v1.0.1",
+    "prerelease": false
+  },
+  {
+    "repo": "claude-toolstack",
+    "toolName": "Claude Toolstack",
+    "tag": "v1.0.0",
+    "name": "v1.0.0 — Bounded Code Intelligence",
+    "body": [
+      "A ready-to-deploy stack that keeps Claude Code productive on large, multi-language repositories without thrashing a 64-GB Linux workstation.",
+      "FastAPI gateway** with 6 bounded endpoints (search, slice, ctags, symbol, job runner, metrics)",
+      "systemd cgroup v2 slices** — 5 slices enforce MemoryHigh/Max per service group",
+      "Exec-only Docker model** — socket proxy blocks 14 higher-risk Docker endpoints",
+      "`cts` CLI** — zero-dependency Python client with text/JSON/Claude output modes",
+      "Evidence bundles v2** — 4 bundle modes (default, error, symbol, change) with path ranking + git recency"
+    ],
+    "publishedAt": "2026-03-01T19:19:10Z",
+    "url": "https://github.com/mcp-tool-shop-org/claude-toolstack/releases/tag/v1.0.0",
+    "prerelease": false
+  },
+  {
     "repo": "shipcheck",
     "toolName": "Shipcheck",
     "tag": "v1.0.4",
@@ -535,102 +670,6 @@
     ],
     "publishedAt": "2026-02-26T23:48:52Z",
     "url": "https://github.com/mcp-tool-shop-org/ScalarScope-Desktop/releases/tag/v1.0.3",
-    "prerelease": false
-  },
-  {
-    "repo": "build-governor",
-    "toolName": "Build Governor",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:48:49Z",
-    "url": "https://github.com/mcp-tool-shop-org/build-governor/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "Attestia-Desktop",
-    "toolName": "Attestia Desktop",
-    "tag": "v1.0.1",
-    "name": "v1.0.1",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:45:33Z",
-    "url": "https://github.com/mcp-tool-shop-org/Attestia-Desktop/releases/tag/v1.0.1",
-    "prerelease": false
-  },
-  {
-    "repo": "tool-compass",
-    "toolName": "Tool Compass",
-    "tag": "v2.0.6",
-    "name": "v2.0.6",
-    "body": [
-      "Patch version bump for PyPI republish."
-    ],
-    "publishedAt": "2026-02-26T23:07:06Z",
-    "url": "https://github.com/mcp-tool-shop-org/tool-compass/releases/tag/v2.0.6",
-    "prerelease": false
-  },
-  {
-    "repo": "nexus-attest",
-    "toolName": "Nexus Attest",
-    "tag": "v0.7.1",
-    "name": "v0.7.1",
-    "body": [
-      "Publish to PyPI."
-    ],
-    "publishedAt": "2026-02-26T23:05:36Z",
-    "url": "https://github.com/mcp-tool-shop-org/nexus-attest/releases/tag/v0.7.1",
-    "prerelease": false
-  },
-  {
-    "repo": "a11y-ci",
-    "toolName": "A11y Ci",
-    "tag": "v0.3.2",
-    "name": "v0.3.2",
-    "body": [
-      "Patch version bump for PyPI republish."
-    ],
-    "publishedAt": "2026-02-26T23:05:34Z",
-    "url": "https://github.com/mcp-tool-shop-org/a11y-ci/releases/tag/v0.3.2",
-    "prerelease": false
-  },
-  {
-    "repo": "code-covered",
-    "toolName": "Code Covered",
-    "tag": "v0.5.3",
-    "name": "v0.5.3",
-    "body": [
-      "Patch version bump for PyPI republish."
-    ],
-    "publishedAt": "2026-02-26T23:05:32Z",
-    "url": "https://github.com/mcp-tool-shop-org/code-covered/releases/tag/v0.5.3",
-    "prerelease": false
-  },
-  {
-    "repo": "context-window-manager",
-    "toolName": "Context Window Manager",
-    "tag": "v0.6.5",
-    "name": "v0.6.5",
-    "body": [
-      "Patch version bump for PyPI republish."
-    ],
-    "publishedAt": "2026-02-26T23:05:30Z",
-    "url": "https://github.com/mcp-tool-shop-org/context-window-manager/releases/tag/v0.6.5",
-    "prerelease": false
-  },
-  {
-    "repo": "flexiflow",
-    "toolName": "Flexiflow",
-    "tag": "v0.3.5",
-    "name": "v0.3.5",
-    "body": [
-      "Patch version bump for PyPI republish."
-    ],
-    "publishedAt": "2026-02-26T23:05:28Z",
-    "url": "https://github.com/mcp-tool-shop-org/flexiflow/releases/tag/v0.3.5",
     "prerelease": false
   }
 ]
