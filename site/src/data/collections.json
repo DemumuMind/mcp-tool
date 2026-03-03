@@ -3,7 +3,7 @@
     "id": "mcp-core",
     "title": "MCP Core Tools",
     "description": "The essentials for building and discovering MCP tool ecosystems.",
-    "repos": ["file-compass", "tool-compass", "brain-dev", "mcpt", "tool-scan"]
+    "repos": ["file-compass", "tool-compass", "brain-dev", "tool-scan"]
   },
   {
     "id": "voice",

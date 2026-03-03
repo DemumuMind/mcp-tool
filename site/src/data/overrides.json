@@ -195,22 +195,6 @@
     "tagline": "A token-based lease governor for AI calls — small enough to embed anywhere, strict...",
     "needsHumanReview": true
   },
-  "VectorCaliper": {
-    "tags": [
-      "ai-research",
-      "debugging",
-      "deterministic",
-      "machine-learning",
-      "svg",
-      "training"
-    ],
-    "category": "ml",
-    "stability": "experimental",
-    "kind": "library",
-    "install": "npm install vectorcaliper",
-    "tagline": "Scientific instrument for faithful model-state visualization — turns vector graphics...",
-    "needsHumanReview": true
-  },
   "a11y-ci": {
     "tags": [
       "accessibility",
@@ -240,17 +224,6 @@
     "kind": "library",
     "install": "npm install ai-jam-sessions",
     "tagline": "Music sessions",
-    "needsHumanReview": true
-  },
-  "ai-music-sheets": {
-    "tags": [
-      "music"
-    ],
-    "category": "devtools",
-    "stability": "stable",
-    "kind": "library",
-    "install": "npm install ai-music-sheets",
-    "tagline": "Music notation",
     "needsHumanReview": true
   },
   "ally-demo-python": {
@@ -447,22 +420,6 @@
     "kind": "library",
     "install": "pip install claude-toolstack",
     "tagline": "Docker + Claude Code workstation config for 64-GB Linux hosts — cgroup v2 slices,...",
-    "needsHumanReview": true
-  },
-  "clearance-opinion-engine": {
-    "tags": [
-      "clearance",
-      "cli",
-      "deterministic",
-      "developer-tools",
-      "naming",
-      "nodejs"
-    ],
-    "category": "devtools",
-    "stability": "experimental",
-    "kind": "cli",
-    "install": "npx clearance-opinion-engine",
-    "tagline": "Deterministic name-availability and clearance-opinion engine.",
     "needsHumanReview": true
   },
   "code-batch": {
@@ -838,20 +795,6 @@
     "smithery": "https://smithery.ai/servers/mcp-tool-shop/voice-soundboard",
     "flyio": "https://voice-soundboard-mcp.fly.dev"
   },
-  "mcpt": {
-    "tags": [
-      "mcp",
-      "cli",
-      "discovery"
-    ],
-    "category": "mcp-core",
-    "stability": "stable",
-    "kind": "cli",
-    "install": "pip install mcpt",
-    "tagline": "CLI for discovering and running MCP tools.",
-    "screenshot": "/screenshots/mcpt.png",
-    "screenshotType": "placeholder"
-  },
   "meta-content-system": {
     "tags": [
       "content-system",
@@ -962,19 +905,6 @@
     "kind": "mcp-server",
     "install": "pip install original_voice-soundboard",
     "tagline": "Production-ready TTS library and MCP server for AI assistants.",
-    "needsHumanReview": true
-  },
-  "pathway": {
-    "tags": [
-      "workflow",
-      "journey",
-      "python"
-    ],
-    "category": "devtools",
-    "stability": "beta",
-    "kind": "library",
-    "install": "pip install pathway",
-    "tagline": "Python journey engine for workflow progression tracking.",
     "needsHumanReview": true
   },
   "payroll-engine": {
@@ -1167,15 +1097,6 @@
     "install": "npm install shipcheck",
     "tagline": "Product standards for MCP Tool Shop — Ship Gate checklist, error contract, templates,...",
     "needsHumanReview": true
-  },
-  "siege-kit": {
-    "tags": [
-      "testing"
-    ],
-    "category": "devtools",
-    "stability": "beta",
-    "kind": "library",
-    "tagline": "Load testing"
   },
   "site-theme": {
     "tags": [
