@@ -265,6 +265,21 @@
     "tagline": "Python demonstration of accessibility framework capabilities.",
     "needsHumanReview": true
   },
+  "artifact": {
+    "tags": [
+      "artifact",
+      "curator",
+      "decision-system",
+      "mcp-tool-shop",
+      "ollama"
+    ],
+    "category": "mcp-core",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install artifact",
+    "tagline": "Repo signature artifact decision system — checklist tree + Ollama-powered Curator...",
+    "needsHumanReview": true
+  },
   "aspire-ai": {
     "tags": [
       "ml",
@@ -892,6 +907,36 @@
     "kind": "library",
     "tagline": "Dev suite"
   },
+  "npm-sovereignty": {
+    "tags": [
+      "board-game",
+      "launcher",
+      "npm",
+      "sovereignty",
+      "wrapper"
+    ],
+    "category": "mcp-core",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install npm-sovereignty",
+    "tagline": "npm wrapper for sovereignty — zero-prerequisite npx install via @mcptoolshop/npm-launcher.",
+    "needsHumanReview": true
+  },
+  "npm-xrpl-lab": {
+    "tags": [
+      "cli",
+      "education",
+      "launcher",
+      "npm",
+      "xrpl"
+    ],
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "npx npm-xrpl-lab",
+    "tagline": "XRPL Lab — zero-prerequisite npx install (verified binary launcher).",
+    "needsHumanReview": true
+  },
   "nullout": {
     "tags": [
       "mcp"
@@ -901,6 +946,22 @@
     "kind": "mcp-server",
     "install": "pip install nullout",
     "tagline": "MCP server that finds and safely removes undeletable files on Windows (reserved device...",
+    "needsHumanReview": true
+  },
+  "original_voice-soundboard": {
+    "tags": [
+      "23-languages",
+      "ai-assistant",
+      "chatterbox",
+      "claude",
+      "diffusion-transformer",
+      "f5-tts"
+    ],
+    "category": "voice",
+    "stability": "experimental",
+    "kind": "mcp-server",
+    "install": "pip install original_voice-soundboard",
+    "tagline": "Production-ready TTS library and MCP server for AI assistants.",
     "needsHumanReview": true
   },
   "pathway": {
@@ -967,6 +1028,22 @@
     "kind": "library",
     "install": "npm install prov-engine-js",
     "tagline": "JavaScript/TypeScript provenance and traceability engine.",
+    "needsHumanReview": true
+  },
+  "receipt-factory": {
+    "tags": [
+      "audit",
+      "cli",
+      "provenance",
+      "receipts",
+      "sbom",
+      "supply-chain"
+    ],
+    "category": "infrastructure",
+    "stability": "stable",
+    "kind": "cli",
+    "install": "npx receipt-factory",
+    "tagline": "Signed, timestamped, reproducible records of what happened — CI, releases, audits, SBOMs.",
     "needsHumanReview": true
   },
   "registry-pulse": {

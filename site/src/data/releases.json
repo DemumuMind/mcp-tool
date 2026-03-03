@@ -1,104 +1,224 @@
 [
   {
-    "repo": "sovereignty",
-    "toolName": "Sovereignty",
-    "tag": "v1.4.1",
-    "name": "v1.4.1",
+    "repo": "receipt-factory",
+    "toolName": "Receipt Factory",
+    "tag": "v1.7.1",
+    "name": "v1.7.1",
     "body": [
-      "Shipcheck compliance + full treatment.",
-      "Structured errors**: SovError with code/message/hint — replaces 47 raw exit points",
-      "Threat model**: 5-row table in README covering seed leakage, state tampering, anchor spoofing",
-      "Landing page**: [mcp-tool-shop-org.github.io/sovereignty](https://mcp-tool-shop-org.github.io/sovereignty/)",
-      "143 tests**, lint clean, shipcheck 100%",
-      "7 translations**: Japanese, Chinese, Spanish, French, Hindi, Italian, Portuguese"
+      "Added branded README with logo, usage examples, and exports table to all 10 npm packages",
+      "Added LICENSE to all sub-packages for npm compliance",
+      "Complete translations: Japanese, Chinese, Spanish, French, Hindi, Italian, Portuguese",
+      "All 10 packages now live on npm at v1.7.1:",
+      "| Package | npm |",
+      "|---------|-----|"
     ],
-    "publishedAt": "2026-03-02T08:55:33Z",
-    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.1",
+    "publishedAt": "2026-03-03T10:58:19Z",
+    "url": "https://github.com/mcp-tool-shop-org/receipt-factory/releases/tag/v1.7.1",
+    "prerelease": false
+  },
+  {
+    "repo": "receipt-factory",
+    "toolName": "Receipt Factory",
+    "tag": "v1.7.0",
+    "name": "v1.7.0 — Supply Chain Receipts",
+    "body": [
+      "Three new receipt pipelines for security teams and executives:",
+      "registry-sync** — Prove what's published vs what's in the repo",
+      "Drift classification: in sync, ahead, behind, unpublished",
+      "Each package becomes a receipt output with version comparison",
+      "security-audit** — Prove what you scanned, with what tool, and what was found",
+      "Severity breakdown (critical/high/moderate/low/info) in intent and metadata"
+    ],
+    "publishedAt": "2026-03-03T10:15:10Z",
+    "url": "https://github.com/mcp-tool-shop-org/receipt-factory/releases/tag/v1.7.0",
+    "prerelease": false
+  },
+  {
+    "repo": "receipt-factory",
+    "toolName": "Receipt Factory",
+    "tag": "v1.6.0",
+    "name": "v1.6.0 — Bundle Authority",
+    "body": [
+      "Bundles can now be signed and their signatures verified, establishing **who created the parcel**. The zip contents are never mutated — signatures live as detached sidecars (`.sig`/`.cert`) next to the bundle.",
+      "`rf bundle sign <file>`** — Sign a bundle with cosign (detached sidecar)",
+      "`--keyless` for OIDC-based signing in CI",
+      "`--key <path>` for local key-based signing",
+      "`rf bundle verify --require-bundle-signature`** — Require a valid bundle-level signature",
+      "`rf verify <file.zip> --require-bundle-signature`** — Auto-detect passthrough"
+    ],
+    "publishedAt": "2026-03-03T09:54:40Z",
+    "url": "https://github.com/mcp-tool-shop-org/receipt-factory/releases/tag/v1.6.0",
+    "prerelease": false
+  },
+  {
+    "repo": "receipt-factory",
+    "toolName": "Receipt Factory",
+    "tag": "v1.5.0",
+    "name": "v1.5.0 — Receipt Bundles",
+    "body": [
+      "v1.5.0 introduces **receipt bundles** — self-verifying zip archives that package a receipt with its entire trust chain into a single portable file.",
+      "```",
+      "bundle.zip/",
+      "├── manifest.json     # Bundle metadata",
+      "├── hashes.json       # SHA-256 of every file",
+      "├── VERIFY.md         # Human-readable verification instructions"
+    ],
+    "publishedAt": "2026-03-03T09:37:47Z",
+    "url": "https://github.com/mcp-tool-shop-org/receipt-factory/releases/tag/v1.5.0",
+    "prerelease": false
+  },
+  {
+    "repo": "receipt-factory",
+    "toolName": "Receipt Factory",
+    "tag": "v1.4.0",
+    "name": "v1.4.0 — Strict Refs, Policy Identity, Policy Signing",
+    "body": [
+      "Default stays best-effort — missing references are reported but don't fail verification. With `--refs-strict`, missing or unreadable references fail. Hash mismatches always fail regardless of mode.",
+      "```bash",
+      "rf verify receipt.json --follow --refs-strict --receipts-dir receipts/",
+      "```",
+      "Receipts now embed `policy_identity.hash` — the SHA-256 of the lint policy rules applied at creation time. During verification, if a policy is supplied, the hash is compared. Mismatch = fail. This prevents policy swapping.",
+      "`PolicyIdentity` type: `hash`, optional `version`, `path`, `signed`, `signatureRef`"
+    ],
+    "publishedAt": "2026-03-03T09:17:49Z",
+    "url": "https://github.com/mcp-tool-shop-org/receipt-factory/releases/tag/v1.4.0",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-lab",
+    "toolName": "Xrpl Lab",
+    "tag": "v1.0.1",
+    "name": "v1.0.1",
+    "body": [],
+    "publishedAt": "2026-03-03T05:14:48Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-lab/releases/tag/v1.0.1",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-lab",
+    "toolName": "Xrpl Lab",
+    "tag": "v1.0.0",
+    "name": "v1.0.0",
+    "body": [],
+    "publishedAt": "2026-03-03T05:08:10Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-lab/releases/tag/v1.0.0",
+    "prerelease": false
+  },
+  {
+    "repo": "site-theme",
+    "toolName": "Site Theme",
+    "tag": "v1.3.0",
+    "name": "v1.3.0 — Multi-Tenant SaaS Architecture",
+    "body": [
+      "App template upgraded** to `/app/[workspace]/…` multi-tenant routing (3 seeded workspaces)",
+      "RBAC policy layer** — `canViewBilling`, `canManageTeam`, `canManageWorkspace`",
+      "Feature flags** — `billing`, `teams`, `auditLog`, `apiKeys` with `isEnabled()` gating",
+      "Centralized data layer** — workspace-keyed projects, metrics, and activity",
+      "Path-preserving workspace switcher** with plan badges (starter / pro / business)",
+      "AccessDenied component** + billing page RBAC gate"
+    ],
+    "publishedAt": "2026-03-03T02:05:00Z",
+    "url": "https://github.com/mcp-tool-shop-org/site-theme/releases/tag/v1.3.0",
     "prerelease": false
   },
   {
     "repo": "xrpl-camp",
     "toolName": "Xrpl Camp",
-    "tag": "v1.0.0",
-    "name": "v1.0.0",
-    "body": [
-      "First stable release — promoted from v0.2.0 after shipcheck compliance.",
-      "4 lessons**: Wallet, Payment, Verification, Certificate — learn the XRP Ledger in one sitting",
-      "Structured errors**: CampError with code/message/hint for every failure mode",
-      "Round proofs**: SHA-256 fingerprints, optional XRPL Testnet anchoring",
-      "Landing page**: [mcp-tool-shop-org.github.io/xrpl-camp](https://mcp-tool-shop-org.github.io/xrpl-camp/)",
-      "91 tests**, lint clean, shipcheck 100%"
-    ],
-    "publishedAt": "2026-03-02T08:55:29Z",
-    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.0",
+    "tag": "v1.0.6",
+    "name": "v1.0.6",
+    "body": [],
+    "publishedAt": "2026-03-02T17:41:23Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.6",
     "prerelease": false
   },
   {
     "repo": "sovereignty",
     "toolName": "Sovereignty",
-    "tag": "v1.4.0",
-    "name": "v1.4.0 — Canon & Craft",
-    "body": [
-      "Core rules frozen through v1.x.** The learning ladder is set. Most changes from here are content. See [roadmap](docs/roadmap.md).",
-      "Scenario lint available.** `sov scenario lint` validates scenario files against the template contract — structure, fields, content, and deck tag counts. Exit 0 on warnings, exit 1 on errors.",
-      "Canon vs community pipeline.** Official packs are playtested, lint-passing, and postcard-proven. Community packs welcome in `docs/scenarios/community/`. See [CANON.md](docs/scenarios/CANON.md).",
-      "130 tests. No engine changes. No new mechanics.",
-      "The commit narrative now reads:",
-      "```"
-    ],
-    "publishedAt": "2026-03-02T07:07:39Z",
-    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.0",
+    "tag": "v1.4.6",
+    "name": "v1.4.6",
+    "body": [],
+    "publishedAt": "2026-03-02T17:41:22Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.6",
     "prerelease": false
   },
   {
     "repo": "sovereignty",
     "toolName": "Sovereignty",
-    "tag": "v1.3.0",
-    "name": "v1.3.0 — Community Season (Share Codes)",
-    "body": [
-      "Ecosystem hooks for strangers to adopt, remix, and report back.",
-      "Turn \"let's all play the same setup\" into one line:",
-      "```bash",
-      "sov scenario code cozy-night --seed 42",
-      "sov new --code \"SOV|cozy-night|campfire|cozy|s42\" -p Alice -p Bob",
-      "```"
-    ],
-    "publishedAt": "2026-03-02T06:49:02Z",
-    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.3.0",
+    "tag": "v1.4.5",
+    "name": "v1.4.5",
+    "body": [],
+    "publishedAt": "2026-03-02T17:32:57Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.5",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-camp",
+    "toolName": "Xrpl Camp",
+    "tag": "v1.0.5",
+    "name": "v1.0.5",
+    "body": [],
+    "publishedAt": "2026-03-02T17:32:36Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.5",
     "prerelease": false
   },
   {
     "repo": "sovereignty",
     "toolName": "Sovereignty",
-    "tag": "v1.2.0",
-    "name": "v1.2.0 — Scenario Season",
-    "body": [
-      "Replayability as content, not mechanics.",
-      "Four themed play sessions — zero new rules. Each one sets a tier, recipe, and mood.",
-      "| Scenario | Tier | Vibe |",
-      "|----------|------|------|",
-      "| **Cozy Night** | Campfire / Market Day | Warm drinks, easy laughs, toasts |",
-      "| **Market Panic** | Town Hall | Scarcity bites, the market decides |"
-    ],
-    "publishedAt": "2026-03-02T06:37:45Z",
-    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.2.0",
+    "tag": "v1.4.4",
+    "name": "v1.4.4",
+    "body": [],
+    "publishedAt": "2026-03-02T17:27:00Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.4",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-camp",
+    "toolName": "Xrpl Camp",
+    "tag": "v1.0.4",
+    "name": "v1.0.4",
+    "body": [],
+    "publishedAt": "2026-03-02T17:26:58Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.4",
     "prerelease": false
   },
   {
     "repo": "sovereignty",
     "toolName": "Sovereignty",
-    "tag": "v1.1.0",
-    "name": "v1.1.0 — Full Game (4 tiers)",
-    "body": [
-      "All four tiers are playable. Print the cards, grab a die, sit down.",
-      "Treaty Table (Tier 3)** — Promises with teeth. Escrow coins or resources as collateral. Break a treaty: lose your stake and 3 Rep. Keep it: get everything back plus 1 Rep. The table decides.",
-      "Market Day (Tier 2)** — A gentler market tier. Fixed prices, no scarcity. Learn to buy and trade resources before Town Hall adds the drama.",
-      "Host Mode** — Toast ceremony, one-Offer-per-turn rule, session recipes (cozy / spicy / market), doctor pre-flight, season postcards, league night guide. Everything a Console Host needs.",
-      "Stranger-ready docs** — Start Here routing page, card-first CONTRIBUTING guide, SECURITY for wallet seed hygiene.",
-      "113 tests, all passing"
-    ],
-    "publishedAt": "2026-03-02T06:25:03Z",
-    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.1.0",
+    "tag": "v1.4.3",
+    "name": "v1.4.3",
+    "body": [],
+    "publishedAt": "2026-03-02T17:00:42Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.3",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-camp",
+    "toolName": "Xrpl Camp",
+    "tag": "v1.0.3",
+    "name": "v1.0.3",
+    "body": [],
+    "publishedAt": "2026-03-02T17:00:31Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.3",
+    "prerelease": false
+  },
+  {
+    "repo": "sovereignty",
+    "toolName": "Sovereignty",
+    "tag": "v1.4.2",
+    "name": "v1.4.2",
+    "body": [],
+    "publishedAt": "2026-03-02T16:48:31Z",
+    "url": "https://github.com/mcp-tool-shop-org/sovereignty/releases/tag/v1.4.2",
+    "prerelease": false
+  },
+  {
+    "repo": "xrpl-camp",
+    "toolName": "Xrpl Camp",
+    "tag": "v1.0.2",
+    "name": "v1.0.2",
+    "body": [],
+    "publishedAt": "2026-03-02T16:44:00Z",
+    "url": "https://github.com/mcp-tool-shop-org/xrpl-camp/releases/tag/v1.0.2",
     "prerelease": false
   },
   {
@@ -521,155 +641,6 @@
     "body": [],
     "publishedAt": "2026-02-27T00:52:51Z",
     "url": "https://github.com/mcp-tool-shop-org/runforge-vscode/releases/tag/v0.4.4",
-    "prerelease": false
-  },
-  {
-    "repo": "Attestia-Desktop",
-    "toolName": "Attestia Desktop",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch bump for Attestia.Core, Attestia.Client, Attestia.Sidecar"
-    ],
-    "publishedAt": "2026-02-27T00:42:23Z",
-    "url": "https://github.com/mcp-tool-shop-org/Attestia-Desktop/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "CursorAssist",
-    "toolName": "CursorAssist",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch bump + CI fix for MAUI workload and NuGet trusted publishing"
-    ],
-    "publishedAt": "2026-02-27T00:36:39Z",
-    "url": "https://github.com/mcp-tool-shop-org/CursorAssist/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "MouseTrainer",
-    "toolName": "MouseTrainer",
-    "tag": "v1.1.2",
-    "name": "v1.1.2",
-    "body": [
-      "Patch bump + fix concurrent disk write race condition in SessionStore"
-    ],
-    "publishedAt": "2026-02-27T00:14:41Z",
-    "url": "https://github.com/mcp-tool-shop-org/MouseTrainer/releases/tag/v1.1.2",
-    "prerelease": false
-  },
-  {
-    "repo": "runforge-desktop",
-    "toolName": "Runforge Desktop",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:49:25Z",
-    "url": "https://github.com/mcp-tool-shop-org/runforge-desktop/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "ClaimLedger",
-    "toolName": "ClaimLedger",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:49:22Z",
-    "url": "https://github.com/mcp-tool-shop-org/ClaimLedger/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "soundboard-maui",
-    "toolName": "Soundboard Maui",
-    "tag": "v1.2.2",
-    "name": "v1.2.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:49:13Z",
-    "url": "https://github.com/mcp-tool-shop-org/soundboard-maui/releases/tag/v1.2.2",
-    "prerelease": false
-  },
-  {
-    "repo": "CodeClone-Desktop",
-    "toolName": "CodeClone Desktop",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:49:10Z",
-    "url": "https://github.com/mcp-tool-shop-org/CodeClone-Desktop/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "linux-dev-typer",
-    "toolName": "Linux Dev Typer",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:49:06Z",
-    "url": "https://github.com/mcp-tool-shop-org/linux-dev-typer/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "meta-content-system",
-    "toolName": "Meta Content System",
-    "tag": "v1.0.2",
-    "name": "v1.0.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:49:03Z",
-    "url": "https://github.com/mcp-tool-shop-org/meta-content-system/releases/tag/v1.0.2",
-    "prerelease": false
-  },
-  {
-    "repo": "InControl-Desktop",
-    "toolName": "InControl Desktop",
-    "tag": "v1.2.2",
-    "name": "InControl-Desktop v1.2.2",
-    "body": [
-      "1. Download the MSIX package below",
-      "2. Verify the SHA256 checksum",
-      "3. Double-click to install",
-      "```powershell",
-      "(Get-FileHash InControl-Desktop-1.2.2-unsigned.msix -Algorithm SHA256).Hash",
-      "```"
-    ],
-    "publishedAt": "2026-02-26T23:48:59Z",
-    "url": "https://github.com/mcp-tool-shop-org/InControl-Desktop/releases/tag/v1.2.2",
-    "prerelease": false
-  },
-  {
-    "repo": "CreatorLedger",
-    "toolName": "CreatorLedger",
-    "tag": "v1.1.2",
-    "name": "v1.1.2",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:48:56Z",
-    "url": "https://github.com/mcp-tool-shop-org/CreatorLedger/releases/tag/v1.1.2",
-    "prerelease": false
-  },
-  {
-    "repo": "ScalarScope-Desktop",
-    "toolName": "ScalarScope Desktop",
-    "tag": "v1.0.3",
-    "name": "v1.0.3",
-    "body": [
-      "Patch version bump for NuGet republish."
-    ],
-    "publishedAt": "2026-02-26T23:48:52Z",
-    "url": "https://github.com/mcp-tool-shop-org/ScalarScope-Desktop/releases/tag/v1.0.3",
     "prerelease": false
   }
 ]
