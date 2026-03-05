@@ -195,6 +195,21 @@
     "tagline": "A token-based lease governor for AI calls — small enough to embed anywhere, strict...",
     "needsHumanReview": true
   },
+  "Trace": {
+    "tags": [
+      "csharp",
+      "desktop-app",
+      "deterministic",
+      "dotnet",
+      "game",
+      "maui"
+    ],
+    "category": "games",
+    "stability": "experimental",
+    "kind": "desktop-app",
+    "tagline": "deterministic cursor discipline game. Navigate chaos through precision, not power.",
+    "needsHumanReview": true
+  },
   "a11y-ci": {
     "tags": [
       "accessibility",
@@ -258,6 +273,14 @@
     "tagline": "Music sessions",
     "needsHumanReview": true
   },
+  "ai-ui": {
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install ai-ui",
+    "tagline": "Eyes → Brain → Hands — repeatable UI workflow for design-system-first Astro pages.",
+    "needsHumanReview": true
+  },
   "ally-demo-python": {
     "tags": [
       "accessibility",
@@ -309,6 +332,21 @@
     "kind": "library",
     "install": "pip install audiobooker",
     "tagline": "Audio book generation and management system.",
+    "needsHumanReview": true
+  },
+  "avatar-face-mvp": {
+    "tags": [
+      "avatar",
+      "face-tracking",
+      "gdscript",
+      "godot",
+      "lipsync",
+      "real-time"
+    ],
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "library",
+    "tagline": "Real-time VRM avatar lipsync MVP — Godot 4 + FFT visemes + OpenSeeFace.",
     "needsHumanReview": true
   },
   "backprop": {
@@ -906,6 +944,22 @@
     "tagline": "Oregon Trail-style survival game with AI narration and XRPL ledger — zero-prerequisite...",
     "needsHumanReview": true
   },
+  "npm-launcher": {
+    "tags": [
+      "binary",
+      "cli",
+      "github-releases",
+      "launcher",
+      "npm",
+      "pyinstaller"
+    ],
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "npx npm-launcher",
+    "tagline": "Generic GitHub-release binary launcher with cache + SHA256 verification.",
+    "needsHumanReview": true
+  },
   "npm-sovereignty": {
     "tags": [
       "board-game",
@@ -1125,6 +1179,21 @@
     "kind": "library",
     "install": "npm install repomesh",
     "tagline": "Syntropic repo network — append-only ledger, signed events, multi-dimensional trust...",
+    "needsHumanReview": true
+  },
+  "rippled-windows-debug": {
+    "tags": [
+      "blockchain",
+      "cpp",
+      "debugging",
+      "developer-tools",
+      "rippled",
+      "validator"
+    ],
+    "category": "desktop",
+    "stability": "experimental",
+    "kind": "desktop-app",
+    "tagline": "Windows debugging toolkit for rippled (XRPL validator node).",
     "needsHumanReview": true
   },
   "runforge-desktop": {

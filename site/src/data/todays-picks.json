@@ -1,5 +1,5 @@
 {
-  "date": "2026-03-04",
+  "date": "2026-03-05",
   "picks": [
     {
       "slug": "websketch-ir",
@@ -9,17 +9,31 @@
       ]
     },
     {
-      "slug": "pathway",
-      "reason": "Python journey engine for workflow progression tracking",
+      "slug": "witness",
+      "reason": "Attestation witness and verification tooling",
       "signals": [
         "popular"
       ]
     },
     {
-      "slug": "aspire-ai",
-      "reason": "Goal-oriented framework for running and evaluating AI workflows over time",
+      "slug": "flexiflow",
+      "reason": "Flexible workflow automation framework",
       "signals": [
         "popular"
+      ]
+    },
+    {
+      "slug": "file-compass",
+      "reason": "Deterministic file-system navigation and inspection for large repos",
+      "signals": [
+        "featured"
+      ]
+    },
+    {
+      "slug": "brain-dev",
+      "reason": "MCP server for AI-powered code analysis — test generation, security audits, refactoring suggestions",
+      "signals": [
+        "featured"
       ]
     },
     {
@@ -27,20 +41,6 @@
       "reason": "Run ComfyUI workflows without the UI — headless execution for automation",
       "signals": [
         "featured"
-      ]
-    },
-    {
-      "slug": "stresskit-mcp",
-      "reason": "MCP stress testing toolkit with configurable load patterns",
-      "signals": [
-        "popular"
-      ]
-    },
-    {
-      "slug": "CreatorLedger",
-      "reason": "Creator attestation proofs and authorship verification",
-      "signals": [
-        "popular"
       ]
     }
   ]

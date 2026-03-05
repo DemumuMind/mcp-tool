@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-04T13:58:50.791Z",
+  "generatedAt": "2026-03-05T14:01:35.361Z",
   "archived": [],
   "missing": [
     {
@@ -12,12 +12,6 @@
       "registryId": "next-gallery",
       "repoName": "next-gallery",
       "repo": "https://github.com/mcp-tool-shop-org/next-gallery",
-      "action": "verify repo exists or remove from registry"
-    },
-    {
-      "registryId": "pathway",
-      "repoName": "pathway",
-      "repo": "https://github.com/mcp-tool-shop-org/pathway",
       "action": "verify repo exists or remove from registry"
     },
     {
@@ -45,5 +39,5 @@
       "reason": "case-mismatch or rename"
     }
   ],
-  "totalIssues": 5
+  "totalIssues": 4
 }
