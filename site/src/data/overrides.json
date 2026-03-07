@@ -225,6 +225,22 @@
     "tagline": "deterministic cursor discipline game. Navigate chaos through precision, not power.",
     "needsHumanReview": true
   },
+  "a11y-assist": {
+    "tags": [
+      "a11y",
+      "accessibility",
+      "assistant",
+      "assistive-technology",
+      "cli",
+      "deterministic"
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "pipx install a11y-assist",
+    "tagline": "Deterministic accessibility assistance for CLI failures — additive, SAFE-only,...",
+    "needsHumanReview": true
+  },
   "a11y-ci": {
     "tags": [
       "accessibility",
@@ -239,6 +255,21 @@
     "kind": "library",
     "install": "pip install a11y-ci",
     "tagline": "CI gate for a11y-lint scorecards. Low-vision-first output with strict policy enforcement.",
+    "needsHumanReview": true
+  },
+  "a11y-demo-site": {
+    "tags": [
+      "a11y",
+      "accessibility",
+      "ci",
+      "demo",
+      "evidence",
+      "github-actions"
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "template",
+    "tagline": "End-to-end demo: a11y-evidence-engine + a11y-assist with provenance verification.",
     "needsHumanReview": true
   },
   "a11y-evidence-engine": {
@@ -302,6 +333,22 @@
     "kind": "library",
     "install": "npm install ai-loadout",
     "tagline": "Context-aware knowledge router for AI agents.",
+    "needsHumanReview": true
+  },
+  "ai-rpg-engine": {
+    "tags": [
+      "ai-cognition",
+      "game-engine",
+      "rpg-engine",
+      "simulation",
+      "terminal-rpg",
+      "typescript"
+    ],
+    "category": "games",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install ai-rpg-engine",
+    "tagline": "A simulation-first terminal RPG engine for worlds shaped by perception, cognition, and...",
     "needsHumanReview": true
   },
   "ai-ui": {
@@ -520,6 +567,14 @@
     "kind": "cli",
     "install": "npx claude-memories",
     "tagline": "MEMORY.md optimizer and dispatch table generator for Claude Code.",
+    "needsHumanReview": true
+  },
+  "claude-rpg": {
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install claude-rpg",
+    "tagline": "Simulation-grounded narrative RPG where worlds are generated live, but truth remains...",
     "needsHumanReview": true
   },
   "claude-rules": {
@@ -1103,6 +1158,21 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Payroll processing"
+  },
+  "pocket-ledger": {
+    "tags": [
+      "budgeting",
+      "csharp",
+      "desktop-app",
+      "dotnet",
+      "local-first",
+      "personal-finance"
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "desktop-app",
+    "tagline": "Personal finance and budget tracking app — clean, simple, and private-first.",
+    "needsHumanReview": true
   },
   "polyglot-mcp": {
     "tags": [

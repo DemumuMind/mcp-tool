@@ -600,14 +600,38 @@
       "context-optimization",
       "dispatch-table",
       "frontmatter",
-      "knowledge-routing",
-      "mcp",
-      "typescript"
+      "knowledge-routing"
     ],
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
     "updatedAt": "2026-03-06T11:14:06Z",
+    "registered": false,
+    "unlisted": true,
+    "deprecated": false,
+    "category": "mcp-core",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install ai-loadout",
+    "tagline": "Context-aware knowledge router for AI agents.",
+    "needsHumanReview": true
+  },
+  {
+    "name": "Ai Rpg Engine",
+    "repo": "ai-rpg-engine",
+    "description": "A simulation-first terminal RPG engine for worlds shaped by perception, cognition, and consequence",
+    "tags": [
+      "ai-cognition",
+      "game-engine",
+      "rpg-engine",
+      "simulation",
+      "terminal-rpg",
+      "typescript"
+    ],
+    "featured": false,
+    "stars": 0,
+    "language": "TypeScript",
+    "updatedAt": "2026-03-07T13:35:03Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -798,7 +822,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-03-06T10:26:47Z",
+    "updatedAt": "2026-03-07T12:40:58Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -941,18 +965,31 @@
       "ai-agent",
       "claude",
       "claude-code",
-      "cli",
-      "context",
-      "context-optimization",
-      "dispatch",
-      "dispatch-table",
-      "memory",
-      "optimization"
+      "cli"
     ],
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
     "updatedAt": "2026-03-06T11:14:14Z",
+    "registered": false,
+    "unlisted": true,
+    "deprecated": false,
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "npx claude-memories",
+    "tagline": "MEMORY.md optimizer and dispatch table generator for Claude Code.",
+    "needsHumanReview": true
+  },
+  {
+    "name": "Claude Rpg",
+    "repo": "claude-rpg",
+    "description": "Simulation-grounded narrative RPG where worlds are generated live, but truth remains coherent",
+    "tags": [],
+    "featured": false,
+    "stars": 0,
+    "language": "TypeScript",
+    "updatedAt": "2026-03-07T12:42:12Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false
@@ -967,9 +1004,7 @@
       "context-optimization",
       "dispatch-table",
       "instruction-file",
-      "mcp",
-      "rules",
-      "typescript"
+      "mcp"
     ],
     "featured": false,
     "stars": 0,
@@ -977,7 +1012,13 @@
     "updatedAt": "2026-03-06T11:14:28Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "mcp-core",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install claude-rules",
+    "tagline": "Dispatch table generator and instruction-file optimizer for Claude Code.",
+    "needsHumanReview": true
   },
   {
     "name": "Claude Session Copilot",
@@ -1328,9 +1369,7 @@
       "deterministic",
       "dotnet",
       "game",
-      "maui",
-      "mouse-precision",
-      "replay"
+      "maui"
     ],
     "featured": false,
     "stars": 0,
@@ -1338,7 +1377,12 @@
     "updatedAt": "2026-03-05T09:03:21Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "ml",
+    "stability": "experimental",
+    "kind": "desktop-app",
+    "tagline": "Deterministic 60Hz mouse training engine — fixed timestep, alpha interpolation, virtual...",
+    "needsHumanReview": true
   },
   {
     "name": "Dev Op Typer",
@@ -2237,7 +2281,7 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-03-05T08:49:53Z",
+    "updatedAt": "2026-03-07T11:02:33Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -2314,9 +2358,7 @@
       "mcp-server",
       "ollama",
       "polyglot",
-      "python",
-      "translategemma",
-      "translation"
+      "python"
     ],
     "featured": false,
     "stars": 0,
@@ -2324,7 +2366,13 @@
     "updatedAt": "2026-03-06T13:40:47Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "mcp-core",
+    "stability": "stable",
+    "kind": "mcp-server",
+    "install": "pip install py-polyglot",
+    "tagline": "Local GPU translation Python library + MCP server — TranslateGemma via Ollama, 57...",
+    "needsHumanReview": true
   },
   {
     "name": "Receipt Factory",
@@ -2399,7 +2447,7 @@
     "featured": false,
     "stars": 0,
     "language": "Astro",
-    "updatedAt": "2026-03-06T13:43:37Z",
+    "updatedAt": "2026-03-06T14:33:17Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
@@ -2496,7 +2544,7 @@
     "featured": false,
     "stars": 0,
     "language": "JavaScript",
-    "updatedAt": "2026-03-06T02:27:54Z",
+    "updatedAt": "2026-03-07T02:21:40Z",
     "registered": false,
     "unlisted": true,
     "deprecated": false,
