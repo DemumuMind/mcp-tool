@@ -1,43 +1,7 @@
 {
-  "generatedAt": "2026-03-07T13:38:54.901Z",
+  "generatedAt": "2026-03-07T17:01:46.642Z",
   "archived": [],
-  "missing": [
-    {
-      "registryId": "mcpt",
-      "repoName": "mcpt",
-      "repo": "https://github.com/mcp-tool-shop-org/mcpt",
-      "action": "verify repo exists or remove from registry"
-    },
-    {
-      "registryId": "next-gallery",
-      "repoName": "next-gallery",
-      "repo": "https://github.com/mcp-tool-shop-org/next-gallery",
-      "action": "verify repo exists or remove from registry"
-    },
-    {
-      "registryId": "websketch-demo",
-      "repoName": "websketch-demo",
-      "repo": "https://github.com/mcp-tool-shop-org/websketch-demo",
-      "action": "verify repo exists or remove from registry"
-    },
-    {
-      "registryId": "winget-pkgs",
-      "repoName": "winget-pkgs",
-      "repo": "https://github.com/mcp-tool-shop-org/winget-pkgs",
-      "action": "verify repo exists or remove from registry"
-    }
-  ],
-  "aliases": [
-    {
-      "registryId": "claim-ledger",
-      "repoName": "ClaimLedger",
-      "reason": "case-mismatch or rename"
-    },
-    {
-      "registryId": "creator-ledger",
-      "repoName": "CreatorLedger",
-      "reason": "case-mismatch or rename"
-    }
-  ],
-  "totalIssues": 4
+  "missing": [],
+  "aliases": [],
+  "totalIssues": 0
 }

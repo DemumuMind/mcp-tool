@@ -429,14 +429,7 @@
       "assistant",
       "assistive-technology",
       "cli",
-      "deterministic",
-      "developer-tools",
-      "dyslexia",
-      "low-vision",
-      "plain-language",
-      "provenance",
-      "python",
-      "screen-reader"
+      "deterministic"
     ],
     "featured": false,
     "stars": 0,
@@ -444,7 +437,13 @@
     "updatedAt": "2026-03-05T08:53:38Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "cli",
+    "install": "pipx install a11y-assist",
+    "tagline": "Deterministic accessibility assistance for CLI failures — additive, SAFE-only,...",
+    "needsHumanReview": true
   },
   {
     "name": "A11y Ci",
@@ -482,9 +481,7 @@
       "ci",
       "demo",
       "evidence",
-      "github-actions",
-      "provenance",
-      "wcag"
+      "github-actions"
     ],
     "featured": false,
     "stars": 0,
@@ -492,7 +489,12 @@
     "updatedAt": "2026-03-05T08:53:44Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "template",
+    "tagline": "End-to-end demo: a11y-evidence-engine + a11y-assist with provenance verification.",
+    "needsHumanReview": true
   },
   {
     "name": "A11y Evidence Engine",
@@ -631,10 +633,16 @@
     "featured": false,
     "stars": 0,
     "language": "TypeScript",
-    "updatedAt": "2026-03-07T13:35:03Z",
+    "updatedAt": "2026-03-07T16:06:54Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "games",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install ai-rpg-engine",
+    "tagline": "A simulation-first terminal RPG engine for worlds shaped by perception, cognition, and...",
+    "needsHumanReview": true
   },
   {
     "name": "Ai Ui",
@@ -992,7 +1000,13 @@
     "updatedAt": "2026-03-07T12:42:12Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "devtools",
+    "stability": "experimental",
+    "kind": "library",
+    "install": "npm install claude-rpg",
+    "tagline": "Simulation-grounded narrative RPG where worlds are generated live, but truth remains...",
+    "needsHumanReview": true
   },
   {
     "name": "Claude Rules",
@@ -1771,23 +1785,6 @@
     "flyio": "https://voice-soundboard-mcp.fly.dev"
   },
   {
-    "name": "MCPT",
-    "repo": "mcpt",
-    "description": "MCP Tool Shop command-line interface and utilities",
-    "tags": [
-      "cli",
-      "mcp",
-      "tools"
-    ],
-    "featured": false,
-    "stars": 0,
-    "language": "",
-    "updatedAt": "",
-    "registered": true,
-    "unlisted": false,
-    "deprecated": false
-  },
-  {
     "name": "Meta Content System",
     "repo": "meta-content-system",
     "description": "Shared content system for typing-practice apps — lessons, progression, and adaptive difficulty",
@@ -1829,24 +1826,6 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Mouse automation"
-  },
-  {
-    "name": "Next Gallery",
-    "repo": "next-gallery",
-    "description": "Windows desktop image gallery application",
-    "tags": [
-      "windows",
-      "desktop",
-      "gallery",
-      "images"
-    ],
-    "featured": false,
-    "stars": 0,
-    "language": "",
-    "updatedAt": "",
-    "registered": true,
-    "unlisted": false,
-    "deprecated": false
   },
   {
     "name": "NextLedger",
@@ -2226,11 +2205,7 @@
       "desktop-app",
       "dotnet",
       "local-first",
-      "personal-finance",
-      "privacy",
-      "sqlite",
-      "winui",
-      "winui3"
+      "personal-finance"
     ],
     "featured": false,
     "stars": 0,
@@ -2238,7 +2213,12 @@
     "updatedAt": "2026-03-05T09:00:54Z",
     "registered": false,
     "unlisted": true,
-    "deprecated": false
+    "deprecated": false,
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "desktop-app",
+    "tagline": "Personal finance and budget tracking app — clean, simple, and private-first.",
+    "needsHumanReview": true
   },
   {
     "name": "Polyglot Mcp",
@@ -2431,11 +2411,13 @@
     "repo": "registry-stats",
     "description": "Multi-registry download stats — engine, dashboard, and desktop app for npm, PyPI, NuGet, VS Code Marketplace, and Docker Hub",
     "tags": [
+      "astro",
       "cli",
       "dashboard",
       "desktop",
       "docker",
       "download-stats",
+      "github-pages",
       "monorepo",
       "npm",
       "nuget",
@@ -2632,6 +2614,7 @@
     "description": "Product standards for MCP Tool Shop — Ship Gate checklist, error contract, templates, and adoption guides",
     "tags": [
       "checklist",
+      "devops",
       "developer-tools",
       "error-contract",
       "mcp",
@@ -3023,24 +3006,6 @@
     "needsHumanReview": true
   },
   {
-    "name": "WebSketch Demo",
-    "repo": "websketch-demo",
-    "description": "Interactive demo showcasing WebSketch capabilities",
-    "tags": [
-      "demo",
-      "web",
-      "visualization"
-    ],
-    "featured": false,
-    "stars": 0,
-    "language": "",
-    "updatedAt": "",
-    "registered": true,
-    "unlisted": false,
-    "deprecated": false,
-    "ecosystem": "websketch"
-  },
-  {
     "name": "WebSketch Extension",
     "repo": "websketch-extension",
     "description": "Browser extension for web page analysis and code generation",
@@ -3139,23 +3104,6 @@
     "kind": "vscode-extension",
     "tagline": "VS Code extension — capture web pages as grammar-based IR for LLMs.",
     "needsHumanReview": true
-  },
-  {
-    "name": "Winget Packages",
-    "repo": "winget-pkgs",
-    "description": "Windows Package Manager manifests for mcp-tool-shop packages",
-    "tags": [
-      "winget",
-      "windows",
-      "packaging"
-    ],
-    "featured": false,
-    "stars": 0,
-    "language": "",
-    "updatedAt": "",
-    "registered": true,
-    "unlisted": false,
-    "deprecated": false
   },
   {
     "name": "Witness",

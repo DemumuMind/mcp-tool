@@ -1,6 +1,6 @@
 {
-  "repoCount": 136,
-  "registeredCount": 45,
+  "repoCount": 132,
+  "registeredCount": 41,
   "totalStars": 11,
   "languages": [
     "Python",
@@ -12,15 +12,15 @@
     "Astro"
   ],
   "recentReleases": 50,
-  "updatedAt": "2026-03-07T13:38:54.900Z",
+  "updatedAt": "2026-03-07T17:01:46.639Z",
   "registryHealth": {
     "registryToolCount": 48,
-    "registeredInProjects": 45,
+    "registeredInProjects": 41,
     "orgOnlyRepos": 91,
     "registryArchived": 0,
-    "registryMissing": 4,
-    "ignoredRepos": 6,
-    "aliasCount": 2,
-    "warnings": 4
+    "registryMissing": 0,
+    "ignoredRepos": 10,
+    "aliasCount": 0,
+    "warnings": 0
   }
 }

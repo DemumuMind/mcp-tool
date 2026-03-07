@@ -2,19 +2,20 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from 'url';
+import { buildMatrixProjects, buildProofData, resolveToolAuditPaths } from "./lib/tool-audit.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Paths
-// We assume we are in c:\workspace\mcp-tool-shop\scripts
-// REPO_ROOT should be c:\workspace
-const REPO_ROOT = path.resolve(__dirname, "../..");
-const SHOP_ROOT = path.resolve(__dirname, "..");
-const DATA_DIR = path.join(SHOP_ROOT, "site", "src", "data");
-const AUDIT_DIR = path.join(DATA_DIR, "audit");
-const PROJECTS_PATH = path.join(DATA_DIR, "projects.json");
-const TRUTH_MATRIX_PATH = path.join(REPO_ROOT, "audit", "truth-matrix.json");
+const {
+  workspaceRoot: WORKSPACE_ROOT,
+  shopRoot: SHOP_ROOT,
+  dataDir: DATA_DIR,
+  auditDir: AUDIT_DIR,
+  projectsPath: PROJECTS_PATH,
+  truthMatrixPath: TRUTH_MATRIX_PATH,
+  proofsPath: PROOFS_PATH,
+} = resolveToolAuditPaths(__dirname);
 
 // Ensure directory exists
 if (!fs.existsSync(AUDIT_DIR)) fs.mkdirSync(AUDIT_DIR, { recursive: true });
@@ -91,6 +92,7 @@ function checkCI(workspaceRoot, repoName) {
 
 async function main() {
   const projects = JSON.parse(fs.readFileSync(PROJECTS_PATH, "utf8"));
+  const currentAuditsByRepo = new Map();
   
   const matrix = {
     schemaVersion: "1.0",
@@ -104,7 +106,7 @@ async function main() {
     // Skip unlisted or non-repo entries if desired, but user wants audit.
     if (!p.repo) continue;
 
-    const projectPath = path.join(REPO_ROOT, p.repo);
+    const projectPath = path.join(WORKSPACE_ROOT, p.repo);
     if (p.repo.toLowerCase().includes("trace")) console.log(`[DEBUG] Trace path: ${projectPath}`);
     
     const audit = {
@@ -143,37 +145,38 @@ async function main() {
         if (hasCargo) { audit.build = true; audit.proofs.push("cargo"); }
 
         // CI Check
-        if (checkCI(REPO_ROOT, p.repo)) {
+        if (checkCI(WORKSPACE_ROOT, p.repo)) {
             audit.ci = true;
             audit.proofs.push("ci");
         }
+        currentAuditsByRepo.set(p.repo, audit);
     }
-
-    matrix.projects.push({
-        name: p.name,
-        path: p.repo,
-        type: p.kind,
-        status: p.stability || "experimental",
-        unlisted: !!p.unlisted,
-        audit: audit
-    });
   }
+
+  const previousProofs = fs.existsSync(PROOFS_PATH)
+    ? JSON.parse(fs.readFileSync(PROOFS_PATH, "utf8"))
+    : [];
+
+  matrix.projects = buildMatrixProjects({
+    projects,
+    currentAuditsByRepo,
+  });
+
+  const proofProjects = buildMatrixProjects({
+    projects,
+    previousProofs,
+    currentAuditsByRepo,
+  });
 
   // Write truth matrix
   fs.writeFileSync(TRUTH_MATRIX_PATH, JSON.stringify(matrix, null, 2));
   console.log(`Wrote truth matrix to ${TRUTH_MATRIX_PATH}`);
 
   // Write proof pills for UI
-  const proofData = matrix.projects.map(mp => ({
-      repo: mp.path,
-      proofs: mp.audit.proofs,
-      verified: mp.audit.ci && mp.audit.build,
-      // Concept if missing CI workflow (Operationalizing Truth)
-      concept: !mp.audit.ci 
-  }));
+  const proofData = buildProofData(proofProjects);
   
-  fs.writeFileSync(path.join(AUDIT_DIR, "proofs.json"), JSON.stringify(proofData, null, 2));
-  console.log(`Wrote proofs to ${path.join(AUDIT_DIR, "proofs.json")}`);
+  fs.writeFileSync(PROOFS_PATH, JSON.stringify(proofData, null, 2));
+  console.log(`Wrote proofs to ${PROOFS_PATH}`);
 }
 
 main().catch((err) => {

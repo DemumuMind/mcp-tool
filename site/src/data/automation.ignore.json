@@ -1,7 +1,11 @@
 [
   ".github",
   "mcp-tool-shop.github.io",
+  "mcpt",
+  "next-gallery",
   "old_voice-soundboard",
+  "websketch-demo",
+  "winget-pkgs",
   "homebrew-core",
   "mcp-tool-registry",
   "mcp-examples"

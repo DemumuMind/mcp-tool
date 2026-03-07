@@ -1,12 +1,12 @@
 [
   {
-    "repo": "brain-dev",
+    "repo": "comfy-headless",
     "proofs": [],
     "verified": false,
     "concept": true
   },
   {
-    "repo": "comfy-headless",
+    "repo": "brain-dev",
     "proofs": [],
     "verified": false,
     "concept": true
@@ -45,16 +45,43 @@
     "concept": false
   },
   {
+    "repo": "audiobooker",
+    "proofs": [],
+    "verified": false,
+    "concept": true
+  },
+  {
     "repo": "backpropagate",
     "proofs": [],
     "verified": false,
     "concept": true
   },
   {
+    "repo": "InControl-Desktop",
+    "proofs": [
+      "dotnet",
+      "ci"
+    ],
+    "verified": true,
+    "concept": false
+  },
+  {
     "repo": "LeaseGate-Lite",
     "proofs": [
       "dotnet"
     ],
+    "verified": false,
+    "concept": true
+  },
+  {
+    "repo": "mcp-app-builder",
+    "proofs": [],
+    "verified": false,
+    "concept": true
+  },
+  {
+    "repo": "mcp-stress-test",
+    "proofs": [],
     "verified": false,
     "concept": true
   },
@@ -101,12 +128,6 @@
     "concept": false
   },
   {
-    "repo": "audiobooker",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
     "repo": "build-governor",
     "proofs": [
       "dotnet",
@@ -123,12 +144,6 @@
   },
   {
     "repo": "claude-collaborate",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
-    "repo": "clearance-opinion-engine",
     "proofs": [],
     "verified": false,
     "concept": true
@@ -244,21 +259,6 @@
     "concept": true
   },
   {
-    "repo": "homebrew-mcp-tools",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
-    "repo": "InControl-Desktop",
-    "proofs": [
-      "dotnet",
-      "ci"
-    ],
-    "verified": true,
-    "concept": false
-  },
-  {
     "repo": "integradio",
     "proofs": [],
     "verified": false,
@@ -280,14 +280,6 @@
     "concept": true
   },
   {
-    "repo": "LinuxDevTyper",
-    "proofs": [
-      "dotnet"
-    ],
-    "verified": false,
-    "concept": true
-  },
-  {
     "repo": "LoKey-Typer",
     "proofs": [
       "npm",
@@ -298,19 +290,7 @@
     "concept": false
   },
   {
-    "repo": "mcp-app-builder",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
     "repo": "mcp-file-forge",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
-    "repo": "mcp-stress-test",
     "proofs": [],
     "verified": false,
     "concept": true
@@ -331,15 +311,6 @@
     "concept": true
   },
   {
-    "repo": "mcpt",
-    "proofs": [
-      "python",
-      "ci"
-    ],
-    "verified": true,
-    "concept": false
-  },
-  {
     "repo": "meta-content-system",
     "proofs": [],
     "verified": false,
@@ -347,24 +318,6 @@
   },
   {
     "repo": "MouseTrainer",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
-    "repo": "nameops",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
-    "repo": "next-gallery",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
-    "repo": "NextGallery-Desktop",
     "proofs": [],
     "verified": false,
     "concept": true
@@ -429,12 +382,6 @@
     "concept": false
   },
   {
-    "repo": "ScalarScope",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
     "repo": "siege-kit",
     "proofs": [],
     "verified": false,
@@ -468,16 +415,19 @@
     "concept": true
   },
   {
-    "repo": "ThrottleAI-Desktop",
+    "repo": "tool-scan",
     "proofs": [],
     "verified": false,
     "concept": true
   },
   {
-    "repo": "tool-scan",
-    "proofs": [],
-    "verified": false,
-    "concept": true
+    "repo": "Trace",
+    "proofs": [
+      "dotnet",
+      "ci"
+    ],
+    "verified": true,
+    "concept": false
   },
   {
     "repo": "training-studio",
@@ -504,12 +454,6 @@
     "concept": true
   },
   {
-    "repo": "websketch-demo",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
     "repo": "websketch-extension",
     "proofs": [],
     "verified": false,
@@ -528,33 +472,9 @@
     "concept": true
   },
   {
-    "repo": "winget-pkgs",
-    "proofs": [],
-    "verified": false,
-    "concept": true
-  },
-  {
     "repo": "witness",
     "proofs": [],
     "verified": false,
     "concept": true
-  },
-  {
-    "repo": "Trace",
-    "proofs": [
-      "dotnet",
-      "ci"
-    ],
-    "verified": true,
-    "concept": false
-  },
-  {
-    "repo": "VectorCaliper",
-    "proofs": [
-      "npm",
-      "ci"
-    ],
-    "verified": true,
-    "concept": false
   }
 ]

@@ -353,6 +353,7 @@ async function main() {
           repo: tool.repo || "",
           action: "verify repo exists or remove from registry",
         });
+        continue;
       }
     } else {
       claimedRepos.add(repoName);

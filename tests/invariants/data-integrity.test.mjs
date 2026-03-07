@@ -25,7 +25,7 @@ function loadJson(relPath) {
 }
 
 // Load all data files once
-let projects, overrides, collections, orgStats, links, releases, promo, promoQueue, worthy, baseline, partners, feedbackSummary, experiments, governance, promoDecisions, experimentDecisions;
+let projects, overrides, collections, orgStats, links, releases, promo, promoQueue, worthy, baseline, partners, feedbackSummary, experiments, governance, promoDecisions, experimentDecisions, registry, registryAliases;
 
 before(() => {
   projects = loadJson("projects.json");
@@ -44,6 +44,8 @@ before(() => {
   governance = loadJson("governance.json");
   promoDecisions = loadJson("promo-decisions.json");
   experimentDecisions = loadJson("experiment-decisions.json");
+  registry = loadJson("registry/registry.json");
+  registryAliases = loadJson("registry/aliases.json");
 });
 
 describe("projects.json", () => {
@@ -93,6 +95,40 @@ describe("overrides.json", () => {
       orphans.length,
       0,
       `override keys with no project: ${orphans.join(", ")}`
+    );
+  });
+});
+
+describe("registry aliases", () => {
+  it("contains no redundant aliases when repo URL already resolves to the actual repo name", () => {
+    if (!registryAliases || !registry?.tools) return;
+
+    const toolById = new Map(registry.tools.map((tool) => [tool.id, tool]));
+    const redundant = [];
+
+    for (const [id, repoName] of Object.entries(registryAliases)) {
+      if (id.startsWith("$")) continue;
+      const tool = toolById.get(id);
+      if (!tool?.repo) continue;
+
+      let derivedRepoName = null;
+      try {
+        const url = new URL(tool.repo);
+        const parts = url.pathname.split("/").filter(Boolean);
+        derivedRepoName = parts.at(-1) || null;
+      } catch {
+        derivedRepoName = null;
+      }
+
+      if (derivedRepoName === repoName) {
+        redundant.push(`${id} -> ${repoName}`);
+      }
+    }
+
+    assert.equal(
+      redundant.length,
+      0,
+      `redundant aliases already derivable from registry repo URL: ${redundant.join(", ")}`
     );
   });
 });

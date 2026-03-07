@@ -157,8 +157,11 @@ Every entry in `projects.json` carries two computed flags:
 
 Registry tool `id` should match the org repo `name`. When they don't match:
 
-- The sync script logs a warning (registry tool with no matching org repo)
-- The tool is still included with `registered: true` but GitHub enrichment is skipped
+- If the repo is archived, the sync script logs a warning, keeps the tool in
+  `projects.json`, and marks it `deprecated: true`
+- If the repo is missing (not archived, just absent), the sync script logs a
+  warning, records the entry in `site/src/data/registry/cleanup.json`, and does
+  not publish it to `projects.json`
 - These mismatches are surfaced in the registry health report
 
 ### Aliases (temporary workaround)
@@ -237,8 +240,9 @@ never propose overrides for. Reasons include:
 - Deprecated/superseded repos (prefixed with `old_`)
 - Vendor forks or mirrors
 - Repos the owner has explicitly excluded
+- Confirmed stale upstream registry IDs that the local site intentionally suppresses
 
-Format: flat JSON array of repo names (strings).
+Format: flat JSON array of repo names or registry IDs (strings).
 
 ```json
 [
@@ -251,8 +255,11 @@ Format: flat JSON array of repo names (strings).
 ]
 ```
 
-To add a repo: edit `automation.ignore.json` directly. The sync and enrichment
-scripts read this file at startup and skip any listed repo.
+To add an entry: edit `automation.ignore.json` directly. The sync and enrichment
+scripts read this file at startup and skip any listed repo or registry ID. In
+`sync-org-metadata.mjs`, ignored registry IDs are excluded before warnings and
+cleanup queue generation, so this file can be used as a local suppression layer
+for confirmed dead upstream registry entries.
 
 ---
 

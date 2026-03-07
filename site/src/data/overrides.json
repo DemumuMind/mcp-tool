@@ -811,15 +811,6 @@
     "tagline": "CLI-first build/validate/release tooling for Python wheels and sdists.",
     "needsHumanReview": true
   },
-  "homebrew-mcp-tools": {
-    "tags": [
-      "package-mgr"
-    ],
-    "category": "infrastructure",
-    "stability": "beta",
-    "kind": "library",
-    "tagline": "Package manager"
-  },
   "integradio": {
     "tags": [
       "gradio",
@@ -918,15 +909,6 @@
     "tagline": "Secure file operations and project scaffolding via MCP.",
     "smithery": "https://smithery.ai/servers/mcp-tool-shop/mcp-file-forge",
     "flyio": "https://mcp-file-forge.fly.dev"
-  },
-  "mcp-shipcheck": {
-    "tags": [
-      "devops"
-    ],
-    "category": "devtools",
-    "stability": "beta",
-    "kind": "mcp-server",
-    "tagline": "Deployment checker"
   },
   "mcp-stress-test": {
     "tags": [
@@ -1250,27 +1232,28 @@
     "tagline": "Signed, timestamped, reproducible records of what happened — CI, releases, audits, SBOMs.",
     "needsHumanReview": true
   },
-  "registry-pulse": {
-    "tags": [
-      "astro",
-      "dashboard",
-      "docker",
-      "download-stats",
-      "github-pages",
-      "npm"
-    ],
-    "category": "infrastructure",
-    "stability": "experimental",
-    "kind": "meta",
-    "tagline": "Multi-registry download stats dashboard — executive snapshots, growth pulse, and data...",
-    "needsHumanReview": true
-  },
   "registry-stats": {
     "category": "infrastructure",
     "stability": "experimental",
     "kind": "meta",
     "tagline": "Multi-registry download stats for npm, PyPI, NuGet, VS Code Marketplace, and Docker Hub.",
-    "needsHumanReview": true
+    "needsHumanReview": true,
+    "tags": [
+      "astro",
+      "cli",
+      "dashboard",
+      "desktop",
+      "docker",
+      "download-stats",
+      "github-pages",
+      "monorepo",
+      "npm",
+      "nuget",
+      "ollama",
+      "pypi",
+      "registry",
+      "typescript"
+    ]
   },
   "registry-stats-vscode": {
     "tags": [
@@ -1374,6 +1357,7 @@
   "shipcheck": {
     "tags": [
       "checklist",
+      "devops",
       "developer-tools",
       "error-contract",
       "mcp",

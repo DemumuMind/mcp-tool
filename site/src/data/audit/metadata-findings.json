@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-17T19:24:07.830Z",
+  "generatedAt": "2026-03-07T16:50:00.000Z",
   "findings": [
     {
       "repo": "codeclone-suite",
@@ -89,15 +89,6 @@
       ]
     },
     {
-      "repo": "homebrew-mcp-tools",
-      "issues": [
-        "Missing required field: tagline",
-        "Missing required field: kind",
-        "Missing required field: stability",
-        "Missing required field: install"
-      ]
-    },
-    {
       "repo": "InControl-Desktop",
       "issues": [
         "Missing required field: tagline",
@@ -179,15 +170,6 @@
       "issues": [
         "Contradiction: deprecated=true but stability!='deprecated'",
         "No tags"
-      ]
-    },
-    {
-      "repo": "next-gallery",
-      "issues": [
-        "Missing required field: tagline",
-        "Missing required field: kind",
-        "Missing required field: stability",
-        "Contradiction: deprecated=true but stability!='deprecated'"
       ]
     },
     {
@@ -330,15 +312,6 @@
       ]
     },
     {
-      "repo": "websketch-demo",
-      "issues": [
-        "Missing required field: tagline",
-        "Missing required field: kind",
-        "Missing required field: stability",
-        "Missing required field: install"
-      ]
-    },
-    {
       "repo": "websketch-extension",
       "issues": [
         "Missing required field: tagline",
@@ -363,16 +336,6 @@
         "Missing required field: kind",
         "Missing required field: stability",
         "Missing required field: install"
-      ]
-    },
-    {
-      "repo": "winget-pkgs",
-      "issues": [
-        "Missing required field: tagline",
-        "Missing required field: kind",
-        "Missing required field: stability",
-        "Missing required field: install",
-        "Contradiction: deprecated=true but stability!='deprecated'"
       ]
     }
   ]

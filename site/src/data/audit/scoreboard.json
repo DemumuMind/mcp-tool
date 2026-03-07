@@ -1,13 +1,6 @@
 {
-  "generatedAt": "2026-02-17T19:24:07.831Z",
+  "generatedAt": "2026-03-07T16:50:00.000Z",
   "results": [
-    {
-      "repo": "winget-pkgs",
-      "score": 55,
-      "label": "Deprecated",
-      "metaIssuesCount": 5,
-      "realityIssuesCount": 0
-    },
     {
       "repo": "ConsensusOS",
       "score": 60,
@@ -24,13 +17,6 @@
     },
     {
       "repo": "feature-reacher",
-      "score": 60,
-      "label": "Prototype",
-      "metaIssuesCount": 4,
-      "realityIssuesCount": 0
-    },
-    {
-      "repo": "homebrew-mcp-tools",
       "score": 60,
       "label": "Prototype",
       "metaIssuesCount": 4,
@@ -142,13 +128,6 @@
       "realityIssuesCount": 0
     },
     {
-      "repo": "next-gallery",
-      "score": 65,
-      "label": "Deprecated",
-      "metaIssuesCount": 4,
-      "realityIssuesCount": 0
-    },
-    {
       "repo": "nexus-suite",
       "score": 65,
       "label": "Prototype",
@@ -213,13 +192,6 @@
     },
     {
       "repo": "websketch-cli",
-      "score": 65,
-      "label": "Prototype",
-      "metaIssuesCount": 4,
-      "realityIssuesCount": 0
-    },
-    {
-      "repo": "websketch-demo",
       "score": 65,
       "label": "Prototype",
       "metaIssuesCount": 4,
@@ -507,13 +479,6 @@
     },
     {
       "repo": "mcp-voice-soundboard",
-      "score": 100,
-      "label": "Stable",
-      "metaIssuesCount": 0,
-      "realityIssuesCount": 0
-    },
-    {
-      "repo": "mcpt",
       "score": 100,
       "label": "Stable",
       "metaIssuesCount": 0,
