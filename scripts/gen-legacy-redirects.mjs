@@ -2,7 +2,7 @@
 
 /**
  * Generate legacy redirect HTML files in site/public/ for old flat-file URLs.
- * These handle bookmarks from when the old .github.io repo served mcptoolshop.com.
+ * These handle bookmarks from when the old .github.io repo served localhost:4321.
  */
 
 import fs from "node:fs";

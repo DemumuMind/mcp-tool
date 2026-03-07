@@ -1,4 +1,4 @@
-// mcp-tool-shop/scripts/gen-tool-audit.mjs
+// DemumuMind / mcp-tool ? tool audit generator
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from 'url';

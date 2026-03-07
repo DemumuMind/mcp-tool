@@ -26,7 +26,7 @@ jobs:
 
       - name: Sync org metadata first
         env:
-          ORG: mcp-tool-shop-org
+          ORG: DemumuMind
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/sync-org-metadata.mjs
 

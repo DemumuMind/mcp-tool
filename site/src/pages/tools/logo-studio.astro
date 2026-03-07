@@ -1,12 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
 
-const repoUrl = 'https://github.com/mcp-tool-shop/mcpt-logo-studio';
-const npmUrl = 'https://www.npmjs.com/package/@mcptoolshop/logo-studio';
+const repoUrl = 'https://github.com/DemumuMind/mcpt-logo-studio';
+const npmUrl = 'https://www.npmjs.com/package/@demumumind/logo-studio';
 ---
 
 <Base
-  title="Logo Studio - mcp-tool-shop"
+  title="Logo Studio - DemumuMind"
   description="Semantic product mining, encoder-aware prompt compilation, and diffusion logo generation. Professional logos, free, for everyone."
   currentPath="/tools/logo-studio/"
 >
@@ -45,7 +45,7 @@ const npmUrl = 'https://www.npmjs.com/package/@mcptoolshop/logo-studio';
 
     <div class="install-block">
       <span class="install-label">Install</span>
-      <code id="install-cmd">npm install @mcptoolshop/logo-studio</code>
+      <code id="install-cmd">npm install @demumumind/logo-studio</code>
       <button class="copy-btn" id="copy-install" aria-label="Copy install command">Copy</button>
     </div>
 
@@ -77,7 +77,7 @@ const npmUrl = 'https://www.npmjs.com/package/@mcptoolshop/logo-studio';
 
     <div class="usage-section">
       <h2>Quick start</h2>
-      <pre><code>{`import { mine, compile, generate } from '@mcptoolshop/logo-studio';
+      <pre><code>{`import { mine, compile, generate } from '@demumumind/logo-studio';
 
 // Mine visual anchors from product text
 const mined = await mine({

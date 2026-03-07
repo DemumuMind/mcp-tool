@@ -553,7 +553,7 @@
   {
     "id": "homebrew-core",
     "name": "Homebrew Core",
-    "description": "Homebrew formulae for mcp-tool-shop packages",
+    "description": "Homebrew formulae for DemumuMind packages",
     "verification": "none",
     "keywords": [
       "core",
@@ -1216,7 +1216,7 @@
   {
     "id": "winget-pkgs",
     "name": "Winget Packages",
-    "description": "Windows Package Manager manifests for mcp-tool-shop packages",
+    "description": "Windows Package Manager manifests for DemumuMind packages",
     "verification": "none",
     "keywords": [
       "for",

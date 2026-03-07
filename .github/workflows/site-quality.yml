@@ -444,7 +444,7 @@ jobs:
 
       - name: Verify no org-specific strings leaked
         run: |
-          if grep -r "mcp-tool-shop" examples/pilot-org/data/ 2>/dev/null; then
+          if grep -r "DemumuMind" examples/pilot-org/data/ 2>/dev/null; then
             echo "ERROR: org-specific strings found in pilot org data"
             exit 1
           fi

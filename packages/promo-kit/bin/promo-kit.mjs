@@ -47,7 +47,7 @@ if (args.includes("--version") || args.includes("-v")) {
 
 if (!command || args.includes("--help") || args.includes("-h")) {
   console.log(`
-  @mcptoolshop/promo-kit — Portable promotion engine for tool catalogs
+  @demumumind/promo-kit — Portable promotion engine for tool catalogs
 
   Usage:
     promo-kit init [--dry-run] [--force]   Bootstrap seed files (auto-creates kit.config.json)

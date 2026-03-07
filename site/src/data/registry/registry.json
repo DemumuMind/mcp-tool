@@ -1,16 +1,16 @@
 {
   "schema_version": "0.3",
   "generated_at": "2026-02-01",
-  "organization": "mcp-tool-shop-org",
+  "organization": "DemumuMind",
   "tools": [
     {
       "id": "accessibility-suite",
       "name": "Accessibility Suite",
       "description": "Unified monorepo for accessibility testing, evidence generation, and WCAG compliance tooling",
-      "repo": "https://github.com/mcp-tool-shop-org/accessibility-suite",
+      "repo": "https://github.com/DemumuMind/accessibility-suite",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/accessibility-suite.git",
+        "url": "https://github.com/DemumuMind/accessibility-suite.git",
         "default_ref": "main"
       },
       "ecosystem": "accessibility",
@@ -28,10 +28,10 @@
       "id": "ally-demo-python",
       "name": "Ally Demo Python",
       "description": "Python demonstration of accessibility framework capabilities",
-      "repo": "https://github.com/mcp-tool-shop-org/ally-demo-python",
+      "repo": "https://github.com/DemumuMind/ally-demo-python",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/ally-demo-python.git",
+        "url": "https://github.com/DemumuMind/ally-demo-python.git",
         "default_ref": "main"
       },
       "ecosystem": "accessibility",
@@ -48,10 +48,10 @@
       "id": "aspire-ai",
       "name": "Aspire AI",
       "description": "Goal-oriented framework for running and evaluating AI workflows over time",
-      "repo": "https://github.com/mcp-tool-shop-org/aspire-ai",
+      "repo": "https://github.com/DemumuMind/aspire-ai",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/aspire-ai.git",
+        "url": "https://github.com/DemumuMind/aspire-ai.git",
         "default_ref": "main"
       },
       "tags": [
@@ -67,10 +67,10 @@
       "id": "audiobooker",
       "name": "Audiobooker",
       "description": "Audio book generation and management system",
-      "repo": "https://github.com/mcp-tool-shop-org/audiobooker",
+      "repo": "https://github.com/DemumuMind/audiobooker",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/audiobooker.git",
+        "url": "https://github.com/DemumuMind/audiobooker.git",
         "default_ref": "main"
       },
       "tags": [
@@ -86,10 +86,10 @@
       "id": "backpropagate",
       "name": "Backpropagate",
       "description": "Structured feedback loops for improving AI behavior through iteration",
-      "repo": "https://github.com/mcp-tool-shop-org/backpropagate",
+      "repo": "https://github.com/DemumuMind/backpropagate",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/backpropagate.git",
+        "url": "https://github.com/DemumuMind/backpropagate.git",
         "default_ref": "main"
       },
       "tags": [
@@ -105,10 +105,10 @@
       "id": "brain-dev",
       "name": "Brain Dev",
       "description": "MCP server for AI-powered code analysis — test generation, security audits, refactoring suggestions",
-      "repo": "https://github.com/mcp-tool-shop-org/brain-dev",
+      "repo": "https://github.com/DemumuMind/brain-dev",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/brain-dev.git",
+        "url": "https://github.com/DemumuMind/brain-dev.git",
         "default_ref": "main"
       },
       "ecosystem": "codeteam",
@@ -126,10 +126,10 @@
       "id": "claim-ledger",
       "name": "ClaimLedger",
       "description": "Scientific claim provenance and verification ledger",
-      "repo": "https://github.com/mcp-tool-shop-org/ClaimLedger",
+      "repo": "https://github.com/DemumuMind/ClaimLedger",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/ClaimLedger.git",
+        "url": "https://github.com/DemumuMind/ClaimLedger.git",
         "default_ref": "main"
       },
       "ecosystem": "ledger",
@@ -146,10 +146,10 @@
       "id": "claude-collaborate",
       "name": "Claude Collaborate",
       "description": "Collaboration primitives for multi-agent and human-in-the-loop Claude workflows",
-      "repo": "https://github.com/mcp-tool-shop-org/claude-collaborate",
+      "repo": "https://github.com/DemumuMind/claude-collaborate",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/claude-collaborate.git",
+        "url": "https://github.com/DemumuMind/claude-collaborate.git",
         "default_ref": "main"
       },
       "tags": [
@@ -165,10 +165,10 @@
       "id": "code-covered",
       "name": "Code Covered",
       "description": "Coverage visualization and reporting tool",
-      "repo": "https://github.com/mcp-tool-shop-org/code-covered",
+      "repo": "https://github.com/DemumuMind/code-covered",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/code-covered.git",
+        "url": "https://github.com/DemumuMind/code-covered.git",
         "default_ref": "main"
       },
       "ecosystem": "codeteam",
@@ -185,10 +185,10 @@
       "id": "codeclone-suite",
       "name": "CodeClone Suite",
       "description": "Deterministic code coverage analysis as a protocol — CLI engine and editor extensions",
-      "repo": "https://github.com/mcp-tool-shop-org/codeclone-suite",
+      "repo": "https://github.com/DemumuMind/codeclone-suite",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/codeclone-suite.git",
+        "url": "https://github.com/DemumuMind/codeclone-suite.git",
         "default_ref": "main"
       },
       "ecosystem": "codeteam",
@@ -205,10 +205,10 @@
       "id": "codecomfy-vscode",
       "name": "CodeComfy VS Code",
       "description": "VS Code extension for code analysis and coverage display",
-      "repo": "https://github.com/mcp-tool-shop-org/codecomfy-vscode",
+      "repo": "https://github.com/DemumuMind/codecomfy-vscode",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/codecomfy-vscode.git",
+        "url": "https://github.com/DemumuMind/codecomfy-vscode.git",
         "default_ref": "main"
       },
       "ecosystem": "codeteam",
@@ -225,10 +225,10 @@
       "id": "codeteam",
       "name": "CodeTeam",
       "description": "Legacy code analysis CLI (see codeteam-suite)",
-      "repo": "https://github.com/mcp-tool-shop-org/codeteam",
+      "repo": "https://github.com/DemumuMind/codeteam",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/codeteam.git",
+        "url": "https://github.com/DemumuMind/codeteam.git",
         "default_ref": "main"
       },
       "ecosystem": "codeteam",
@@ -245,10 +245,10 @@
       "id": "codeteam-suite",
       "name": "CodeTeam Suite",
       "description": "Code analysis protocol and tools — CLI engine with editor extensions",
-      "repo": "https://github.com/mcp-tool-shop-org/codeteam-suite",
+      "repo": "https://github.com/DemumuMind/codeteam-suite",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/codeteam-suite.git",
+        "url": "https://github.com/DemumuMind/codeteam-suite.git",
         "default_ref": "main"
       },
       "ecosystem": "codeteam",
@@ -265,10 +265,10 @@
       "id": "comfy-headless",
       "name": "Comfy Headless",
       "description": "Run ComfyUI workflows without the UI — headless execution for automation",
-      "repo": "https://github.com/mcp-tool-shop-org/comfy-headless",
+      "repo": "https://github.com/DemumuMind/comfy-headless",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/comfy-headless.git",
+        "url": "https://github.com/DemumuMind/comfy-headless.git",
         "default_ref": "main"
       },
       "tags": [
@@ -285,10 +285,10 @@
       "id": "context-window-manager",
       "name": "Context Window Manager",
       "description": "Deterministic tools for shaping and allocating LLM context windows",
-      "repo": "https://github.com/mcp-tool-shop-org/context-window-manager",
+      "repo": "https://github.com/DemumuMind/context-window-manager",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/context-window-manager.git",
+        "url": "https://github.com/DemumuMind/context-window-manager.git",
         "default_ref": "main"
       },
       "tags": [
@@ -305,10 +305,10 @@
       "id": "control-room",
       "name": "Control Room",
       "description": "Dashboard and monitoring for MCP tool ecosystems",
-      "repo": "https://github.com/mcp-tool-shop-org/control-room",
+      "repo": "https://github.com/DemumuMind/control-room",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/control-room.git",
+        "url": "https://github.com/DemumuMind/control-room.git",
         "default_ref": "main"
       },
       "tags": [
@@ -324,10 +324,10 @@
       "id": "creator-ledger",
       "name": "CreatorLedger",
       "description": "Creator attestation proofs and authorship verification",
-      "repo": "https://github.com/mcp-tool-shop-org/CreatorLedger",
+      "repo": "https://github.com/DemumuMind/CreatorLedger",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/CreatorLedger.git",
+        "url": "https://github.com/DemumuMind/CreatorLedger.git",
         "default_ref": "main"
       },
       "ecosystem": "ledger",
@@ -344,10 +344,10 @@
       "id": "file-compass",
       "name": "File Compass",
       "description": "Deterministic file-system navigation and inspection for large repos",
-      "repo": "https://github.com/mcp-tool-shop-org/file-compass",
+      "repo": "https://github.com/DemumuMind/file-compass",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/file-compass.git",
+        "url": "https://github.com/DemumuMind/file-compass.git",
         "default_ref": "main"
       },
       "tags": [
@@ -363,10 +363,10 @@
       "id": "flexiflow",
       "name": "Flexiflow",
       "description": "Flexible workflow automation framework",
-      "repo": "https://github.com/mcp-tool-shop-org/flexiflow",
+      "repo": "https://github.com/DemumuMind/flexiflow",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/flexiflow.git",
+        "url": "https://github.com/DemumuMind/flexiflow.git",
         "default_ref": "main"
       },
       "tags": [
@@ -382,10 +382,10 @@
       "id": "headless-wheel-builder",
       "name": "Headless Wheel Builder",
       "description": "CLI-first build/validate/release tooling for Python wheels and sdists",
-      "repo": "https://github.com/mcp-tool-shop-org/headless-wheel-builder",
+      "repo": "https://github.com/DemumuMind/headless-wheel-builder",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/headless-wheel-builder.git",
+        "url": "https://github.com/DemumuMind/headless-wheel-builder.git",
         "default_ref": "main"
       },
       "tags": [
@@ -401,11 +401,11 @@
     {
       "id": "homebrew-core",
       "name": "Homebrew Core",
-      "description": "Homebrew formulae for mcp-tool-shop packages",
-      "repo": "https://github.com/mcp-tool-shop-org/homebrew-core",
+      "description": "Homebrew formulae for DemumuMind packages",
+      "repo": "https://github.com/DemumuMind/homebrew-core",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/homebrew-core.git",
+        "url": "https://github.com/DemumuMind/homebrew-core.git",
         "default_ref": "main"
       },
       "tags": [
@@ -421,10 +421,10 @@
       "id": "integradio",
       "name": "Integradio",
       "description": "Structure layer for building maintainable Gradio apps (UI + execution separation)",
-      "repo": "https://github.com/mcp-tool-shop-org/integradio",
+      "repo": "https://github.com/DemumuMind/integradio",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/integradio.git",
+        "url": "https://github.com/DemumuMind/integradio.git",
         "default_ref": "main"
       },
       "tags": [
@@ -440,10 +440,10 @@
       "id": "ledger-suite",
       "name": "Ledger Suite",
       "description": "Unified monorepo for cryptographic provenance ledgers — ClaimLedger and CreatorLedger",
-      "repo": "https://github.com/mcp-tool-shop-org/ledger-suite",
+      "repo": "https://github.com/DemumuMind/ledger-suite",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/ledger-suite.git",
+        "url": "https://github.com/DemumuMind/ledger-suite.git",
         "default_ref": "main"
       },
       "ecosystem": "ledger",
@@ -461,10 +461,10 @@
       "id": "mcp-examples",
       "name": "MCP Examples",
       "description": "Example workspaces and templates for MCP tools",
-      "repo": "https://github.com/mcp-tool-shop-org/mcp-examples",
+      "repo": "https://github.com/DemumuMind/mcp-examples",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/mcp-examples.git",
+        "url": "https://github.com/DemumuMind/mcp-examples.git",
         "default_ref": "main"
       },
       "tags": [
@@ -480,10 +480,10 @@
       "id": "mcp-stress-test",
       "name": "MCP Stress Test",
       "description": "Load and stress testing utilities for MCP servers and tool ecosystems",
-      "repo": "https://github.com/mcp-tool-shop-org/mcp-stress-test",
+      "repo": "https://github.com/DemumuMind/mcp-stress-test",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/mcp-stress-test.git",
+        "url": "https://github.com/DemumuMind/mcp-stress-test.git",
         "default_ref": "main"
       },
       "tags": [
@@ -499,10 +499,10 @@
       "id": "mcp-docs",
       "name": "MCP Tool Shop Website",
       "description": "Official website and documentation for MCP Tool Shop",
-      "repo": "https://github.com/mcp-tool-shop-org/mcp-tool-shop.github.io",
+      "repo": "https://github.com/DemumuMind/localhost:4321",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/mcp-tool-shop.github.io.git",
+        "url": "https://github.com/DemumuMind/localhost:4321.git",
         "default_ref": "main"
       },
       "tags": [
@@ -518,10 +518,10 @@
       "id": "mcpt",
       "name": "MCPT",
       "description": "MCP Tool Shop command-line interface and utilities",
-      "repo": "https://github.com/mcp-tool-shop-org/mcpt",
+      "repo": "https://github.com/DemumuMind/mcpt",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/mcpt.git",
+        "url": "https://github.com/DemumuMind/mcpt.git",
         "default_ref": "main"
       },
       "tags": [
@@ -537,10 +537,10 @@
       "id": "next-gallery",
       "name": "Next Gallery",
       "description": "Windows desktop image gallery application",
-      "repo": "https://github.com/mcp-tool-shop-org/next-gallery",
+      "repo": "https://github.com/DemumuMind/next-gallery",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/next-gallery.git",
+        "url": "https://github.com/DemumuMind/next-gallery.git",
         "default_ref": "main"
       },
       "tags": [
@@ -557,10 +557,10 @@
       "id": "nexus-suite",
       "name": "Nexus Suite",
       "description": "Governance, attestation, and routing infrastructure for MCP tool ecosystems",
-      "repo": "https://github.com/mcp-tool-shop-org/nexus-suite",
+      "repo": "https://github.com/DemumuMind/nexus-suite",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/nexus-suite.git",
+        "url": "https://github.com/DemumuMind/nexus-suite.git",
         "default_ref": "main"
       },
       "ecosystem": "nexus",
@@ -578,10 +578,10 @@
       "id": "pathway",
       "name": "Pathway",
       "description": "Python journey engine for workflow progression tracking",
-      "repo": "https://github.com/mcp-tool-shop-org/pathway",
+      "repo": "https://github.com/DemumuMind/pathway",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/pathway.git",
+        "url": "https://github.com/DemumuMind/pathway.git",
         "default_ref": "main"
       },
       "tags": [
@@ -597,10 +597,10 @@
       "id": "payroll-engine",
       "name": "Payroll Engine",
       "description": "Comprehensive payroll processing and SaaS platform",
-      "repo": "https://github.com/mcp-tool-shop-org/payroll-engine",
+      "repo": "https://github.com/DemumuMind/payroll-engine",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/payroll-engine.git",
+        "url": "https://github.com/DemumuMind/payroll-engine.git",
         "default_ref": "main"
       },
       "tags": [
@@ -616,10 +616,10 @@
       "id": "prov-engine-js",
       "name": "Prov Engine JS",
       "description": "JavaScript/TypeScript provenance and traceability engine",
-      "repo": "https://github.com/mcp-tool-shop-org/prov-engine-js",
+      "repo": "https://github.com/DemumuMind/prov-engine-js",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/prov-engine-js.git",
+        "url": "https://github.com/DemumuMind/prov-engine-js.git",
         "default_ref": "main"
       },
       "tags": [
@@ -635,10 +635,10 @@
       "id": "runforge-desktop",
       "name": "RunForge Desktop",
       "description": "Windows desktop application for AI workflow execution",
-      "repo": "https://github.com/mcp-tool-shop-org/runforge-desktop",
+      "repo": "https://github.com/DemumuMind/runforge-desktop",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/runforge-desktop.git",
+        "url": "https://github.com/DemumuMind/runforge-desktop.git",
         "default_ref": "main"
       },
       "tags": [
@@ -655,10 +655,10 @@
       "id": "runforge-vscode",
       "name": "RunForge VS Code",
       "description": "VS Code extension for AI workflow execution",
-      "repo": "https://github.com/mcp-tool-shop-org/runforge-vscode",
+      "repo": "https://github.com/DemumuMind/runforge-vscode",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/runforge-vscode.git",
+        "url": "https://github.com/DemumuMind/runforge-vscode.git",
         "default_ref": "main"
       },
       "tags": [
@@ -675,10 +675,10 @@
       "id": "stresskit-mcp",
       "name": "StressKit MCP",
       "description": "MCP stress testing toolkit with configurable load patterns",
-      "repo": "https://github.com/mcp-tool-shop-org/stresskit-mcp",
+      "repo": "https://github.com/DemumuMind/stresskit-mcp",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/stresskit-mcp.git",
+        "url": "https://github.com/DemumuMind/stresskit-mcp.git",
         "default_ref": "main"
       },
       "tags": [
@@ -694,10 +694,10 @@
       "id": "synthesis",
       "name": "Synthesis",
       "description": "Composable tool framework for building complex AI workflows",
-      "repo": "https://github.com/mcp-tool-shop-org/synthesis",
+      "repo": "https://github.com/DemumuMind/synthesis",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/synthesis.git",
+        "url": "https://github.com/DemumuMind/synthesis.git",
         "default_ref": "main"
       },
       "tags": [
@@ -713,10 +713,10 @@
       "id": "tool-compass",
       "name": "Tool Compass",
       "description": "Discovery, classification, and ranking utilities for MCP-compatible tools",
-      "repo": "https://github.com/mcp-tool-shop-org/tool-compass",
+      "repo": "https://github.com/DemumuMind/tool-compass",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/tool-compass.git",
+        "url": "https://github.com/DemumuMind/tool-compass.git",
         "default_ref": "main"
       },
       "tags": [
@@ -732,10 +732,10 @@
       "id": "tool-scan",
       "name": "Tool Scan",
       "description": "Static inspection utilities for MCP tools and repositories",
-      "repo": "https://github.com/mcp-tool-shop-org/tool-scan",
+      "repo": "https://github.com/DemumuMind/tool-scan",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/tool-scan.git",
+        "url": "https://github.com/DemumuMind/tool-scan.git",
         "default_ref": "main"
       },
       "tags": [
@@ -751,10 +751,10 @@
       "id": "training-studio",
       "name": "Training Studio",
       "description": "TensorFlow.js ML bundle validator with security-first design and zero code execution",
-      "repo": "https://github.com/mcp-tool-shop-org/training-studio",
+      "repo": "https://github.com/DemumuMind/training-studio",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/training-studio.git",
+        "url": "https://github.com/DemumuMind/training-studio.git",
         "default_ref": "main"
       },
       "tags": [
@@ -771,10 +771,10 @@
       "id": "venvkit",
       "name": "Venvkit",
       "description": "Python virtual environment diagnostics and utilities",
-      "repo": "https://github.com/mcp-tool-shop-org/venvkit",
+      "repo": "https://github.com/DemumuMind/venvkit",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/venvkit.git",
+        "url": "https://github.com/DemumuMind/venvkit.git",
         "default_ref": "main"
       },
       "tags": [
@@ -790,10 +790,10 @@
       "id": "voice-soundboard",
       "name": "Voice Soundboard",
       "description": "TTS and audio generation with voice cloning support",
-      "repo": "https://github.com/mcp-tool-shop-org/voice-soundboard",
+      "repo": "https://github.com/DemumuMind/voice-soundboard",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/voice-soundboard.git",
+        "url": "https://github.com/DemumuMind/voice-soundboard.git",
         "default_ref": "main"
       },
       "tags": [
@@ -810,10 +810,10 @@
       "id": "websketch-cli",
       "name": "WebSketch CLI",
       "description": "Command-line interface for web component analysis",
-      "repo": "https://github.com/mcp-tool-shop-org/websketch-cli",
+      "repo": "https://github.com/DemumuMind/websketch-cli",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/websketch-cli.git",
+        "url": "https://github.com/DemumuMind/websketch-cli.git",
         "default_ref": "main"
       },
       "ecosystem": "websketch",
@@ -830,10 +830,10 @@
       "id": "websketch-demo",
       "name": "WebSketch Demo",
       "description": "Interactive demo showcasing WebSketch capabilities",
-      "repo": "https://github.com/mcp-tool-shop-org/websketch-demo",
+      "repo": "https://github.com/DemumuMind/websketch-demo",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/websketch-demo.git",
+        "url": "https://github.com/DemumuMind/websketch-demo.git",
         "default_ref": "main"
       },
       "ecosystem": "websketch",
@@ -850,10 +850,10 @@
       "id": "websketch-extension",
       "name": "WebSketch Extension",
       "description": "Browser extension for web page analysis and code generation",
-      "repo": "https://github.com/mcp-tool-shop-org/websketch-extension",
+      "repo": "https://github.com/DemumuMind/websketch-extension",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/websketch-extension.git",
+        "url": "https://github.com/DemumuMind/websketch-extension.git",
         "default_ref": "main"
       },
       "ecosystem": "websketch",
@@ -870,10 +870,10 @@
       "id": "websketch-ir",
       "name": "WebSketch IR",
       "description": "Intermediate representation library for web component analysis",
-      "repo": "https://github.com/mcp-tool-shop-org/websketch-ir",
+      "repo": "https://github.com/DemumuMind/websketch-ir",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/websketch-ir.git",
+        "url": "https://github.com/DemumuMind/websketch-ir.git",
         "default_ref": "main"
       },
       "ecosystem": "websketch",
@@ -890,10 +890,10 @@
       "id": "websketch-mcp",
       "name": "WebSketch MCP",
       "description": "MCP server for AI-assisted web analysis",
-      "repo": "https://github.com/mcp-tool-shop-org/websketch-mcp",
+      "repo": "https://github.com/DemumuMind/websketch-mcp",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/websketch-mcp.git",
+        "url": "https://github.com/DemumuMind/websketch-mcp.git",
         "default_ref": "main"
       },
       "ecosystem": "websketch",
@@ -909,11 +909,11 @@
     {
       "id": "winget-pkgs",
       "name": "Winget Packages",
-      "description": "Windows Package Manager manifests for mcp-tool-shop packages",
-      "repo": "https://github.com/mcp-tool-shop-org/winget-pkgs",
+      "description": "Windows Package Manager manifests for DemumuMind packages",
+      "repo": "https://github.com/DemumuMind/winget-pkgs",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/winget-pkgs.git",
+        "url": "https://github.com/DemumuMind/winget-pkgs.git",
         "default_ref": "main"
       },
       "tags": [
@@ -929,10 +929,10 @@
       "id": "witness",
       "name": "Witness",
       "description": "Attestation witness and verification tooling",
-      "repo": "https://github.com/mcp-tool-shop-org/witness",
+      "repo": "https://github.com/DemumuMind/witness",
       "install": {
         "type": "git",
-        "url": "https://github.com/mcp-tool-shop-org/witness.git",
+        "url": "https://github.com/DemumuMind/witness.git",
         "default_ref": "main"
       },
       "tags": [
@@ -949,89 +949,89 @@
     {
       "id": "a11y-assist",
       "note": "Consolidated into accessibility-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/a11y-assist"
+      "repo": "https://github.com/DemumuMind/a11y-assist"
     },
     {
       "id": "a11y-ci",
       "note": "Consolidated into accessibility-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/a11y-ci"
+      "repo": "https://github.com/DemumuMind/a11y-ci"
     },
     {
       "id": "a11y-lint",
       "note": "Consolidated into accessibility-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/a11y-lint"
+      "repo": "https://github.com/DemumuMind/a11y-lint"
     },
     {
       "id": "a11y-evidence-engine",
       "note": "Consolidated into accessibility-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/a11y-evidence-engine"
+      "repo": "https://github.com/DemumuMind/a11y-evidence-engine"
     },
     {
       "id": "a11y-mcp-tools",
       "note": "Consolidated into accessibility-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/a11y-mcp-tools"
+      "repo": "https://github.com/DemumuMind/a11y-mcp-tools"
     },
     {
       "id": "a11y-demo-site",
       "note": "Consolidated into accessibility-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/a11y-demo-site"
+      "repo": "https://github.com/DemumuMind/a11y-demo-site"
     },
     {
       "id": "prov-spec",
       "note": "Consolidated into accessibility-suite/docs",
-      "repo": "https://github.com/mcp-tool-shop-org/prov-spec"
+      "repo": "https://github.com/DemumuMind/prov-spec"
     },
     {
       "id": "nexus-control",
       "note": "Consolidated into nexus-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/nexus-control"
+      "repo": "https://github.com/DemumuMind/nexus-control"
     },
     {
       "id": "nexus-attest",
       "note": "Consolidated into nexus-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/nexus-attest"
+      "repo": "https://github.com/DemumuMind/nexus-attest"
     },
     {
       "id": "nexus-router",
       "note": "Consolidated into nexus-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/nexus-router"
+      "repo": "https://github.com/DemumuMind/nexus-router"
     },
     {
       "id": "nexus-router-adapter-http",
       "note": "Consolidated into nexus-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/nexus-router-adapter-http"
+      "repo": "https://github.com/DemumuMind/nexus-router-adapter-http"
     },
     {
       "id": "nexus-router-adapter-stdout",
       "note": "Consolidated into nexus-suite",
-      "repo": "https://github.com/mcp-tool-shop-org/nexus-router-adapter-stdout"
+      "repo": "https://github.com/DemumuMind/nexus-router-adapter-stdout"
     }
   ],
   "ecosystems": {
     "ledger": {
       "name": "Ledger Ecosystem",
       "description": "Cryptographic provenance ledgers",
-      "docs": "https://github.com/mcp-tool-shop-org/ledger-suite#readme"
+      "docs": "https://github.com/DemumuMind/ledger-suite#readme"
     },
     "nexus": {
       "name": "Nexus Ecosystem",
       "description": "Governance, attestation, and routing infrastructure",
-      "docs": "https://github.com/mcp-tool-shop-org/nexus-suite#readme"
+      "docs": "https://github.com/DemumuMind/nexus-suite#readme"
     },
     "accessibility": {
       "name": "Accessibility Ecosystem",
       "description": "WCAG compliance and accessibility testing",
-      "docs": "https://github.com/mcp-tool-shop-org/accessibility-suite#readme"
+      "docs": "https://github.com/DemumuMind/accessibility-suite#readme"
     },
     "websketch": {
       "name": "WebSketch Ecosystem",
       "description": "Web component analysis and code generation",
-      "docs": "https://github.com/mcp-tool-shop-org/websketch-ir#readme"
+      "docs": "https://github.com/DemumuMind/websketch-ir#readme"
     },
     "codeteam": {
       "name": "CodeTeam Ecosystem",
       "description": "Code analysis and quality tools",
-      "docs": "https://github.com/mcp-tool-shop-org/codeteam-suite#readme"
+      "docs": "https://github.com/DemumuMind/codeteam-suite#readme"
     }
   }
 }

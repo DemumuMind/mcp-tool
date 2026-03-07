@@ -131,8 +131,8 @@ for (const slug of enabledSlugs) {
     install: override?.install || null,
     stability: override?.stability || null,
     kind: override?.kind || null,
-    repo: `https://github.com/mcp-tool-shop-org/${slug}`,
-    site: `https://mcptoolshop.com/tools/${slug}/`,
+    repo: `https://github.com/DemumuMind/${slug}`,
+    site: `https://localhost:4321/tools/${slug}/`,
     valueProps: tool.positioning?.valueProps || [],
     provenClaims: resolvedClaims.map((c) => ({
       id: c.id,
@@ -166,7 +166,7 @@ for (const slug of enabledSlugs) {
       : null,
     trackedLinks: (linksBySlug.get(slug) || []).map((l) => ({
       id: l.id,
-      url: `https://mcptoolshop.com/go/${l.id}/`,
+      url: `https://localhost:4321/go/${l.id}/`,
       channel: l.channel,
     })),
     press: tool.press
@@ -316,7 +316,7 @@ for (const slug of enabledSlugs) {
   readmeLines.push(`- [GitHub](${presskitJson.repo})`);
   readmeLines.push(`- [Tool page](${presskitJson.site})`);
   if (tool.press) {
-    readmeLines.push(`- [Press page](https://mcptoolshop.com/press/${slug}/)`);
+    readmeLines.push(`- [Press page](https://localhost:4321/press/${slug}/)`);
   }
   readmeLines.push("");
 
@@ -325,7 +325,7 @@ for (const slug of enabledSlugs) {
     readmeLines.push("## Tracked links");
     readmeLines.push("");
     for (const l of toolLinks) {
-      readmeLines.push(`- [${l.id}](https://mcptoolshop.com/go/${l.id}/) (${l.channel})`);
+      readmeLines.push(`- [${l.id}](https://localhost:4321/go/${l.id}/) (${l.channel})`);
     }
     readmeLines.push("");
   }
@@ -500,7 +500,7 @@ for (const slug of enabledSlugs) {
     ${(linksBySlug.get(slug) || []).length > 0 ? `<div class="links" style="margin-top:0.5rem">\n      ${(linksBySlug.get(slug) || []).map((l) => `<a href="/go/${htmlEsc(l.id)}/" title="${htmlEsc(l.channel)}">${htmlEsc(l.id)}</a>`).join("\n      ")}\n    </div>` : ""}
 
     <div class="footer">
-      Generated from <a href="https://github.com/mcp-tool-shop/mcpt-marketing">MarketIR</a>${facts ? " + GitHub facts snapshot" : ""}
+      Generated from <a href="https://github.com/DemumuMind/mcpt-marketing">MarketIR</a>${facts ? " + GitHub facts snapshot" : ""}
       &middot; lock: ${htmlEsc(lockShort)}
       &middot; ${htmlEsc(generatedAt)}
       ${facts ? "<br>GitHub data is non-authoritative and time-stamped. Verify at source." : ""}
@@ -540,7 +540,7 @@ for (const slug of enabledSlugs) {
     raLines.push(`- [GitHub](${presskitJson.repo})`);
     raLines.push(`- [Tool page](${presskitJson.site})`);
     if (tool.press) {
-      raLines.push(`- [Press page](https://mcptoolshop.com/press/${slug}/)`);
+      raLines.push(`- [Press page](https://localhost:4321/press/${slug}/)`);
     }
     raLines.push("");
     raLines.push("---");

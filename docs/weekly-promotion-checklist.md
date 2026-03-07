@@ -14,7 +14,7 @@ Run every Monday before promoting. All **A + C** must be green, no accidental fr
   - [ ] Copy Verification Bundle works
   - [ ] Copy Verify Command works
 - [ ] Trust Center exists and is current: `/trust/`
-- [ ] Trust Center includes clickable canonical path: Presskit → Trust → Receipts → Promo → Verify
+- [ ] Trust Center includes clickable canonical path: Presskit -> Trust -> Receipts -> Promo -> Verify
 - [ ] Receipts index exists and lists recent receipts: `/receipts/`
 - [ ] Trust receipt file is present and recent: `site/public/trust.json`
 - [ ] Trust receipt is sane:
@@ -39,7 +39,7 @@ Run every Monday before promoting. All **A + C** must be green, no accidental fr
 
 ## C) promo-kit npm package is "complete" (presentation + trust)
 
-- [ ] npm shows latest version (expected): `@mcptoolshop/promo-kit@X.Y.Z`
+- [ ] npm shows latest version (expected): `@demumumind/promo-kit@X.Y.Z`
 - [ ] npm README renders correctly:
   - [ ] Logo image displays (raw GitHub URL)
   - [ ] Badges display (npm version, GitHub release, MIT)

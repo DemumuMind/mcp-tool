@@ -11,8 +11,10 @@ Get from zero to a verified trust receipt in under 5 minutes.
 ```bash
 mkdir my-catalog && cd my-catalog
 npm init -y
-npm i @mcptoolshop/promo-kit
+npm i @demumumind/promo-kit
 ```
+
+Migration note: `@demumumind/promo-kit` was formerly published as `@demumumind/promo-kit`.
 
 One package. Zero dependencies. Nothing else to install.
 
@@ -35,9 +37,9 @@ Created kit.config.json from template.
 
 Kit Bootstrap
 ========================================
-✓ Environment OK
-✓ Config loaded (kitVersion: 1)
-✓ Created: 19 files/dirs
+OK Environment OK
+OK Config loaded (kitVersion: 1)
+OK Created: 19 files/dirs
 ```
 
 ## Configure
@@ -83,24 +85,24 @@ Kit Self-Test
 ========================================
 
 [Config]
-  ✓ kit.config.json exists
-  ✓ kit.config.json is valid JSON with required fields
-  ✓ no unknown keys in paths
-  ✓ kitVersion in supported range
+  OK kit.config.json exists
+  OK kit.config.json is valid JSON with required fields
+  OK no unknown keys in paths
+  OK kitVersion in supported range
 
 [Seed Files]
-  ✓ governance.json exists
-  ✓ promo-queue.json exists
+  OK governance.json exists
+  OK promo-queue.json exists
   ... (17 seed checks)
 
 [Core Dry-Runs]
-  ✓ gen-promo-decisions.mjs --dry-run
-  ✓ gen-trust-receipt.mjs --dry-run
+  OK gen-promo-decisions.mjs --dry-run
+  OK gen-trust-receipt.mjs --dry-run
   ... (10 generator checks)
 
 ========================================
 Results: 28 passed, 0 failed, 28 total
-✓ All checks passed.
+OK All checks passed.
 ```
 
 If any check fails, the error message tells you what's wrong and how to fix it.
@@ -128,7 +130,7 @@ All JSON. All local. All auditable.
 Run a generator for real (not dry-run):
 
 ```bash
-KIT_CONFIG=./kit.config.json node node_modules/@mcptoolshop/promo-kit/scripts/gen-trust-receipt.mjs
+KIT_CONFIG=./kit.config.json node node_modules/@demumumind/promo-kit/scripts/gen-trust-receipt.mjs
 ```
 
 This produces `trust.json` in your public directory:
@@ -151,10 +153,10 @@ Every artifact is SHA-256 hashed. The commit ties the receipt to a specific poin
 
 ## What's next
 
-- **Edit seed data** — add tools to `promo-queue.json`, set rules in `governance.json`
-- **Run generators** — produce promotion decisions, drift reports, recommendations
-- **Commit everything** — all artifacts are deterministic and diffable in PRs
-- **Set up CI** — run `npx promo-kit selftest` in your CI pipeline
+- **Edit seed data** -- add tools to `promo-queue.json`, set rules in `governance.json`
+- **Run generators** -- produce promotion decisions, drift reports, recommendations
+- **Commit everything** -- all artifacts are deterministic and diffable in PRs
+- **Set up CI** -- run `npx promo-kit selftest` in your CI pipeline
 
 ## Useful commands
 
@@ -167,18 +169,18 @@ npx promo-kit migrate          # apply schema upgrades
 
 ## Why trust this kit?
 
-- **Zero runtime deps** — nothing to audit, nothing to break
-- **Local-only data** — no external services, no tracking, no network calls
-- **Deterministic outputs** — same inputs produce the same outputs, every time
-- **Receipt-backed** — every artifact is SHA-256 hashed with a commit SHA
-- **PR-only automation** — proposes changes; humans merge
-- **Freeze modes** — pause automation for human review at any time
+- **Zero runtime deps** -- nothing to audit, nothing to break
+- **Local-only data** -- no external services, no tracking, no network calls
+- **Deterministic outputs** -- same inputs produce the same outputs, every time
+- **Receipt-backed** -- every artifact is SHA-256 hashed with a commit SHA
+- **PR-only automation** -- proposes changes; humans merge
+- **Freeze modes** -- pause automation for human review at any time
 
 ## Links
 
-- [npm package](https://www.npmjs.com/package/@mcptoolshop/promo-kit)
-- [Portable Core docs](https://github.com/mcp-tool-shop/mcp-tool-shop/blob/main/docs/portable-core.md) — full contract and field reference
-- [Presskit Handbook](https://github.com/mcp-tool-shop/mcp-tool-shop/blob/main/docs/presskit-handbook.md) — brand assets and verification walkthrough
-- [Trust Center](https://mcp-tool-shop.github.io/trust/) — live verification example
-- [Example outputs](https://github.com/mcp-tool-shop/mcp-tool-shop/tree/main/docs/examples) — real trust receipt, drift report, recommendations
-- [Security policy](https://github.com/mcp-tool-shop/mcp-tool-shop/blob/main/SECURITY.md)
+- [npm package](https://www.npmjs.com/package/@demumumind/promo-kit)
+- [Portable Core docs](https://github.com/DemumuMind/mcp-tool/blob/main/docs/portable-core.md) -- full contract and field reference
+- [Presskit Handbook](https://github.com/DemumuMind/mcp-tool/blob/main/docs/presskit-handbook.md) -- brand assets and verification walkthrough
+- [Trust Center](http://localhost:4321/trust/) -- live verification example
+- [Example outputs](https://github.com/DemumuMind/mcp-tool/tree/main/docs/examples) -- real trust receipt, drift report, recommendations
+- [Security policy](https://github.com/DemumuMind/mcp-tool/blob/main/SECURITY.md)

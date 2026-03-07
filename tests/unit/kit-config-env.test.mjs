@@ -160,7 +160,7 @@ describe("KIT_CONFIG + bootstrap", () => {
     assert.equal(result2.created.length, 0, "no files should be created on second run");
   });
 
-  it("no mcp-tool-shop strings in pilot-org seed files", () => {
+  it("no DemumuMind strings in pilot-org seed files", () => {
     writeFileSync(
       join(tmpDir, "kit.config.json"),
       JSON.stringify({
@@ -188,8 +188,8 @@ describe("KIT_CONFIG + bootstrap", () => {
     for (const file of files) {
       const content = readFileSync(join(dataDir, file), "utf8");
       assert.ok(
-        !content.includes("mcp-tool-shop"),
-        `${file} should not contain mcp-tool-shop`
+        !content.includes("DemumuMind"),
+        `${file} should not contain DemumuMind`
       );
     }
   });

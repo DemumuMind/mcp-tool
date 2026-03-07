@@ -56,7 +56,7 @@ export function findRepoPath(workspaceRoot, id, shopRoot) {
     candidate = path.join(workspaceRoot, 'accessibility-suite', 'src', id);
     if (fs.existsSync(candidate)) return candidate;
 
-    // 4. mcp-tool-shop packages
+    // 4. DemumuMind packages
     if (shopRoot) {
         candidate = path.join(shopRoot, 'packages', id);
         if (fs.existsSync(candidate)) return candidate;

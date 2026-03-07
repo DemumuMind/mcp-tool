@@ -49,7 +49,7 @@ function safeParseJson(filePath, fallback = null) {
  * @returns {object|null} Outreach run manifest, or null if disabled
  */
 export function buildOutreachRun(queue, promo, opts = {}) {
-  const siteBase = opts.siteBase || "https://mcptoolshop.com";
+  const siteBase = opts.siteBase || "https://localhost:4321";
   const maxItems = opts.maxItems || 3;
   const marketirDir = opts.marketirDir || join(ROOT, "site", "src", "data", "marketir");
   const overrides = opts.overrides || safeParseJson(join(DATA_DIR, "overrides.json"), {});

@@ -2,7 +2,7 @@ name: Weekly clearance freshness
 
 on:
   workflow_dispatch: {}
-  # schedule disabled until @mcptoolshop/clearance-opinion-engine is published to npm
+  # schedule disabled until @demumumind/clearance-opinion-engine is published to npm
   # schedule:
   #   - cron: '0 10 * * 4'
 
@@ -25,7 +25,7 @@ jobs:
           node-version: 22
 
       - name: Install clearance engine
-        run: npm install -g @mcptoolshop/clearance-opinion-engine
+        run: npm install -g @demumumind/clearance-opinion-engine
 
       - name: Refresh stale reports
         id: refresh

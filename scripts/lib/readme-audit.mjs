@@ -5,7 +5,7 @@ import { loadRegistry, getToolStatus, findRepoPath } from './front-door.mjs';
 export function auditReadmes(shopRoot) {
     const { registry, overrides } = loadRegistry(shopRoot);
     
-    // shopRoot is `c:\workspace\mcp-tool-shop`
+    // shopRoot is the marketing repo root
     // workspaceRoot is usually `c:\workspace`
     const workspaceRoot = path.dirname(shopRoot); 
 

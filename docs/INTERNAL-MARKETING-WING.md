@@ -1,16 +1,16 @@
 # Internal Marketing Wing Recap
 
-> Architecture and script inventory for the mcp-tool-shop marketing pipeline.
+> Architecture and script inventory for the DemumuMind marketing pipeline.
 > This document is the starting point for AI agents and maintainers resuming work on the site.
 
 ## What this repo does
 
-This repo (`mcp-tool-shop/mcp-tool-shop`) is the **public marketing site** for [mcp-tool-shop-org](https://github.com/mcp-tool-shop-org). It discovers tools from the org, enriches them with metadata, and publishes a catalog at [mcptoolshop.com](https://mcp-tool-shop.github.io/).
+This repo (`DemumuMind/mcp-tool`) is the **public marketing site** for [DemumuMind](https://github.com/DemumuMind). It discovers tools from the org, enriches them with metadata, and publishes a catalog at [localhost:4321](http://localhost:4321/).
 
 The pipeline has four stages:
 
 ```
-Fetch  →  Verify  →  Generate  →  Deploy
+Fetch  ->  Verify  ->  Generate  ->  Deploy
 ```
 
 1. **Fetch** pulls data from three sources: the mcp-tool-registry, GitHub API, and MarketIR (upstream marketing data).
@@ -24,10 +24,10 @@ Drop this into any conversation to orient Claude on the marketing wing:
 
 ```
 Read these files in order:
-1. F:\AI\mcp-tool-shop\docs\automation.md        — data ownership + override schema
-2. F:\AI\mcp-tool-shop\docs\SECURITY-MODEL.md     — trust boundaries + sanitization
-3. F:\AI\mcp-tool-shop\docs\INTERNAL-MARKETING-WING.md — this file (architecture + scripts)
-4. F:\AI\mcp-tool-shop\package.json               — available npm scripts
+1. F:\AI\mcp-tool\docs\automation.md        -- data ownership + override schema
+2. F:\AI\mcp-tool\docs\SECURITY-MODEL.md   -- trust boundaries + sanitization
+3. F:\AI\mcp-tool\docs\INTERNAL-MARKETING-WING.md -- this file (architecture + scripts)
+4. F:\AI\mcp-tool\package.json             -- available npm scripts
 ```
 
 ## Data files (site/src/data/)
@@ -101,7 +101,7 @@ All structured errors use the format `MKT.<AREA>.<KIND>`:
 | Code | Meaning |
 |------|---------|
 | `MKT.FETCH.NETWORK` | HTTP/DNS failure during data fetch |
-| `MKT.FETCH.DENIED` | 401/403 — missing or insufficient token |
+| `MKT.FETCH.DENIED` | 401/403 -- missing or insufficient token |
 | `MKT.DATA.MISSING` | Expected file not found |
 | `MKT.DATA.INVALID` | File exists but has wrong shape or format |
 | `MKT.HASH.MISMATCH` | SHA-256 doesn't match lockfile |

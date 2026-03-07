@@ -109,7 +109,7 @@ export function generateCampaignBundle(queue, results, opts = {}) {
     return { generated: false };
   }
 
-  const siteBase = opts.siteBase || "https://mcptoolshop.com";
+  const siteBase = opts.siteBase || "https://localhost:4321";
   const outDir = opts.outDir || join(ROOT, "site", "public", "promo-bundles", campaign.id);
   const dryRun = opts.dryRun || false;
 

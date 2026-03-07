@@ -1,17 +1,17 @@
-# Phase 26A — Pilot Report
+# Phase 26A -- Pilot Report
 
 ## What Was Tested
 
 - **Bootstrap**: `KIT_CONFIG=examples/pilot-org/kit.config.json node scripts/kit-bootstrap.mjs`
 - **Selftest**: `KIT_CONFIG=... node scripts/kit-selftest.mjs --skip-build --skip-invariants`
 - **Dry-runs**: All 10 portable core scripts via selftest
-- **String isolation**: `grep -r "mcp-tool-shop" examples/pilot-org/data/` — zero matches
+- **String isolation**: `grep -r "DemumuMind" examples/pilot-org/data/` -- zero matches
 - **Unit tests**: 9 new KIT_CONFIG env var tests, all passing
 - **Backward compatibility**: Original org selftest 29/29, 539+ total tests pass
 
 ## What Worked
 
-- Bootstrap created 19 seed files/dirs in `examples/pilot-org/data/` — correct directory, not `site/src/data/`
+- Bootstrap created 19 seed files/dirs in `examples/pilot-org/data/` -- correct directory, not `site/src/data/`
 - All 10 dry-runs passed against zero-state seed data
 - No org-specific strings leaked into pilot org data files
 - `getRoot()` correctly resolves KIT_CONFIG env var or falls back to auto-discovery
@@ -45,11 +45,11 @@
 
 ## Recommendations for Phase 26B
 
-1. **Portable invariant tests**: Create a subset of invariants that work against any kit root (seed schema validation, governance rules, data type checks) — not dependent on projects.json/collections.json.
-2. **Site template**: Minimal Astro site that works out of the box with kit.config.json — even if it's just a dashboard showing governance state.
+1. **Portable invariant tests**: Create a subset of invariants that work against any kit root (seed schema validation, governance rules, data type checks) -- not dependent on projects.json/collections.json.
+2. **Site template**: Minimal Astro site that works out of the box with kit.config.json -- even if it's just a dashboard showing governance state.
 3. **`npx create-kit`**: Bootstrap an entirely new repo (not just seed data) from a template.
 4. **Adopter CI template**: `.github/workflows/kit-ci.yml` that an adopter can copy into their repo.
-5. **Migration testing**: Create a v1→v2 migration with actual transforms to exercise the migration path.
+5. **Migration testing**: Create a v1->v2 migration with actual transforms to exercise the migration path.
 
 ## Test Counts
 

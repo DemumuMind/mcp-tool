@@ -1,4 +1,4 @@
-# Copilot Instructions — mcp-tool-shop (Astro Site)
+# Copilot Instructions — DemumuMind / mcp-tool (Astro Site)
 
 This repository is the **public website** (Astro). It owns:
 - `site/` (Astro app)
@@ -14,7 +14,7 @@ Keep the site fresh by updating generated data daily and rebuilding Pages.
 - Prefer deterministic outputs (stable sorting, consistent formatting).
 - If adding automation: one daily workflow, build before commit, commit only if changed.
 
-This repo is the **Site Repo** (mcp-tool-shop). It is the source of truth for the [mcp-tool-shop.org](https://mcp-tool-shop.org) website.
+This repo is the **Site Repo** (DemumuMind/mcp-tool). It is the source of truth for the [localhost:4321](https://localhost:4321) website.
 Features:
 - **Daily Refresh**: A GitHub Action runs every day at 13:00 UTC to sync org metadata (`npm run sync`), generate a daily note (`npm run daily:note`), and commit changes.
 - **Daily Note**: A script (`scripts/gen-daily-note.mjs`) picks a random "insight" from a list to keep the homepage freshness indicator alive.

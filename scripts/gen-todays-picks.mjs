@@ -29,8 +29,8 @@ const EXCLUDED_REPOS = new Set([
   "winget-pkgs",
   "homebrew-tap",
   ".github",
-  "mcp-tool-shop",
-  "mcp-tool-shop-org" // meta org repo
+  "mcp-tool",
+  "DemumuMind" // meta org repo
 ]);
 
 // Helper: Get quality penalty

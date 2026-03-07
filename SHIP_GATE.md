@@ -57,7 +57,7 @@
 
 - [x] `[all]` Logo in README header (2026-02-27)
 - [ ] `[all]` SKIP: marketing site — translations not applicable
-- [x] `[org]` Landing page — IS the landing page (mcp-tool-shop.github.io) (2026-02-27)
+- [x] `[org]` Landing page — IS the landing page (localhost:4321) (2026-02-27)
 - [x] `[all]` GitHub repo metadata: description, homepage, topics (2026-02-27)
 
 ---

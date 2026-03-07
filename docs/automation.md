@@ -23,9 +23,9 @@
 | `site/src/data/registry/meta.json` | **Generated** | Footer nutrition facts: schema version, registry ref, sync timestamp, cleanup issue URL |
 | `site/src/data/ops-history.json` | **Generated** | Rolling ops log from NameOps runs (max 30 entries, `scripts/ingest-ops.mjs`) |
 | `site/src/data/promo.json` | **Human-curated** | Promotion enabled flag + safety caps (`maxNamesPerRun`, `failMode`) |
-| `site/src/data/promo-queue.json` | **Human-curated** | Weekly promotion queue — slugs + channels + type |
-| `site/src/data/worthy.json` | **Human-curated** | Repo worthiness rubric — criteria, scores, assessment |
-| `site/src/data/recommendation-patch.json` | **Generated** | `scripts/gen-recommendation-patch.mjs` — audit artifact for recommendation patches |
+| `site/src/data/promo-queue.json` | **Human-curated** | Weekly promotion queue -- slugs + channels + type |
+| `site/src/data/worthy.json` | **Human-curated** | Repo worthiness rubric -- criteria, scores, assessment |
+| `site/src/data/recommendation-patch.json` | **Generated** | `scripts/gen-recommendation-patch.mjs` -- audit artifact for recommendation patches |
 
 ### Draft override rule
 
@@ -48,15 +48,15 @@ Values follow this schema:
 
 | Field | Type | Constraints | Required |
 |-------|------|-------------|----------|
-| `featured` | `boolean` | — | no |
+| `featured` | `boolean` | -- | no |
 | `tags` | `string[]` | max **6** items | no |
 | `category` | `string` | see Category enum | no |
 | `stability` | `string` | `stable` \| `beta` \| `experimental` | no |
 | `kind` | `string` | see Kind enum | no |
-| `install` | `string` | shell command, ≤ 120 chars | no |
-| `tagline` | `string` | ≤ **90** chars | no |
-| `goodFor` | `string[]` | max **4** items, each ≤ 120 chars | no |
-| `notFor` | `string[]` | max **3** items, each ≤ 120 chars | no |
+| `install` | `string` | shell command, <= 120 chars | no |
+| `tagline` | `string` | <= **90** chars | no |
+| `goodFor` | `string[]` | max **4** items, each <= 120 chars | no |
+| `notFor` | `string[]` | max **3** items, each <= 120 chars | no |
 | `screenshot` | `string` | path: `/screenshots/<slug>.png` | no |
 | `screenshotType` | `string` | `real` \| `placeholder` | no |
 | `needsHumanReview` | `boolean` | `true` on auto-generated entries | auto-only |
@@ -117,8 +117,8 @@ Every entry in `projects.json` carries two computed flags:
 
 **Policy:**
 
-- Registry tools → `registered: true`, `unlisted: false`
-- Org repos **not** in registry and **not** in ignore list → `registered: false`, `unlisted: true`
+- Registry tools -> `registered: true`, `unlisted: false`
+- Org repos **not** in registry and **not** in ignore list -> `registered: false`, `unlisted: true`
 - Override can set `unlisted: false` on an unregistered repo to force-show it
 - `deprecated: true` is set when: registry has `deprecated: true`, OR the GitHub repo is archived
 
@@ -126,10 +126,10 @@ Every entry in `projects.json` carries two computed flags:
 
 | Field | Winner | Rationale |
 |-------|--------|-----------|
-| `name` | Registry → GitHub → slug | Registry curates display names |
-| `description` | Registry → GitHub | Registry descriptions are reviewed |
-| `tags` | Override → Registry → GitHub topics | Editorial tags override all |
-| `install` | Override → (computed) | Override shell commands are more useful than raw `git clone` |
+| `name` | Registry -> GitHub -> slug | Registry curates display names |
+| `description` | Registry -> GitHub | Registry descriptions are reviewed |
+| `tags` | Override -> Registry -> GitHub topics | Editorial tags override all |
+| `install` | Override -> (computed) | Override shell commands are more useful than raw `git clone` |
 | `ecosystem` | Registry only | Not present in GitHub or overrides |
 | `stars` | GitHub only | Live signal |
 | `language` | GitHub only | Live signal |
@@ -143,17 +143,17 @@ Every entry in `projects.json` carries two computed flags:
 | `notFor` | Override only | Editorial decision |
 | `screenshot` | Override only | Editorial decision |
 | `screenshotType` | Override only | Editorial decision |
-| `deprecated` | Registry → GitHub archived | Auto-computed from registry flag or archived status |
+| `deprecated` | Registry -> GitHub archived | Auto-computed from registry flag or archived status |
 
 ### Merge order
 
 1. **Start** with registry entry (if `registered: true`)
-   — or empty base (if org-only repo)
+   -- or empty base (if org-only repo)
 2. **Overlay** GitHub API live signals (stars, language, updatedAt, description if missing)
 3. **Overlay** override fields (overrides always win for editorial fields)
 4. **Compute** `registered` and `unlisted` flags
 
-### Registry ID → org repo mapping
+### Registry ID -> org repo mapping
 
 Registry tool `id` should match the org repo `name`. When they don't match:
 
@@ -180,19 +180,19 @@ permanent solution.
 
 **Rules:**
 
-- Aliases are human-curated — automation never writes to this file
+- Aliases are human-curated -- automation never writes to this file
 - Each alias should have a corresponding entry in `cleanup.json` tracking it
 - Aliases for archived repos should be retired (remove from registry instead)
-- Goal: **zero aliases** — every alias is a known mismatch awaiting upstream fix
+- Goal: **zero aliases** -- every alias is a known mismatch awaiting upstream fix
 
 ### Cleanup queue
 
 `site/src/data/registry/cleanup.json` is a generated artifact produced by the
 sync script. It captures structured data about registry hygiene issues:
 
-- `archived[]` — registry tools pointing to archived GitHub repos
-- `missing[]` — registry tools with no matching repo (not archived, just absent)
-- `aliases[]` — active alias workarounds
+- `archived[]` -- registry tools pointing to archived GitHub repos
+- `missing[]` -- registry tools with no matching repo (not archived, just absent)
+- `aliases[]` -- active alias workarounds
 
 The cleanup queue feeds into:
 - The `/registry/` page (visible to visitors)
@@ -206,11 +206,11 @@ The enrichment script selects **3-5 repos per batch** using this priority:
 
 ### Include (highest priority first)
 
-1. **Missing override** — repo has no entry in `overrides.json`
-2. **Recently updated** — `pushedAt` within last 30 days
-3. **Has releases** — at least one release in `releases.json`
-4. **Has description** — GitHub description is non-empty
-5. **Has language** — GitHub detected a primary language
+1. **Missing override** -- repo has no entry in `overrides.json`
+2. **Recently updated** -- `pushedAt` within last 30 days
+3. **Has releases** -- at least one release in `releases.json`
+4. **Has description** -- GitHub description is non-empty
+5. **Has language** -- GitHub detected a primary language
 
 Repos meeting more criteria rank higher. Ties broken by most recently updated.
 
@@ -247,7 +247,7 @@ Format: flat JSON array of repo names or registry IDs (strings).
 ```json
 [
   ".github",
-  "mcp-tool-shop.github.io",
+  "localhost:4321",
   "old_voice-soundboard",
   "homebrew-core",
   "mcp-tool-registry",
@@ -265,7 +265,7 @@ for confirmed dead upstream registry entries.
 
 ## 6. Workflow Budget
 
-All automation runs on the **personal repo** (`mcp-tool-shop/mcp-tool-shop`),
+All automation runs on the **personal repo** (`DemumuMind/mcp-tool`),
 not the org. This uses personal Actions minutes, not org minutes.
 
 | Workflow | Trigger | Runner | Est. time |

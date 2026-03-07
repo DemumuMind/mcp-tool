@@ -1,5 +1,5 @@
 {
-  "name": "@mcptoolshop/promo-kit",
+  "name": "@demumumind/promo-kit",
   "version": "0.1.3",
   "description": "Portable promotion engine for tool catalogs. Receipt-backed promotions, freeze modes, drift detection.",
   "type": "module",
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcp-tool-shop/mcp-tool-shop.git",
+    "url": "https://github.com/DemumuMind/mcp-tool.git",
     "directory": "packages/promo-kit"
   },
-  "homepage": "https://github.com/mcp-tool-shop/mcp-tool-shop/tree/main/packages/promo-kit",
+  "homepage": "https://github.com/DemumuMind/mcp-tool/tree/main/packages/promo-kit",
   "bugs": {
-    "url": "https://github.com/mcp-tool-shop/mcp-tool-shop/issues"
+    "url": "https://github.com/DemumuMind/mcp-tool/issues"
   },
   "keywords": [
     "mcp",
@@ -40,6 +40,6 @@
     "receipts",
     "verification"
   ],
-  "author": "mcp-tool-shop <64996768+mcp-tool-shop@users.noreply.github.com>",
+  "author": "DemumuMind <demumumind@users.noreply.github.com>",
   "license": "MIT"
 }

@@ -120,7 +120,7 @@ async function main() {
   const results = [];
   const errors = [];
   const checkedRepos = new Set();
-  const org = "mcp-tool-shop-org"; 
+  const org = "DemumuMind"; 
 
   let checkCounter = 0;
 

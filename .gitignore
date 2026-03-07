@@ -30,6 +30,9 @@ site/src/data/github-facts/
 # generated types
 .astro/
 
+# local git worktrees
+.worktrees/
+
 # dependencies
 node_modules/
 

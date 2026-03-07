@@ -16,7 +16,7 @@ const {
   ogImage,
 } = Astro.props;
 
-const siteUrl = kit.site.url || 'https://mcptoolshop.com';
+const siteUrl = kit.site.url || 'http://localhost:4321/';
 const canonicalUrl = new URL(currentPath || '/', siteUrl).href;
 const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).href : undefined;
 
@@ -59,7 +59,7 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
   <body>
     <nav class="site-nav">
       <div class="container relative"> {/* Added relative for positioning */}
-        <a href="/" class="logo">{kit.site.title || 'mcp-tool-shop'}</a>
+        <a href="/" class="logo">{kit.site.title || 'DemumuMind'}</a>
         <ul class="nav-links">
           {navLinks.map((link) => (
             <li>
@@ -87,7 +87,7 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
     
     <script is:inline>
       (function() {
-        const KEY = "mcptoolshop_admin_nav";
+        const KEY = "demumumind_admin_nav";
         
         // Check for enable command
         if (typeof window !== "undefined") {
@@ -125,10 +125,10 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
     <footer class="site-footer">
       <div class="container">
         <div class="footer-top">
-          <span>&copy; {new Date().getFullYear()} {kit.site.title || 'mcp-tool-shop'}</span>
+          <span>&copy; {new Date().getFullYear()} {kit.site.title || 'DemumuMind'}</span>
           <ul class="footer-links">
-            <li><a href={kit.org.url || 'https://github.com/mcp-tool-shop-org'}>Org on GitHub</a></li>
-            <li><a href={`https://github.com/${kit.org.account || 'mcp-tool-shop'}`}>Profile</a></li>
+            <li><a href={kit.org.url || 'https://github.com/DemumuMind'}>Org on GitHub</a></li>
+            <li><a href={`https://github.com/${kit.org.account || 'DemumuMind'}`}>Profile</a></li>
             <li><a href="/trust/">Trust Center</a></li>
           </ul>
         </div>
@@ -139,7 +139,7 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
           {cleanupUrl && <a href={cleanupUrl} rel="noopener">Cleanup issue</a>}
         </div>
         <div class="footer-powered">
-          Powered by <a href="https://www.npmjs.com/package/@mcptoolshop/promo-kit" rel="noopener">promo-kit</a>
+          Powered by <a href="https://www.npmjs.com/package/@demumumind/promo-kit" rel="noopener">promo-kit</a>
           &mdash; receipt-backed promotions, open source
         </div>
       </div>

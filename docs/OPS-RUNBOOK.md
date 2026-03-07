@@ -9,7 +9,7 @@
 | Day | Event | Trigger |
 |-----|-------|---------|
 | Tuesday 06:00 UTC | NameOps clearance run | `nameops-scheduled.yml` cron |
-| Tuesday–Thursday | Review NameOps PR | Manual |
+| Tuesday-Thursday | Review NameOps PR | Manual |
 | Thursday | Clearance freshness refresh | `clearance-weekly.yml` cron |
 | Friday | Merge approved PRs | Manual |
 
@@ -28,7 +28,7 @@ Both workflows can be triggered manually via `workflow_dispatch` in GitHub Actio
 ### Via CLI
 
 ```bash
-gh workflow run nameops-scheduled.yml --repo mcp-tool-shop/mcp-tool-shop
+gh workflow run nameops-scheduled.yml --repo DemumuMind/mcp-tool
 ```
 
 ---
@@ -150,8 +150,8 @@ Edit `site/src/data/worthy.json`:
 ```
 
 Used by:
-- `gen-targets.mjs --worthy-only` — filters target discovery to worthy repos only
-- `gen-promo.mjs` — ecosystem gate skips non-worthy slugs when `promotionType: "ecosystem"`
+- `gen-targets.mjs --worthy-only` -- filters target discovery to worthy repos only
+- `gen-promo.mjs` -- ecosystem gate skips non-worthy slugs when `promotionType: "ecosystem"`
 
 ---
 

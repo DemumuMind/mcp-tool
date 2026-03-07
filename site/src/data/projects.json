@@ -160,7 +160,7 @@
     ],
     "screenshot": "/screenshots/tool-compass.png",
     "screenshotType": "placeholder",
-    "smithery": "https://smithery.ai/servers/mcp-tool-shop/tool-compass",
+    "smithery": "https://smithery.ai/servers/DemumuMind/tool-compass",
     "flyio": "https://tool-compass-gateway.fly.dev"
   },
   {
@@ -700,7 +700,7 @@
       "artifact",
       "curator",
       "decision-system",
-      "mcp-tool-shop",
+      "DemumuMind",
       "ollama"
     ],
     "featured": false,
@@ -1730,9 +1730,9 @@
     "category": "mcp-core",
     "stability": "stable",
     "kind": "mcp-server",
-    "install": "npm install @mcptoolshop/file-forge",
+    "install": "npm install @demumumind/file-forge",
     "tagline": "Secure file operations and project scaffolding via MCP.",
-    "smithery": "https://smithery.ai/servers/mcp-tool-shop/mcp-file-forge",
+    "smithery": "https://smithery.ai/servers/DemumuMind/mcp-file-forge",
     "flyio": "https://mcp-file-forge.fly.dev"
   },
   {
@@ -1777,11 +1777,11 @@
     "category": "voice",
     "stability": "stable",
     "kind": "mcp-server",
-    "install": "npm install @mcptoolshop/voice-soundboard-mcp",
+    "install": "npm install @demumumind/voice-soundboard-mcp",
     "tagline": "TTS MCP server with 12 voices and SSML-lite.",
     "screenshot": "/screenshots/mcp-voice-soundboard.png",
     "screenshotType": "placeholder",
-    "smithery": "https://smithery.ai/servers/mcp-tool-shop/voice-soundboard",
+    "smithery": "https://smithery.ai/servers/DemumuMind/voice-soundboard",
     "flyio": "https://voice-soundboard-mcp.fly.dev"
   },
   {
@@ -2040,7 +2040,7 @@
   {
     "name": "Npm Sovereignty",
     "repo": "npm-sovereignty",
-    "description": "npm wrapper for sovereignty — zero-prerequisite npx install via @mcptoolshop/npm-launcher",
+    "description": "npm wrapper for sovereignty — zero-prerequisite npx install via @demumumind/npm-launcher",
     "tags": [
       "board-game",
       "launcher",
@@ -2059,13 +2059,13 @@
     "stability": "experimental",
     "kind": "library",
     "install": "npm install npm-sovereignty",
-    "tagline": "npm wrapper for sovereignty — zero-prerequisite npx install via @mcptoolshop/npm-launcher.",
+    "tagline": "npm wrapper for sovereignty — zero-prerequisite npx install via @demumumind/npm-launcher.",
     "needsHumanReview": true
   },
   {
     "name": "Npm Xrpl Camp",
     "repo": "npm-xrpl-camp",
-    "description": "npm wrapper for xrpl-camp — zero-prerequisite npx install via @mcptoolshop/npm-launcher",
+    "description": "npm wrapper for xrpl-camp — zero-prerequisite npx install via @demumumind/npm-launcher",
     "tags": [
       "cli",
       "launcher",
@@ -2084,7 +2084,7 @@
     "stability": "experimental",
     "kind": "cli",
     "install": "npx npm-xrpl-camp",
-    "tagline": "npm wrapper for xrpl-camp — zero-prerequisite npx install via @mcptoolshop/npm-launcher.",
+    "tagline": "npm wrapper for xrpl-camp — zero-prerequisite npx install via @demumumind/npm-launcher.",
     "needsHumanReview": true
   },
   {
@@ -2518,7 +2518,7 @@
     "tags": [
       "attestation",
       "ledger",
-      "mcp-tool-shop",
+      "DemumuMind",
       "sbom",
       "supply-chain-security",
       "trust"

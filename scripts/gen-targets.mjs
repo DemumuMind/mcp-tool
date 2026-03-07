@@ -40,8 +40,8 @@ const OUTPUT_BASE = path.join(SITE, "public", "targets");
 
 const TOKEN = process.env.GITHUB_TOKEN || "";
 const THROTTLE_MS = 2000;
-const SELF_ORG = "mcp-tool-shop-org";
-const SELF_SITE = "mcp-tool-shop";
+const SELF_ORG = "DemumuMind";
+const SELF_SITE = "mcp-tool";
 
 const SCORING_VERSION = "1.0.0";
 const SCORING_WEIGHTS = {
@@ -659,8 +659,8 @@ for (const slug of enabledSlugs) {
   readmeLines.push("");
   readmeLines.push(`- [Full JSON](targets.json)`);
   readmeLines.push(`- [CSV export](targets.csv)`);
-  readmeLines.push(`- [Outreach pack](https://mcptoolshop.com/outreach/${slug}/)`);
-  readmeLines.push(`- [Press page](https://mcptoolshop.com/press/${slug}/)`);
+  readmeLines.push(`- [Outreach pack](https://localhost:4321/outreach/${slug}/)`);
+  readmeLines.push(`- [Press page](https://localhost:4321/press/${slug}/)`);
   readmeLines.push("");
 
   fs.writeFileSync(
@@ -677,8 +677,8 @@ for (const slug of enabledSlugs) {
 
   const draftCandidates = sorted.slice(0, MAX_DRAFTS);
   const oneLiner = tool.positioning?.oneLiner || "";
-  const pressPageUrl = `https://mcptoolshop.com/press/${slug}/`;
-  const outreachPackUrl = `https://mcptoolshop.com/outreach/${slug}/`;
+  const pressPageUrl = `https://localhost:4321/press/${slug}/`;
+  const outreachPackUrl = `https://localhost:4321/outreach/${slug}/`;
 
   // Proof bullets
   const proofBullets = proven.slice(0, 3).map((c) =>

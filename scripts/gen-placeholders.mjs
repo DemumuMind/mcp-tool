@@ -115,7 +115,7 @@ function generateSvg(project) {
   const stability = project.stability || "experimental";
   const stabColor = stabilityColor(stability);
   const kind = project.kind ? escapeXml(project.kind) : null;
-  const url = escapeXml(`mcp-tool-shop.github.io/tools/${project.repo}/`);
+  const url = escapeXml(`localhost:4321/tools/${project.repo}/`);
 
   // Build elements
   let y = 180; // starting y after top padding

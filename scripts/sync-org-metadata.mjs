@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Sync mcp-tool-shop-org repo metadata -> site/src/data/
+ * Sync DemumuMind repo metadata -> site/src/data/
  *
  * Data sources (in merge order):
  *   1. Registry  — canonical tool list + curated names/descriptions
@@ -17,7 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const ORG = process.env.ORG || "mcp-tool-shop-org";
+const ORG = process.env.ORG || "DemumuMind";
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
 const MAX_RELEASES = 50;
 
@@ -50,7 +50,7 @@ async function ghFetch(url) {
   apiCalls++;
   const headers = {
     Accept: "application/vnd.github+json",
-    "User-Agent": "mcp-tool-shop-sync",
+    "User-Agent": "demumumind-sync",
   };
   if (TOKEN) headers["Authorization"] = `Bearer ${TOKEN}`;
 
@@ -66,7 +66,7 @@ async function ghFetchOptional(url) {
   apiCalls++;
   const headers = {
     Accept: "application/vnd.github+json",
-    "User-Agent": "mcp-tool-shop-sync",
+    "User-Agent": "demumumind-sync",
   };
   if (TOKEN) headers["Authorization"] = `Bearer ${TOKEN}`;
 

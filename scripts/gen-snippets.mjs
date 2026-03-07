@@ -125,7 +125,7 @@ for (const slug of enabledSlugs) {
       lines.push(msg.text);
       if (goId) {
         lines.push("");
-        lines.push(`Source: mcptoolshop.com/go/${goId}`);
+        lines.push(`Source: localhost:4321/go/${goId}`);
       }
       lines.push("```");
       lines.push("");
@@ -173,7 +173,7 @@ for (const slug of enabledSlugs) {
   // Footer
   lines.push("---");
   lines.push("");
-  lines.push(`_Generated from [MarketIR](https://github.com/mcp-tool-shop/mcpt-marketing) (lock: ${lockShort}) at ${new Date().toISOString()}_`);
+  lines.push(`_Generated from [MarketIR](https://github.com/DemumuMind/mcpt-marketing) (lock: ${lockShort}) at ${new Date().toISOString()}_`);
   lines.push("");
 
   const text = lines.join("\n");

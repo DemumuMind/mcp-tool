@@ -215,7 +215,7 @@ function buildSvg(index) {
   const footer = `
     <line x1="0" y1="${footerY - 8}" x2="${WIDTH}" y2="${footerY - 8}" stroke="${BORDER}" stroke-width="1"/>
     <text x="40" y="${footerY + 10}" font-family="Consolas, 'Cascadia Code', monospace" font-size="12" fill="${GRAY}">$ pipx install zip-meta-map &amp;&amp; zip-meta-map build .</text>
-    <text x="${WIDTH - 40}" y="${footerY + 10}" text-anchor="end" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" fill="${GRAY}">mcptoolshop.com/tools/zip-meta-map</text>
+    <text x="${WIDTH - 40}" y="${footerY + 10}" text-anchor="end" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" fill="${GRAY}">localhost:4321/tools/zip-meta-map</text>
   `;
 
   return `<?xml version="1.0" encoding="UTF-8"?>

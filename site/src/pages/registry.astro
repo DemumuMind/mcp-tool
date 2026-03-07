@@ -8,14 +8,14 @@ const cleanupData = cleanup as any;
 ---
 
 <Base
-  title="Registry - mcp-tool-shop"
-  description="The MCP Tool Shop registry: what it is, what listing means, and how to add a tool."
+  title="Registry - DemumuMind"
+  description="The DemumuMind registry: what it is, what listing means, and how to add a tool."
   currentPath="/registry/"
 >
   <div class="page-content">
     <h1>Registry</h1>
     <p>
-      The <strong>MCP Tool Shop Registry</strong> is the canonical metadata catalog for
+      The <strong>DemumuMind Registry</strong> is the canonical metadata catalog for
       tools in the ecosystem. It provides verified names, descriptions, install contracts,
       and capability tags for each listed tool.
     </p>
@@ -35,15 +35,15 @@ const cleanupData = cleanup as any;
     <h2>Org-only repos</h2>
     <p>
       Tools showing <span class="badge badge-orgonly">Org-only</span> exist in the
-      <a href="https://github.com/mcp-tool-shop-org" rel="noopener">mcp-tool-shop-org</a>
+      <a href="https://github.com/DemumuMind" rel="noopener">DemumuMind</a>
       organization but haven't been formally listed in the registry yet. They may be
       experimental, in-progress, or simply awaiting review.
     </p>
 
     <h2>How to add a tool</h2>
     <ol>
-      <li>Push your repo to <code>mcp-tool-shop-org</code></li>
-      <li>Open a PR to the <a href="https://github.com/mcp-tool-shop-org/mcp-tool-registry" rel="noopener">mcp-tool-registry</a> adding your tool to <code>registry.json</code></li>
+      <li>Push your repo to <code>DemumuMind</code></li>
+      <li>Open a PR to the <a href="https://github.com/DemumuMind/mcp-tool-registry" rel="noopener">mcp-tool-registry</a> adding your tool to <code>registry.json</code></li>
       <li>Include: <code>id</code>, <code>name</code>, <code>description</code>, <code>repo</code> URL, <code>install</code> object, and <code>tags</code></li>
       <li>Once merged, the tool appears on this site after the next sync</li>
     </ol>
@@ -73,7 +73,7 @@ const cleanupData = cleanup as any;
         <h2>Upstream cleanup queue</h2>
         <p>
           These registry entries need attention in the upstream
-          <a href="https://github.com/mcp-tool-shop-org/mcp-tool-registry" rel="noopener">mcp-tool-registry</a>.
+          <a href="https://github.com/DemumuMind/mcp-tool-registry" rel="noopener">mcp-tool-registry</a>.
           {cleanupData.totalIssues} issue{cleanupData.totalIssues !== 1 ? 's' : ''} detected.
         </p>
       </>

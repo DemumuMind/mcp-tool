@@ -86,7 +86,7 @@ check("kit.config.json is valid JSON with required fields", () => {
   if (missing.length > 0) {
     const checklist = missing.map((f) => `  □ ${f}`).join("\n");
     throw new Error(
-      `Missing required fields in ${configPath}:\n${checklist}\n  Fix: edit kit.config.json — see https://github.com/mcp-tool-shop/mcp-tool-shop/blob/main/docs/quickstart.md#configure`
+      `Missing required fields in ${configPath}:\n${checklist}\n  Fix: edit kit.config.json — see https://github.com/DemumuMind/mcp-tool/blob/main/docs/quickstart.md#configure`
     );
   }
 });

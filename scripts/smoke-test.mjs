@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Smoke test for mcptoolshop.com
+ * Smoke test for localhost:4321
  *
  * Checks that key pages and legacy redirects respond correctly.
  * Run manually or from CI after deploy.
@@ -11,7 +11,7 @@
  *   node scripts/smoke-test.mjs http://localhost:4321  # test local dev
  */
 
-const BASE = process.argv[2] || "https://mcptoolshop.com";
+const BASE = process.argv[2] || "https://localhost:4321";
 
 const CHECKS = [
   // Key pages — expect 200
@@ -183,7 +183,7 @@ try {
   const outreachRes = await fetch(`${BASE}/outreach/zip-meta-map/email-partner.md`);
   if (outreachRes.ok) {
     const text = await outreachRes.text();
-    if (text.includes("proof:") || text.includes("mcptoolshop.com/press/")) {
+    if (text.includes("proof:") || text.includes("localhost:4321/press/")) {
       console.log(`  ✓ outreach email contains proof links`);
       passed++;
     } else {
@@ -204,7 +204,7 @@ try {
   const snippetRes = await fetch(`${BASE}/snippets/zip-meta-map.md`);
   if (snippetRes.ok) {
     const text = await snippetRes.text();
-    if (text.includes("mcptoolshop.com/go/")) {
+    if (text.includes("localhost:4321/go/")) {
       console.log(`  ✓ snippet contains go-link source markers`);
       passed++;
     } else {

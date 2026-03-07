@@ -43,13 +43,13 @@ function abbreviate(slug) {
 
 /** Channel → default target URL pattern */
 function targetForChannel(channel, slug) {
-  const toolPage = `https://mcptoolshop.com/tools/${slug}/`;
-  const repo = `https://github.com/mcp-tool-shop-org/${slug}`;
+  const toolPage = `https://localhost:4321/tools/${slug}/`;
+  const repo = `https://github.com/DemumuMind/${slug}`;
   switch (channel) {
     case "readme":
       return repo;
     case "presskit":
-      return `https://mcptoolshop.com/presskit/${slug}/`;
+      return `https://localhost:4321/presskit/${slug}/`;
     default:
       return toolPage;
   }
@@ -139,7 +139,7 @@ for (const slug of enabledSlugs) {
       slug,
       target: targetForChannel(msg.channel, slug),
       utm: {
-        source: "mcptoolshop",
+        source: "demumumind",
         medium: msg.channel,
         campaign: campInfo?.campaignSlug || pfx,
         content: msg.id,
@@ -155,8 +155,8 @@ for (const slug of enabledSlugs) {
   links.push({
     id: `${pfx}-github`,
     slug,
-    target: `https://github.com/mcp-tool-shop-org/${slug}`,
-    utm: { source: "mcptoolshop", medium: "cta", campaign: pfx, content: "github" },
+    target: `https://github.com/DemumuMind/${slug}`,
+    utm: { source: "demumumind", medium: "cta", campaign: pfx, content: "github" },
     channel: "cta",
     toolRef: tool.id,
     campaignRef: null,
@@ -166,8 +166,8 @@ for (const slug of enabledSlugs) {
   links.push({
     id: `${pfx}-toolpage`,
     slug,
-    target: `https://mcptoolshop.com/tools/${slug}/`,
-    utm: { source: "mcptoolshop", medium: "cta", campaign: pfx, content: "toolpage" },
+    target: `https://localhost:4321/tools/${slug}/`,
+    utm: { source: "demumumind", medium: "cta", campaign: pfx, content: "toolpage" },
     channel: "cta",
     toolRef: tool.id,
     campaignRef: null,
@@ -181,7 +181,7 @@ for (const slug of enabledSlugs) {
       id: `${pfx}-pypi`,
       slug,
       target: `https://pypi.org/project/${slug}/`,
-      utm: { source: "mcptoolshop", medium: "cta", campaign: pfx, content: "pypi" },
+      utm: { source: "demumumind", medium: "cta", campaign: pfx, content: "pypi" },
       channel: "cta",
       toolRef: tool.id,
       campaignRef: null,
@@ -194,7 +194,7 @@ for (const slug of enabledSlugs) {
       id: `${pfx}-npm`,
       slug,
       target: `https://www.npmjs.com/package/${pkg}`,
-      utm: { source: "mcptoolshop", medium: "cta", campaign: pfx, content: "npm" },
+      utm: { source: "demumumind", medium: "cta", campaign: pfx, content: "npm" },
       channel: "cta",
       toolRef: tool.id,
       campaignRef: null,

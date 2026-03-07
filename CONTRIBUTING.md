@@ -1,6 +1,6 @@
 # Contributing
 
-**One-line promise**: Everything you need to contribute to the mcp-tool-shop marketing site.
+**One-line promise**: Everything you need to contribute to the DemumuMind marketing site.
 
 **Who it's for**: Developers contributing to the site codebase.
 **Not for**: Tool authors wanting to list a tool (see [Handbook](docs/HANDBOOK.md)), or press contacts (see [Presskit Handbook](docs/presskit-handbook.md)).
@@ -48,5 +48,5 @@ All PRs must pass `site-quality.yml` checks: unit tests, invariant tests, schema
 - [Handbook](docs/HANDBOOK.md) -- how the site works, common tasks, glossary
 - [Automation contract](docs/automation.md) -- what automation owns vs. humans
 - [Security model](docs/SECURITY-MODEL.md) -- sanitization rules and CI controls
-- [Trust Center](https://mcp-tool-shop.github.io/trust/) -- verification infrastructure
+- [Trust Center](http://localhost:4321/trust/) -- verification infrastructure
 - [Presskit Handbook](docs/presskit-handbook.md) -- brand assets and press blurbs

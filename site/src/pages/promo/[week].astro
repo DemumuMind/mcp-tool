@@ -97,7 +97,7 @@ const description = `Tools promoted during the week of ${week}.`;
   description={description}
   currentPath={`/promo/${week}/`}
 >
-  <div class="promo-week-page" data-telemetry-week={week} data-repo-marketing={kit.repo.marketing || 'mcp-tool-shop/mcp-tool-shop'}>
+  <div class="promo-week-page" data-telemetry-week={week} data-repo-marketing={kit.repo.marketing || 'DemumuMind/mcp-tool'}>
     <a href="/now/" class="back-link">&larr; Back to This Week's Focus</a>
 
     <h1>
@@ -155,7 +155,7 @@ const description = `Tools promoted during the week of ${week}.`;
           {commitSha && commitSha !== "unknown" && (
             <span>
               <strong>Commit:</strong>{" "}
-              <a href={`https://github.com/${kit.repo.marketing || 'mcp-tool-shop/mcp-tool-shop'}/commit/${commitSha}`} rel="noopener">
+              <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}/commit/${commitSha}`} rel="noopener">
                 <code>{commitSha.slice(0, 8)}</code>
               </a>
             </span>
@@ -292,7 +292,7 @@ const description = `Tools promoted during the week of ${week}.`;
         const files = ds.files || "";
 
         const cmd = [
-          `git clone https://github.com/${document.querySelector('[data-repo-marketing]')?.getAttribute('data-repo-marketing') || 'mcp-tool-shop/mcp-tool-shop'}.git && cd ${(document.querySelector('[data-repo-marketing]')?.getAttribute('data-repo-marketing') || 'mcp-tool-shop/mcp-tool-shop').split('/').pop()}`,
+          `git clone https://github.com/${document.querySelector('[data-repo-marketing]')?.getAttribute('data-repo-marketing') || 'DemumuMind/mcp-tool'}.git && cd ${(document.querySelector('[data-repo-marketing]')?.getAttribute('data-repo-marketing') || 'DemumuMind/mcp-tool').split('/').pop()}`,
           `git checkout ${commit}`,
           `sha256sum ${files}`,
           "# Compare output to bundle hashes",

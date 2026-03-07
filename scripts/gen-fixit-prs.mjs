@@ -50,7 +50,7 @@ const TEMPLATES = {
     file: "LICENSE.md",
     content: `# MIT License
 
-Copyright (c) ${YEAR} mcp-tool-shop-org
+Copyright (c) ${YEAR} DemumuMind
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -81,7 +81,7 @@ SOFTWARE.
 If you discover a security vulnerability, please report it responsibly:
 
 1. **Do not** open a public issue
-2. Email security concerns to: 64996768+mcp-tool-shop@users.noreply.github.com
+2. Email security concerns to: demumumind@users.noreply.github.com
 3. Include steps to reproduce if possible
 4. Allow up to 48 hours for an initial response
 
@@ -112,7 +112,7 @@ Add these sections to your existing README.md:
 npm install <package-name>
 
 # or from source
-git clone https://github.com/mcp-tool-shop-org/<repo-name>.git
+git clone https://github.com/DemumuMind/<repo-name>.git
 cd <repo-name>
 npm install
 \`\`\`

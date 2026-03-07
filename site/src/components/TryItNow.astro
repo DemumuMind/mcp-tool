@@ -10,7 +10,7 @@ const { project, verified, concept, proofs = [] } = Astro.props;
 const isCLI = project.kind === 'cli';
 const isMCPServer = project.kind === 'mcp-server';
 const installCmd = project.install;
-const repoUrl = `https://github.com/mcp-tool-shop-org/${project.repo}`;
+const repoUrl = `https://github.com/DemumuMind/${project.repo}`;
 
 // Determine context
 const showInstall = verified && (isCLI || isMCPServer) && installCmd;

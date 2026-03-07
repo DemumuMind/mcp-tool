@@ -7,8 +7,8 @@ import { kit } from '../lib/kit';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const title = `Trust Center - ${kit.site.title || 'mcp-tool-shop'}`;
-const description = `How ${kit.site.title || 'mcp-tool-shop'} earns trust: receipts, hashed inputs, freeze modes, drift detection, and independent verification.`;
+const title = `Trust Center - ${kit.site.title || 'DemumuMind'}`;
+const description = `How ${kit.site.title || 'DemumuMind'} earns trust: receipts, hashed inputs, freeze modes, drift detection, and independent verification.`;
 
 // ── Load build metadata for freshness ─────────────────────
 let buildMeta: any = {};
@@ -141,7 +141,7 @@ try {
           <div class="freshness-item">
             <span class="freshness-label">Build Commit</span>
             <span class="freshness-value mono">
-              <a href={`https://github.com/${kit.repo.marketing || 'mcp-tool-shop/mcp-tool-shop'}/commit/${commitSha}`} rel="noopener">{commitSha.slice(0, 8)}</a>
+              <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}/commit/${commitSha}`} rel="noopener">{commitSha.slice(0, 8)}</a>
             </span>
           </div>
         )}
@@ -286,7 +286,7 @@ try {
       <p>
         Machine-readable trust receipt: <a href="/trust.json" rel="noopener"><code>trust.json</code></a>
         {" "}&middot;{" "}
-        Source: <a href={`https://github.com/${kit.repo.marketing || 'mcp-tool-shop/mcp-tool-shop'}`} rel="noopener">GitHub</a>
+        Source: <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}`} rel="noopener">GitHub</a>
       </p>
     </div>
   </div>

@@ -19,7 +19,7 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const orgUrl = `https://github.com/mcp-tool-shop-org/${project.repo}`;
+const orgUrl = `https://github.com/DemumuMind/${project.repo}`;
 const toolProof = (proofs as any[]).find((p: any) => p.repo === project.repo);
 
 // Registry status
@@ -52,7 +52,7 @@ const hasPresski = showProof && fs.existsSync(presskitDir);
 ---
 
 <Base
-  title={`${project.name} - mcp-tool-shop`}
+  title={`${project.name} - DemumuMind`}
   description={project.tagline || project.description}
   currentPath={`/tools/${project.repo}/`}
 >
@@ -63,7 +63,7 @@ const hasPresski = showProof && fs.existsSync(presskitDir);
       <h1>{project.name}</h1>
       <div class="tool-badges">
         {isRegistered ? (
-          <span class="badge badge-registered" title="Listed in the MCP Tool Shop registry — verified metadata and install contract">Registry</span>
+          <span class="badge badge-registered" title="Listed in the DemumuMind registry — verified metadata and install contract">Registry</span>
         ) : (
           <span class="badge badge-orgonly" title="Available in the org but not yet listed in the registry">Org-only</span>
         )}

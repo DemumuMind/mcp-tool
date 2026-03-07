@@ -31,8 +31,8 @@ const OUTPUT_DIR = path.join(SITE, "src", "data", "signals");
 const TOKEN = process.env.GITHUB_TOKEN || "";
 
 const THROTTLE_MS = 2000; // GitHub code search rate limit: 10 req/min
-const SELF_ORG = "mcp-tool-shop-org";
-const SELF_SITE_REPO = "mcp-tool-shop/mcp-tool-shop";
+const SELF_ORG = "DemumuMind";
+const SELF_SITE_REPO = "DemumuMind/mcp-tool";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -87,7 +87,7 @@ const signals = [];
 const errors = [];
 
 for (const link of links) {
-  const query = encodeURIComponent(`mcptoolshop.com/go/${link.id}`);
+  const query = encodeURIComponent(`localhost:4321/go/${link.id}`);
   const endpoint = `search/code?q=${query}`;
 
   try {

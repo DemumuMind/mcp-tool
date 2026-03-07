@@ -1,4 +1,4 @@
-# Pilot Notes — [Org Name]
+# Pilot Notes -- [Org Name]
 
 **Date**: YYYY-MM-DD
 **Pilot type**: friendly dev / cold-ish dev
@@ -9,7 +9,7 @@
 ```bash
 mkdir promo-kit-pilot && cd promo-kit-pilot
 npm init -y
-npm i @mcptoolshop/promo-kit
+npm i @demumumind/promo-kit
 
 npx promo-kit init
 # edit kit.config.json (org.name, org.account, site.title, contact.email)
@@ -18,7 +18,7 @@ npx promo-kit selftest
 
 ## Time to green
 
-- `npm i` → `selftest pass`: _____ minutes
+- `npm i` -> `selftest pass`: _____ minutes
 
 ## First point of confusion
 
@@ -49,7 +49,7 @@ npx promo-kit selftest
 - [ ] Completed without editing their repo
 - [ ] Required a docs fix (patch release)
 - [ ] Required a code fix (patch release)
-- [ ] Blocked — could not complete
+- [ ] Blocked -- could not complete
 
 ## Notes
 

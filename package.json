@@ -1,8 +1,9 @@
 {
   "private": true,
-  "name": "mcp-tool-shop",
+  "name": "mcp-tool",
   "type": "module",
   "scripts": {
+    "dev": "npm --prefix site run dev --",
     "fetch:registry": "node scripts/fetch-registry.mjs",
     "sync": "node scripts/sync-org-metadata.mjs",
     "enrich": "node scripts/draft-overrides.mjs",

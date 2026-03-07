@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { auditReadmes } from './lib/readme-audit.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..'); // mcp-tool-shop root
+const ROOT = path.resolve(__dirname, '..'); // marketing repo root
 
 console.log('Verifying front-door tool READMEs...');
 

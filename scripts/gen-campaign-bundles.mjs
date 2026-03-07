@@ -277,12 +277,12 @@ for (const campaign of filteredCampaigns) {
       lines.push(msg.text);
       if (goId) {
         lines.push("");
-        lines.push(`Source: mcptoolshop.com/go/${goId}`);
+        lines.push(`Source: localhost:4321/go/${goId}`);
       }
       lines.push("```");
       lines.push("");
       if (goId) {
-        lines.push(`_Tracked link: [mcptoolshop.com/go/${goId}](https://mcptoolshop.com/go/${goId}/)_`);
+        lines.push(`_Tracked link: [localhost:4321/go/${goId}](https://localhost:4321/go/${goId}/)_`);
         lines.push("");
       }
 

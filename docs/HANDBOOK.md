@@ -2,22 +2,22 @@
 
 > How the marketing site works, in plain language.
 
-**One-line promise**: The operator's manual for the mcp-tool-shop marketing site -- from syncing a tool to generating a press kit.
+**One-line promise**: The operator's manual for the DemumuMind marketing site -- from syncing a tool to generating a press kit.
 
 **Who it's for**: Site maintainers, tool authors contributing to the catalog, AI agents resuming work.
-**Not for**: End users of tools (see [tool pages](https://mcp-tool-shop.github.io/tools/)), or journalists (see [Presskit Handbook](presskit-handbook.md)).
+**Not for**: End users of tools (see [tool pages](http://localhost:4321/tools/)), or journalists (see [Presskit Handbook](presskit-handbook.md)).
 
-**Trust**: [Trust Center](https://mcp-tool-shop.github.io/trust/) · [Receipts](https://mcp-tool-shop.github.io/receipts/)
+**Trust**: [Trust Center](http://localhost:4321/trust/) | [Receipts](http://localhost:4321/receipts/)
 
 ---
 
 ## What is this?
 
-This repo powers [mcptoolshop.com](https://mcp-tool-shop.github.io/) — the catalog site for tools built under [mcp-tool-shop-org](https://github.com/mcp-tool-shop-org). It lists every tool, shows install commands, and hosts press kits and outreach materials.
+This repo powers [DemumuMind](http://localhost:4321/) -- the catalog site for tools built under [DemumuMind](https://github.com/DemumuMind). It lists every tool, shows install commands, and hosts press kits and outreach materials.
 
 ## How tools appear on the site
 
-1. You push a repo to `mcp-tool-shop-org`.
+1. You push a repo to `DemumuMind`.
 2. Someone runs the **Sync** workflow (Actions tab, manual trigger).
 3. The repo appears in the tools directory at `/tools/`.
 4. Optionally, you add an entry to `overrides.json` to polish how it looks (tagline, install command, stability badge, etc.).
@@ -28,7 +28,7 @@ That's it. The site rebuilds automatically when changes land on `main`.
 
 ### Add a new tool to the site
 
-1. Push the repo to `mcp-tool-shop-org`.
+1. Push the repo to `DemumuMind`.
 2. Go to Actions > "Sync org metadata" > Run workflow.
 3. The tool appears on the next deploy.
 
@@ -77,7 +77,7 @@ Edit `site/src/data/links.json` and add an entry:
 
 Then regenerate: `node scripts/gen-go-links.mjs`
 
-The link will be live at `mcptoolshop.com/go/my-link/`.
+The link will be live at `localhost:4321/go/my-link/`.
 
 ### Run tests locally
 
@@ -100,7 +100,7 @@ npm run preview   # preview the build
 ## Where things live
 
 ```
-mcp-tool-shop/
+mcp-tool/
   site/                     # Astro site
     src/data/               # JSON data files (the "database")
     src/pages/              # Page templates
@@ -123,7 +123,7 @@ mcp-tool-shop/
 | **Override** | A human-curated entry in `overrides.json` that polishes how a tool appears on the site (tagline, install command, badges). |
 | **Registered** | A tool that exists in the official [mcp-tool-registry](https://github.com/nicobailon/mcp-tool-registry). Gets a "registered" badge. |
 | **Unlisted** | A repo that exists in the org but isn't shown in the catalog by default. Usually infrastructure repos or forks. |
-| **Go-link** | A short redirect URL (e.g., `mcptoolshop.com/go/fc-npm/`) that tracks which channel referred the click. |
+| **Go-link** | A short redirect URL (e.g., `localhost:4321/go/fc-npm/`) that tracks which channel referred the click. |
 | **Press kit** | Auto-generated bundle (HTML + Markdown + JSON) with verified claims, GitHub stats, and quotes for a tool. |
 | **Outreach pack** | Markdown bundle for reaching out to potential users/partners about a tool. |
 | **Partner pack** | Markdown bundle for integration partners with technical details. |
@@ -133,9 +133,9 @@ mcp-tool-shop/
 | **Stability badge** | `stable` / `beta` / `experimental` label shown on tool cards. |
 | **Kind badge** | Tool type label: `mcp-server`, `cli`, `library`, `plugin`, `desktop-app`, etc. |
 | **Enrichment** | Automated process that drafts override entries for repos that don't have them yet. Always flagged `needsHumanReview: true`. |
-| **Lockfile** | `marketing.lock.json` — SHA-256 hashes of every MarketIR file. Ensures fetched data hasn't been tampered with. |
+| **Lockfile** | `marketing.lock.json` -- SHA-256 hashes of every MarketIR file. Ensures fetched data hasn't been tampered with. |
 | **Slug** | URL-safe repo name used as a directory name and URL path segment (e.g., `file-compass`). |
-| **Distribution signal** | Download/install counts from npm, PyPI, Docker Hub — fetched to show adoption metrics. |
+| **Distribution signal** | Download/install counts from npm, PyPI, Docker Hub -- fetched to show adoption metrics. |
 | **Smoke test** | Post-deploy script that visits live pages and checks for broken links, missing content, and dangerous URLs. |
 
 ## Error codes

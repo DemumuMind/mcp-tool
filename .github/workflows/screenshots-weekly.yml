@@ -27,7 +27,7 @@ jobs:
 
       - name: Sync org metadata first
         env:
-          ORG: mcp-tool-shop-org
+          ORG: DemumuMind
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/sync-org-metadata.mjs
 
@@ -113,7 +113,7 @@ jobs:
             for (const repo of placeholders) {
               const p = projectMap.get(repo);
               const name = p ? p.name : repo;
-              body += '- [ ] **' + name + '** (\`' + repo + '\`) — [tool page](https://mcp-tool-shop.github.io/tools/' + repo + '/)\n';
+              body += '- [ ] **' + name + '** (\`' + repo + '\`) — [tool page](https://localhost:4321/tools/' + repo + '/)\n';
             }
           }
 

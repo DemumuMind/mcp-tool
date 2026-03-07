@@ -9,7 +9,7 @@
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 
-const ORG = "mcp-tool-shop-org";
+const ORG = "DemumuMind";
 const OUT = "site/src/data/releases.json";
 const MAX = 50;
 

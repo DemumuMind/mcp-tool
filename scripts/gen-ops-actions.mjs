@@ -40,7 +40,7 @@ function safeParseJson(filePath, fallback = null) {
 const ERROR_RUNBOOK_MAP = {
   RATE_LIMIT: "Increase maxAgeHours to use more cached results",
   TIMEOUT: "Reduce concurrency or name count in profile.json",
-  COE_NOT_FOUND: "Check npm install -g @mcptoolshop/clearance-opinion-engine step",
+  COE_NOT_FOUND: "Check npm install -g @demumumind/clearance-opinion-engine step",
   NETWORK: "Check network connectivity; retry on next scheduled run",
   PARSE: "Review batch output for malformed JSON responses",
   UNKNOWN: "Check workflow logs for details",

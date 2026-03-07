@@ -11,11 +11,11 @@ Only the latest minor release receives security fixes.
 
 ## Dependency Posture
 
-`@mcptoolshop/promo-kit` has **zero runtime dependencies**. There is nothing to audit beyond the package itself. All functionality uses Node.js built-in modules (`fs`, `path`, `crypto`, `child_process`).
+`@demumumind/promo-kit` has **zero runtime dependencies**. There is nothing to audit beyond the package itself. All functionality uses Node.js built-in modules (`fs`, `path`, `crypto`, `child_process`).
 
 ## Data Handling
 
-- All data stays local — no network calls, no telemetry, no external services
+- All data stays local -- no network calls, no telemetry, no external services
 - Artifacts are hashed with SHA-256 for integrity verification
 - No secrets, tokens, or credentials are read or stored by the kit
 
@@ -23,8 +23,8 @@ Only the latest minor release receives security fixes.
 
 If you discover a security issue, please report it privately:
 
-1. **Email**: [64996768+mcp-tool-shop@users.noreply.github.com](mailto:64996768+mcp-tool-shop@users.noreply.github.com)
-2. **Subject**: `[SECURITY] promo-kit — brief description`
+1. **Email**: [demumumind@users.noreply.github.com](mailto:demumumind@users.noreply.github.com)
+2. **Subject**: `[SECURITY] promo-kit -- brief description`
 
 Please include:
 - Description of the vulnerability

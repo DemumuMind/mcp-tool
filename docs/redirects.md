@@ -1,14 +1,16 @@
 # Legacy URL Redirects
 
-When mcptoolshop.com migrated from the flat-HTML site (`mcp-tool-shop-org/mcp-tool-shop.github.io`) to the Astro catalog (`mcp-tool-shop/mcp-tool-shop`), we preserved inbound links with two layers of redirects.
+This document records the legacy redirect chain from the former MCP Tool Shop properties to the current DemumuMind catalog at `http://localhost:4321/`.
+
+When `localhost:4321` migrated from the flat-HTML site (`DemumuMind/localhost:4321`) to the Astro catalog (`DemumuMind/mcp-tool`), we preserved inbound links with two layers of redirects.
 
 ## Layer 1: Old `.github.io` repo (archived)
 
-The old repo at `mcp-tool-shop-org/mcp-tool-shop.github.io` was replaced with redirect shims and archived. Anyone visiting `mcp-tool-shop-org.github.io/*.html` gets redirected to the canonical Astro site.
+The old repo at `DemumuMind/localhost:4321` was replaced with redirect shims and archived. Anyone visiting `DemumuMind.github.io/*.html` gets redirected to the canonical Astro site.
 
 ## Layer 2: Astro site compatibility files
 
-Static HTML files in `site/public/` handle bookmarks from the CNAME overlap period (when `mcptoolshop.com` briefly served the old flat-HTML site).
+Static HTML files in `site/public/` handle bookmarks from the CNAME overlap period (when `localhost:4321` briefly served the old flat-HTML site).
 
 | Old URL | Redirect Target |
 |---------|----------------|

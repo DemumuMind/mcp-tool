@@ -26,7 +26,7 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE = path.join(ROOT, "site");
 const OVERRIDES_PATH = path.join(SITE, "src", "data", "overrides.json");
 const OUTPUT_DIR = path.join(SITE, "src", "data", "github-facts");
-const ORG = "mcp-tool-shop-org";
+const ORG = "DemumuMind";
 const TOKEN = process.env.GITHUB_TOKEN || "";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

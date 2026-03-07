@@ -28,7 +28,7 @@ jobs:
 
       - name: Sync org metadata
         env:
-          ORG: mcp-tool-shop-org
+          ORG: DemumuMind
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/sync-org-metadata.mjs
 
@@ -46,7 +46,7 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REGISTRY_REPO: mcp-tool-shop-org/mcp-tool-registry
+          REGISTRY_REPO: DemumuMind/mcp-tool-registry
         run: node scripts/registry-cleanup-issue.mjs || echo "Cleanup issue step failed (non-fatal)"
 
       - name: Commit meta updates

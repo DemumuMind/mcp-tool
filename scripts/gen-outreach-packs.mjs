@@ -103,10 +103,10 @@ for (const slug of enabledSlugs) {
   const proven = (tool.claims || []).filter((c) => c.status === "proven");
   const oneLiner = tool.positioning?.oneLiner || "";
   const installCmd = override.install || null;
-  const repoUrl = `https://github.com/mcp-tool-shop-org/${slug}`;
-  const toolPageUrl = `https://mcptoolshop.com/tools/${slug}/`;
-  const pressPageUrl = `https://mcptoolshop.com/press/${slug}/`;
-  const presskitUrl = `https://mcptoolshop.com/presskit/${slug}/`;
+  const repoUrl = `https://github.com/DemumuMind/${slug}`;
+  const toolPageUrl = `https://localhost:4321/tools/${slug}/`;
+  const pressPageUrl = `https://localhost:4321/press/${slug}/`;
+  const presskitUrl = `https://localhost:4321/presskit/${slug}/`;
   const generatedAt = new Date().toISOString();
 
   // Find HN message if exists
@@ -389,7 +389,7 @@ for (const slug of enabledSlugs) {
       lines.push(`![License](https://img.shields.io/badge/license-${encodeURIComponent(facts.license)}-blue)`);
     }
     if (facts?.latestRelease) {
-      lines.push(`![Release](https://img.shields.io/github/v/release/mcp-tool-shop-org/${slug})`);
+      lines.push(`![Release](https://img.shields.io/github/v/release/DemumuMind/${slug})`);
     }
     lines.push(`![Tests](https://img.shields.io/badge/tests-${proven.length}%20proven%20claims-green)`);
     lines.push("");

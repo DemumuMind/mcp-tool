@@ -5,8 +5,8 @@ import { kit } from '../../lib/kit';
 import fs from "node:fs";
 import path from "node:path";
 
-const title = `Get Featured - ${kit.site.title || 'mcp-tool-shop'}`;
-const description = `Submit your tool for promotion or experimentation on the ${kit.site.title || 'mcp-tool-shop'} catalog.`;
+const title = `Get Featured - ${kit.site.title || 'DemumuMind'}`;
+const description = `Submit your tool for promotion or experimentation on the ${kit.site.title || 'DemumuMind'} catalog.`;
 
 // Load worthy rubric
 let worthyCriteria: string[] = [];
@@ -42,7 +42,7 @@ const exampleJson = JSON.stringify({
   <div class="submit-page page-content">
     <h1>Get Featured</h1>
     <p class="subtitle">
-      Submit your tool for promotion on the {kit.site.title || 'mcp-tool-shop'} catalog.
+      Submit your tool for promotion on the {kit.site.title || 'DemumuMind'} catalog.
       Structured intake, CI validation, human review.
     </p>
 
@@ -89,7 +89,7 @@ const exampleJson = JSON.stringify({
         <ol>
           <li>
             <strong>Fork</strong> the{" "}
-            <a href={`https://github.com/${kit.repo.marketing || 'mcp-tool-shop/mcp-tool-shop'}`} rel="noopener" data-link-type="fork">marketing repo</a>.
+            <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}`} rel="noopener" data-link-type="fork">marketing repo</a>.
           </li>
           <li>
             <strong>Create</strong>{" "}

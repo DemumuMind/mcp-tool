@@ -70,7 +70,7 @@ function runSync(dir, handlers) {
   const mockPath = writeMockFetch(dir, handlers);
   execFileSync(process.execPath, ["--import", pathToFileURL(mockPath).href, SCRIPT_PATH], {
     cwd: dir,
-    env: { ...process.env, ORG: "mcp-tool-shop-org" },
+    env: { ...process.env, ORG: "DemumuMind" },
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -92,7 +92,7 @@ describe("sync-org-metadata", () => {
         {
           id: "ghost-tool",
           name: "Ghost Tool",
-          repo: "https://github.com/mcp-tool-shop-org/ghost-tool",
+          repo: "https://github.com/DemumuMind/ghost-tool",
           description: "Should stay in cleanup only",
           tags: ["ghost"],
         },
@@ -100,7 +100,7 @@ describe("sync-org-metadata", () => {
     });
 
     runSync(dir, {
-      "https://api.github.com/orgs/mcp-tool-shop-org/repos?per_page=100&page=1&type=public&sort=updated": {
+      "https://api.github.com/orgs/DemumuMind/repos?per_page=100&page=1&type=public&sort=updated": {
         body: [],
       },
     });
@@ -117,7 +117,7 @@ describe("sync-org-metadata", () => {
       {
         registryId: "ghost-tool",
         repoName: "ghost-tool",
-        repo: "https://github.com/mcp-tool-shop-org/ghost-tool",
+        repo: "https://github.com/DemumuMind/ghost-tool",
         action: "verify repo exists or remove from registry",
       },
     ]);
@@ -132,7 +132,7 @@ describe("sync-org-metadata", () => {
         {
           id: "retired-tool",
           name: "Retired Tool",
-          repo: "https://github.com/mcp-tool-shop-org/retired-tool",
+          repo: "https://github.com/DemumuMind/retired-tool",
           description: "Archived but still known",
           tags: ["archive"],
         },
@@ -140,11 +140,11 @@ describe("sync-org-metadata", () => {
     });
 
     runSync(dir, {
-      "https://api.github.com/orgs/mcp-tool-shop-org/repos?per_page=100&page=1&type=public&sort=updated": {
+      "https://api.github.com/orgs/DemumuMind/repos?per_page=100&page=1&type=public&sort=updated": {
         body: [
           {
             name: "retired-tool",
-            full_name: "mcp-tool-shop-org/retired-tool",
+            full_name: "DemumuMind/retired-tool",
             archived: true,
             pushed_at: "2026-03-01T00:00:00Z",
             updated_at: "2026-03-01T00:00:00Z",
@@ -179,7 +179,7 @@ describe("sync-org-metadata", () => {
         {
           id: "ghost-tool",
           name: "Ghost Tool",
-          repo: "https://github.com/mcp-tool-shop-org/ghost-tool",
+          repo: "https://github.com/DemumuMind/ghost-tool",
           description: "Ignored locally",
           tags: ["ghost"],
         },
@@ -187,7 +187,7 @@ describe("sync-org-metadata", () => {
     });
 
     runSync(dir, {
-      "https://api.github.com/orgs/mcp-tool-shop-org/repos?per_page=100&page=1&type=public&sort=updated": {
+      "https://api.github.com/orgs/DemumuMind/repos?per_page=100&page=1&type=public&sort=updated": {
         body: [],
       },
     });

@@ -18,7 +18,7 @@ const rows = results.map(r => {
   let severity = 'low';
   let badge = 'OK';
   let action = 'None';
-  let actionUrl = `https://github.com/mcp-tool-shop-org/${r.repo}/edit/main/README.md`; 
+  let actionUrl = `https://github.com/DemumuMind/${r.repo}/edit/main/README.md`;
 
   if (r.checkStatus === 'unreachable') {
     status = 'unreachable';
@@ -31,7 +31,7 @@ const rows = results.map(r => {
     severity = 'critical';
     badge = 'Missing README';
     action = 'Create README.md';
-    actionUrl = `https://github.com/mcp-tool-shop-org/${r.repo}/new/main`;
+    actionUrl = `https://github.com/DemumuMind/${r.repo}/new/main`;
     stats.broken++;
   } else if (r.capReason) {
     status = 'broken';
@@ -118,7 +118,7 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
         {rows.map(row => (
           <div class={`queue-row ${row.ui.status}`} data-status={row.ui.status} data-repo={row.repo}>
             <div class="col-repo">
-              <a href={`https://github.com/mcp-tool-shop-org/${row.repo}`} target="_blank" class="repo-link">
+              <a href={`https://github.com/DemumuMind/${row.repo}`} target="_blank" class="repo-link">
                 {row.repo}
               </a>
               <span class="score-mini">Score: {row.score}</span>

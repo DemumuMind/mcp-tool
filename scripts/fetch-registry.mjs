@@ -3,7 +3,7 @@
 /**
  * Registry Fetch Script
  *
- * Downloads registry artifacts from mcp-tool-shop-org/mcp-tool-registry
+ * Downloads registry artifacts from DemumuMind/mcp-tool-registry
  * and stores them as generated inputs for the marketing site.
  *
  * Files fetched:
@@ -17,7 +17,7 @@
  *
  * Environment:
  *   GITHUB_TOKEN  — optional, uses authenticated requests if set
- *   REGISTRY_REPO — override source repo (default: mcp-tool-shop-org/mcp-tool-registry)
+ *   REGISTRY_REPO — override source repo (default: DemumuMind/mcp-tool-registry)
  */
 
 import fs from "node:fs";
@@ -29,7 +29,7 @@ const ROOT = path.resolve(__dirname, "..");
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
-const REGISTRY_REPO = process.env.REGISTRY_REPO || "mcp-tool-shop-org/mcp-tool-registry";
+const REGISTRY_REPO = process.env.REGISTRY_REPO || "DemumuMind/mcp-tool-registry";
 const OUTPUT_DIR = path.join(ROOT, "site", "src", "data", "registry");
 const DRY_RUN = process.argv.includes("--dry-run");
 

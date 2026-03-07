@@ -11,7 +11,7 @@ on:
         options:
           - fast
           - full
-  # schedule disabled until @mcptoolshop/clearance-opinion-engine is published to npm
+  # schedule disabled until @demumumind/clearance-opinion-engine is published to npm
   # schedule:
   #   - cron: '0 6 * * 2'   # Tuesday 06:00 UTC
 
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout nameops repo
         uses: actions/checkout@v4
         with:
-          repository: mcp-tool-shop-org/nameops
+          repository: DemumuMind/nameops
           path: _nameops
           token: ${{ secrets.NAMEOPS_PAT || secrets.GITHUB_TOKEN }}
 
@@ -58,7 +58,7 @@ jobs:
             coe-nameops-
 
       - name: Install clearance engine
-        run: npm install -g @mcptoolshop/clearance-opinion-engine
+        run: npm install -g @demumumind/clearance-opinion-engine
 
       - name: Load safety caps
         id: caps

@@ -3,7 +3,7 @@
 /**
  * MarketIR Fetch Script
  *
- * Downloads MarketIR data from mcp-tool-shop/mcpt-marketing and writes
+ * Downloads MarketIR data from DemumuMind/mcpt-marketing and writes
  * a verified vendor snapshot into site/src/data/marketir/.
  *
  * Steps:
@@ -20,7 +20,7 @@
  *
  * Environment:
  *   GITHUB_TOKEN    — optional, for authenticated requests
- *   MARKETIR_REPO   — override source (default: mcp-tool-shop/mcpt-marketing)
+ *   MARKETIR_REPO   — override source (default: DemumuMind/mcpt-marketing)
  */
 
 import { createHash } from "node:crypto";
@@ -34,7 +34,7 @@ const ROOT = path.resolve(__dirname, "..");
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
-const REPO = process.env.MARKETIR_REPO || "mcp-tool-shop/mcpt-marketing";
+const REPO = process.env.MARKETIR_REPO || "DemumuMind/mcpt-marketing";
 const OUTPUT_DIR = path.join(ROOT, "site", "src", "data", "marketir");
 const EVIDENCE_DIR = path.join(ROOT, "site", "public", "marketir", "evidence");
 const SNAPSHOT_PATH = path.join(OUTPUT_DIR, "marketir.snapshot.json");

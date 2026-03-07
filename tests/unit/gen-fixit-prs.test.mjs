@@ -104,7 +104,7 @@ describe("generateFixTemplate", () => {
     assert.equal(result.fixable, true);
     assert.equal(result.filename, "LICENSE.md");
     assert.ok(result.content.includes("MIT License"));
-    assert.ok(result.content.includes("mcp-tool-shop-org"));
+    assert.ok(result.content.includes("DemumuMind"));
   });
 
   it("template generated for fixable criteria (README)", () => {

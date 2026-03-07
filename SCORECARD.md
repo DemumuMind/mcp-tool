@@ -2,7 +2,7 @@
 
 > Score a repo before remediation. Fill this out first, then use SHIP_GATE.md to fix.
 
-**Repo:** mcp-tool-shop
+**Repo:** DemumuMind
 **Date:** 2026-02-27
 **Type tags:** [npm] (private monorepo)
 

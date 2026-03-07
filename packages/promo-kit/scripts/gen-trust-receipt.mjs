@@ -85,8 +85,8 @@ export function buildTrustReceipt(opts = {}) {
   try {
     const rootPkg = safeParseJson(join(root, "package.json"), {});
     const deps = { ...rootPkg.dependencies, ...rootPkg.devDependencies };
-    if (deps["@mcptoolshop/clearance-opinion-engine"]) {
-      coeVersion = deps["@mcptoolshop/clearance-opinion-engine"].replace(/^\^|~/, "");
+    if (deps["@demumumind/clearance-opinion-engine"]) {
+      coeVersion = deps["@demumumind/clearance-opinion-engine"].replace(/^\^|~/, "");
     }
   } catch { /* fail soft */ }
 

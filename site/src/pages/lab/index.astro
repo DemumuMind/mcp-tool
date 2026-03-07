@@ -35,14 +35,14 @@ const LAB_SECTIONS = [
     id: "instruments",
     title: "Live Instruments",
     items: [
-      { href: "https://cockpit.mcptoolshop.com", icon: "🎹", title: "Vocal Synth Cockpit", desc: "Piano roll, render bank, and A/B comparison for the vocal synthesis engine", badge: "Lab", external: true },
+      { href: "https://github.com/DemumuMind/vocal-synth-engine", icon: "🎹", title: "Vocal Synth Cockpit", desc: "Piano roll, render bank, and A/B comparison for the vocal synthesis engine", badge: "Lab", external: true },
     ],
   },
   {
     id: "intel",
     title: "Market Intelligence",
     items: [
-      { href: "https://mcp-tool-shop-org.github.io/registry-stats/dashboard/", icon: "📦", title: "Registry Pulse", desc: "Weekly download stats, growth pulse, and data health across npm, PyPI, VS Code, NuGet, and Docker Hub", badge: "Live", external: true },
+      { href: "https://demumumind.github.io/registry-stats/dashboard/", icon: "📦", title: "Registry Pulse", desc: "Weekly download stats, growth pulse, and data health across npm, PyPI, VS Code, NuGet, and Docker Hub", badge: "Live", external: true },
       { href: "/lab/marketir/", icon: "📊", title: "Market IR", desc: "Investor relations and market analysis", badge: "Internal" },
       { href: "/lab/metrics/", icon: "🌱", title: "Growth Metrics", desc: "User adoption and catalog growth stats", badge: "Internal" },
       { href: "/lab/signals/", icon: "📡", title: "Signals", desc: "Early warning indicators and trends", badge: "Internal" },
@@ -52,7 +52,7 @@ const LAB_SECTIONS = [
 ];
 ---
 
-<Layout title="The Lab" description="Experimental tools, dashboards, and internal utilities for managing the MCP Tool Shop.">
+<Layout title="The Lab" description="Experimental tools, dashboards, and internal utilities for managing DemumuMind.">
   <style>
     .subhead { max-width: 70ch; opacity: 0.85; margin-top: 0.75rem; color: #a1a1aa; font-size: 1.125rem; line-height: 1.75rem; }
     .section { margin-top: 3rem; }
@@ -143,7 +143,7 @@ const LAB_SECTIONS = [
   
   <script is:inline>
     (function () {
-      const KEY = "mcptoolshop_admin_nav";
+      const KEY = "demumumind_admin_nav";
       
       if (typeof window !== "undefined") {
         const url = new URL(window.location.href);
