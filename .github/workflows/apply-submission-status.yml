@@ -5,7 +5,7 @@ on:
     inputs:
       patch_json:
         description: 'Status patch (e.g., {"slug":"my-tool","status":"needs-info","reviewNotes":"Please add a demo link"})'
-        required: true
+        required: false
         type: string
       patch_json_b64:
         description: 'Optional base64-encoded status patch JSON for CLI/API callers that need stable transport'

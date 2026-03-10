@@ -14,6 +14,19 @@ const ROOT = resolve(import.meta.dirname, "..", "..");
 const CONTROL_WORKFLOW = resolve(ROOT, ".github", "workflows", "apply-control-patch.yml");
 const SUBMISSION_WORKFLOW = resolve(ROOT, ".github", "workflows", "apply-submission-status.yml");
 
+function extractInputBlock(source, inputName) {
+  const lines = source.split(/\r?\n/);
+  const start = lines.findIndex((line) => new RegExp(`^\\s{6}${inputName}:\\s*$`).test(line));
+  if (start === -1) return "";
+  const block = [];
+  for (let i = start; i < lines.length; i++) {
+    const line = lines[i];
+    if (i > start && /^\s{6}[a-z0-9_]+:\s*$/.test(line)) break;
+    block.push(line);
+  }
+  return block.join("\n");
+}
+
 describe("workflow dispatch transport", () => {
   it("decodes base64 transport for control patch input", () => {
     const patchJson = '{"promo.json":{"enabled":false}}';
@@ -46,9 +59,13 @@ describe("workflow dispatch transport", () => {
   it("workflows expose optional base64 inputs for CLI/API callers", () => {
     const control = readFileSync(CONTROL_WORKFLOW, "utf8");
     const submission = readFileSync(SUBMISSION_WORKFLOW, "utf8");
+    const controlPatchJson = extractInputBlock(control, "patch_json");
+    const submissionPatchJson = extractInputBlock(submission, "patch_json");
 
     assert.match(control, /patch_json_b64:/);
     assert.match(submission, /patch_json_b64:/);
+    assert.match(controlPatchJson, /required:\s*false/);
+    assert.match(submissionPatchJson, /required:\s*false/);
     assert.match(control, /PATCH_JSON_B64:\s*\$\{\{\s*inputs\.patch_json_b64\s*\}\}/);
     assert.match(submission, /PATCH_JSON_B64:\s*\$\{\{\s*inputs\.patch_json_b64\s*\}\}/);
   });
