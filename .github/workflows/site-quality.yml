@@ -179,6 +179,8 @@ jobs:
 
           const start = Date.now();
           const distDir = 'site/dist';
+          const kitConfig = JSON.parse(fs.readFileSync('kit.config.json', 'utf8'));
+          const siteBase = kitConfig.site?.url ? new URL(kitConfig.site.url).pathname.replace(/\/$/, '') : '';
           let errors = 0;
           let checked = 0;
 
@@ -203,11 +205,14 @@ jobs:
               const href = match[1];
               checked++;
 
-              // Skip anchor-only links, external, and asset links
-              if (href.startsWith('/#') || href.startsWith('/_astro/')) continue;
+              let target = href;
+              if (siteBase && target === siteBase) target = '/';
+              if (siteBase && target.startsWith(siteBase + '/')) target = target.slice(siteBase.length);
+
+              // Skip anchor-only links and asset links
+              if (target.startsWith('/#') || target.startsWith('/_astro/')) continue;
 
               // Normalize: /tools/ → /tools/index.html
-              let target = href;
               if (target.endsWith('/')) target += 'index.html';
               if (!path.extname(target)) target += '/index.html';
 

@@ -1,7 +1,10 @@
 ---
 import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
+import projects from "../data/projects.json";
 import { withBase } from "../lib/site-paths";
+
+const availableRepos = new Set((projects as any[]).map((project: any) => project.repo));
 
 const stacks = [
   {
@@ -44,6 +47,13 @@ const stacks = [
     ],
   },
 ];
+
+const visibleStacks = stacks
+  .map((stack) => ({
+    ...stack,
+    tools: stack.tools.filter((tool) => availableRepos.has(tool.repo)),
+  }))
+  .filter((stack) => stack.tools.length > 0);
 ---
 
 <Base title="Get Started - DemumuMind" description="Find the right tools for what you're trying to do." currentPath="/start/">
@@ -53,23 +63,32 @@ const stacks = [
       title="Start with a use case, not a logo wall."
       lede="Each stack below groups tools that make sense together so you can move from curiosity to a working setup faster."
       meta={["Curated bundles", "Registry-linked", "Local-first workflows"]}
+      proofItems={["Use-case first", "Curated stacks", "Trust-aware starting points"]}
+      asideTitle="Best first move"
+      asideBody="Pick the job you need done first. The stack pages below are ordered to reduce browsing friction and avoid a generic logo wall."
     />
 
-    <div class="stack-list">
-      {stacks.map((stack) => (
-        <details class="stack-card">
-          <summary class="stack-question">{stack.question}</summary>
-          <div class="stack-tools">
-            {stack.tools.map((tool) => (
-              <a href={withBase(`/tools/${tool.repo}/`)} class="stack-tool">
-                <span class="stack-tool-name">{tool.name}</span>
-                <span class="stack-tool-why">{tool.why}</span>
-              </a>
-            ))}
-          </div>
-        </details>
-      ))}
-    </div>
+    {visibleStacks.length > 0 ? (
+      <div class="stack-list">
+        {visibleStacks.map((stack) => (
+          <details class="stack-card">
+            <summary class="stack-question">{stack.question}</summary>
+            <div class="stack-tools">
+              {stack.tools.map((tool) => (
+                <a href={withBase(`/tools/${tool.repo}/`)} class="stack-tool">
+                  <span class="stack-tool-name">{tool.name}</span>
+                  <span class="stack-tool-why">{tool.why}</span>
+                </a>
+              ))}
+            </div>
+          </details>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <p>The curated start stacks are temporarily unavailable in this build. Browse the catalog or registry instead.</p>
+      </div>
+    )}
 
     <div class="start-fallback">
       <p>

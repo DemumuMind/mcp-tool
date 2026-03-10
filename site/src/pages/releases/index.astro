@@ -34,11 +34,15 @@ function formatDate(iso: string) {
     eyebrow="Release chronicle"
     title="Track the cadence."
     lede="Every tagged release lands here with freshness, summary bullets, and a direct path back to the originating tool dossier."
+    layout="split"
     meta={[
       `${(releases as any[]).length} release entries`,
       `Refreshed ${timeAgo(dailyNote.generatedAt)}`,
       formatTime(dailyNote.generatedAt),
     ]}
+    proofItems={["Freshness visible", "Tag-to-dossier path", "Chronology over hype"]}
+    asideTitle="Why releases matter"
+    asideBody="Release cadence is a trust signal here: operators can inspect whether a tool is alive, stable, and shipping with a readable trail."
   />
 
   <div class="release-feed">

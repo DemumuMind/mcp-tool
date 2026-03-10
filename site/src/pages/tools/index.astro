@@ -10,6 +10,8 @@ const languages = [...new Set((projects as any[]).map((project: any) => project.
 const stabilities = ["stable", "beta", "experimental"];
 const kinds = [...new Set((projects as any[]).map((project: any) => project.kind).filter(Boolean))].sort();
 const registeredCount = (projects as any[]).filter((project: any) => project.registered).length;
+const verifiedCount = (proofs as any[]).filter((proof: any) => proof.verified).length;
+const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs || []).length > 0).length;
 ---
 
 <Base
@@ -21,11 +23,19 @@ const registeredCount = (projects as any[]).filter((project: any) => project.reg
     eyebrow="Curated registry"
     title="Browse operator-grade tools."
     lede="Compare install paths, proof signals, release posture, and editorial readiness across the DemumuMind catalog."
+    layout="split"
     meta={[
       `${registeredCount} registry-listed tools`,
       `${(projects as any[]).length - registeredCount} org-only repos`,
       "Filter by build, kind, proof, and stability",
     ]}
+    proofItems={[
+      `${verifiedCount} verified entries`,
+      `${proofBackedCount} proof-backed repos`,
+      `${languages.length} languages represented`,
+    ]}
+    asideTitle="How to read the catalog"
+    asideBody="Treat this page as a decision surface: filter by proof posture, build path, and stability before you open a repo."
   />
 
   <div class="toolbar">

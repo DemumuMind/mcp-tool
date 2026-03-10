@@ -32,4 +32,14 @@ describe("DemumuMind canonical defaults", () => {
     assert.match(selftest, /https:\/\/github\.com\/DemumuMind\/mcp-tool\/blob\/main\/docs\/quickstart\.md#configure/);
     assert.match(trustReceipt, /@demumumind\/clearance-opinion-engine/);
   });
+
+  it("kit config pins the canonical public site URL", () => {
+    const kitConfig = JSON.parse(readText("kit.config.json"));
+
+    assert.equal(
+      kitConfig.site?.url,
+      "https://demumumind.github.io/mcp-tool/",
+      "kit.config.json should define the canonical public site URL used by Astro and robots generation"
+    );
+  });
 });
