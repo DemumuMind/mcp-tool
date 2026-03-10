@@ -2,6 +2,7 @@
 import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
 import projects from "../data/projects.json";
+import { withBase } from "../lib/site-paths";
 
 const popular = (projects as any[]).filter((project: any) => project.featured).slice(0, 5);
 ---
@@ -15,8 +16,8 @@ const popular = (projects as any[]).filter((project: any) => project.featured).s
       align="center"
     >
       <Fragment slot="actions">
-        <a href="/" class="btn btn-primary">Go home</a>
-        <a href="/tools/" class="btn btn-secondary">Browse tools</a>
+        <a href={withBase("/")} class="btn btn-primary">Go home</a>
+        <a href={withBase("/tools/")} class="btn btn-secondary">Browse tools</a>
       </Fragment>
     </PageHero>
 
@@ -26,7 +27,7 @@ const popular = (projects as any[]).filter((project: any) => project.featured).s
         <ul>
           {popular.map((project: any) => (
             <li>
-              <a href={`/tools/${project.repo}/`}>{project.name}</a>
+              <a href={withBase(`/tools/${project.repo}/`)}>{project.name}</a>
               <span class="popular-desc">{project.tagline || project.description}</span>
             </li>
           ))}

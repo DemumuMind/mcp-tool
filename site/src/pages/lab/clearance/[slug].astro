@@ -2,6 +2,7 @@
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../../../lib/site-paths";
 
 export function getStaticPaths() {
   const baseDir = path.join(process.cwd(), "public/lab/clearance");
@@ -105,7 +106,7 @@ function formatDate(dateStr: string | null) {
   <div class="report-page">
     <span class="internal-badge">Internal</span>
 
-    <a href="/lab/clearance/" class="back-link">&larr; All reports</a>
+    <a href={withBase("/lab/clearance/")} class="back-link">&larr; All reports</a>
 
     <div class="report-header">
       <h1>
@@ -156,13 +157,13 @@ function formatDate(dateStr: string | null) {
 
     <div class="report-actions">
       <a
-        href={`/lab/clearance/${slug}/report.html`}
+        href={withBase(`/lab/clearance/${slug}/report.html`)}
         download={`${slug}-clearance-report.html`}
         class="action-link"
       >
         Download full report (HTML)
       </a>
-      <a href="/lab/clearance/" class="action-link secondary">&larr; All reports</a>
+      <a href={withBase("/lab/clearance/")} class="action-link secondary">&larr; All reports</a>
     </div>
 
     <div class="provenance">

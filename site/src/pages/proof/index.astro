@@ -4,6 +4,7 @@ import Base from "../../layouts/Base.astro";
 import { kit } from "../../lib/kit";
 import overrides from "../../data/overrides.json";
 import { getProofData, getToolBySlug } from "../../lib/marketir/loader.mjs";
+import { withBase } from "../../lib/site-paths";
 
 const overrideMap = overrides as Record<string, any>;
 
@@ -43,7 +44,7 @@ const proofTools = Object.keys(overrideMap)
     ) : (
       <div class="tools-grid">
         {proofTools.map((tool) => (
-          <a href={`/proof/${tool.slug}/`} class="tool-card">
+          <a href={withBase(`/proof/${tool.slug}/`)} class="tool-card">
             <div class="card-header">
               <h2>{tool.name}</h2>
               <div class="badges">

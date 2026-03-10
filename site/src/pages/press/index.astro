@@ -3,6 +3,7 @@ import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
 import overrides from "../../data/overrides.json";
 import { getToolBySlug } from "../../lib/marketir/loader.mjs";
+import { withBase } from "../../lib/site-paths";
 
 const overrideMap = overrides as Record<string, any>;
 
@@ -40,7 +41,7 @@ const pressTools = Object.keys(overrideMap)
     ) : (
       <div class="tools-grid">
         {pressTools.map((tool) => (
-          <a href={`/press/${tool.slug}/`} class="tool-card">
+          <a href={withBase(`/press/${tool.slug}/`)} class="tool-card">
             <div class="card-header">
               <h2>{tool.name}</h2>
               <div class="badges">

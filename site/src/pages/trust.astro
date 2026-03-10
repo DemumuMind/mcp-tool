@@ -6,6 +6,7 @@ import ReceiptLink from "../components/ReceiptLink.astro";
 import { kit } from "../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../lib/site-paths";
 
 const title = `Trust Center - ${kit.site.title || "DemumuMind"}`;
 const description = `How ${kit.site.title || "DemumuMind"} earns trust: receipts, hashed inputs, freeze modes, drift detection, and independent verification.`;
@@ -92,19 +93,19 @@ const experimentsFrozen = governance.experimentsFrozen === true;
       ]}
     >
       <Fragment slot="actions">
-        <a href="/receipts/" class="btn btn-primary">Browse receipts</a>
+        <a href={withBase("/receipts/")} class="btn btn-primary">Browse receipts</a>
         <a href="#verify" class="btn btn-secondary">Verify a week</a>
       </Fragment>
     </PageHero>
 
     <nav class="trust-path" aria-label="Trust verification path">
-      <a href="/press/">Press</a>
+      <a href={withBase("/press/")}>Press</a>
       <span>-></span>
       <span>Trust</span>
       <span>-></span>
-      <a href="/receipts/">Receipts</a>
+      <a href={withBase("/receipts/")}>Receipts</a>
       <span>-></span>
-      {latestWeek ? <a href={`/promo/${latestWeek}/`}>Latest week</a> : <span>Promo week</span>}
+      {latestWeek ? <a href={withBase(`/promo/${latestWeek}/`)}>Latest week</a> : <span>Promo week</span>}
       <span>-></span>
       <a href="#verify">Verify</a>
     </nav>

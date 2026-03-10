@@ -4,6 +4,7 @@ import Base from "../../layouts/Base.astro";
 import { kit } from "../../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../../lib/site-paths";
 
 const title = `Submission Queue - ${kit.site.title || "DemumuMind"}`;
 const description = "Track the status of tool submissions for promotion and experimentation.";
@@ -44,7 +45,7 @@ function renderCompactRows(items) {
 <Base title={title} description={description} currentPath="/submit/queue/">
   <div class="queue-page">
     <div class="breadcrumbs">
-      <a href="/submit/">Submit</a>
+      <a href={withBase("/submit/")}>Submit</a>
       <span>/</span>
       <span>Queue</span>
     </div>
@@ -61,14 +62,14 @@ function renderCompactRows(items) {
       ]}
     >
       <Fragment slot="actions">
-        <a href="/submit/" class="btn btn-primary">Submit a tool</a>
+        <a href={withBase("/submit/")} class="btn btn-primary">Submit a tool</a>
       </Fragment>
     </PageHero>
 
     {submissions.length === 0 ? (
       <div class="empty-state">
         <p>No submissions yet.</p>
-        <p>Be the first and <a href="/submit/">open a submission</a>.</p>
+        <p>Be the first and <a href={withBase("/submit/")}>open a submission</a>.</p>
       </div>
     ) : (
       <>
@@ -242,7 +243,7 @@ function renderCompactRows(items) {
           Submissions are validated by <code>validate-submissions.mjs</code> on every PR before they reach a human reviewer.
         </p>
         <p>
-          Learn the intake contract on <a href="/submit/">Get Featured</a>.
+          Learn the intake contract on <a href={withBase("/submit/")}>Get Featured</a>.
         </p>
       </div>
     </section>

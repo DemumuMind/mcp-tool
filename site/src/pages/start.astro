@@ -1,6 +1,7 @@
 ---
 import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
+import { withBase } from "../lib/site-paths";
 
 const stacks = [
   {
@@ -60,7 +61,7 @@ const stacks = [
           <summary class="stack-question">{stack.question}</summary>
           <div class="stack-tools">
             {stack.tools.map((tool) => (
-              <a href={`/tools/${tool.repo}/`} class="stack-tool">
+              <a href={withBase(`/tools/${tool.repo}/`)} class="stack-tool">
                 <span class="stack-tool-name">{tool.name}</span>
                 <span class="stack-tool-why">{tool.why}</span>
               </a>
@@ -72,7 +73,7 @@ const stacks = [
 
     <div class="start-fallback">
       <p>
-        Need the full surface instead? <a href="/tools/">Browse every tool</a> or ask in{" "}
+        Need the full surface instead? <a href={withBase("/tools/")}>Browse every tool</a> or ask in{" "}
         <a href="https://github.com/orgs/DemumuMind/discussions" rel="noopener">Discussions</a>.
       </p>
     </div>

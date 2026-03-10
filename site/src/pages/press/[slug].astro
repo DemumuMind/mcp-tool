@@ -4,6 +4,7 @@ import overrides from "../../data/overrides.json";
 import fs from "node:fs";
 import path from "node:path";
 import { getPressData, getProofData, getPublicAssetLinks, getSnapshotMeta, getToolBySlug, loadSnapshot } from "../../lib/marketir/loader.mjs";
+import { withBase } from "../../lib/site-paths";
 
 const overrideMap = overrides as Record<string, any>;
 
@@ -41,7 +42,7 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
 
 <Base title={`${tool.name} - Press`} description={press?.boilerplate?.projectDescription || tool.positioning?.oneLiner || ""} currentPath={`/press/${slug}/`}>
   <div class="press-page">
-    <a href="/press/" class="back-link">&larr; All press pages</a>
+    <a href={withBase("/press/")} class="back-link">&larr; All press pages</a>
 
     <section class="press-hero">
       <div>
@@ -60,7 +61,7 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
         {publicAssetLinks.find((link) => link.kind === "machine-readable") && (
           <a href={publicAssetLinks.find((link) => link.kind === "machine-readable").href} class="btn btn-secondary" rel="noopener">Machine-readable</a>
         )}
-        <a href={`/proof/${slug}/`} class="btn btn-secondary">Proof page</a>
+        <a href={withBase(`/proof/${slug}/`)} class="btn btn-secondary">Proof page</a>
       </div>
     </section>
 
@@ -101,7 +102,7 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
                       {evidence.url ? (
                         <a href={evidence.url} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
                       ) : evidence.path ? (
-                        <a href={`/marketir/evidence/${evidence.path.split("/").pop()}`} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
+                        <a href={withBase(`/marketir/evidence/${evidence.path.split("/").pop()}`)} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
                       ) : (
                         <span>{evidence.type}: {evidence.id.split(".").pop()}</span>
                       )}
@@ -227,7 +228,7 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
           <a href={link.href} class="btn btn-secondary" rel="noopener">{link.label}</a>
         ))}
         <a href={orgUrl} class="btn btn-secondary" rel="noopener">GitHub</a>
-        <a href={`/tools/${slug}/`} class="btn btn-secondary">Tool page</a>
+        <a href={withBase(`/tools/${slug}/`)} class="btn btn-secondary">Tool page</a>
       </div>
     </section>
 
