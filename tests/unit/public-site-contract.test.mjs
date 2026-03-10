@@ -99,4 +99,24 @@ describe("public site URL contract", () => {
       "generator cache key should include the generator fingerprint output"
     );
   });
+
+  it("makes the site-quality internal link checker base-path aware", () => {
+    const workflow = readText(".github", "workflows", "site-quality.yml");
+
+    assert.match(
+      workflow,
+      /const kitConfig = JSON\.parse\(fs\.readFileSync\('kit\.config\.json', 'utf8'\)\);/,
+      "site-quality internal link check should read kit.config.json"
+    );
+    assert.match(
+      workflow,
+      /const siteBase = kitConfig\.site\?\.url \? new URL\(kitConfig\.site\.url\)\.pathname\.replace\(\/\\\/\$\/, ''\) : '';/,
+      "site-quality internal link check should derive a base path from the configured site URL"
+    );
+    assert.match(
+      workflow,
+      /if \(siteBase && target\.startsWith\(siteBase \+ '\/'\)\) target = target\.slice\(siteBase\.length\);/,
+      "site-quality internal link check should strip the configured base path before looking in dist/"
+    );
+  });
 });
