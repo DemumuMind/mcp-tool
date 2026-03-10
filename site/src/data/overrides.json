@@ -37,6 +37,8 @@
     "stability": "stable",
     "kind": "library",
     "tagline": "Scientific claim provenance and verification ledger.",
+    "screenshot": "/screenshots/claim-ledger.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "CodeClone-Desktop": {
@@ -80,6 +82,8 @@
     "stability": "stable",
     "kind": "library",
     "tagline": "Creator attestation proofs and authorship verification.",
+    "screenshot": "/screenshots/creator-ledger.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "CursorAssist": {
@@ -369,6 +373,8 @@
     "stability": "beta",
     "kind": "template",
     "tagline": "Python demonstration of accessibility framework capabilities.",
+    "screenshot": "/screenshots/ally-demo-python.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "artifact": {
@@ -410,6 +416,8 @@
     "kind": "library",
     "install": "pip install audiobooker",
     "tagline": "Audio book generation and management system.",
+    "screenshot": "/screenshots/audiobooker.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "avatar-face-mvp": {
@@ -477,7 +485,8 @@
       "Runtime code analysis or profiling",
       "Replacing manual security review for production systems"
     ],
-    "screenshot": "/screenshots/brain-dev.png"
+    "screenshot": "/screenshots/brain-dev.png",
+    "screenshotType": "placeholder"
   },
   "brand": {
     "tags": [
@@ -535,6 +544,8 @@
     "stability": "experimental",
     "kind": "library",
     "tagline": "Collaboration primitives for multi-agent and human-in-the-loop Claude workflows.",
+    "screenshot": "/screenshots/claude-collaborate.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "claude-guardian": {
@@ -637,6 +648,8 @@
     "kind": "library",
     "install": "pip install code-covered",
     "tagline": "Coverage visualization and reporting tool.",
+    "screenshot": "/screenshots/code-covered.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "codeclone-suite": {
@@ -646,7 +659,9 @@
     "category": "devtools",
     "stability": "beta",
     "kind": "library",
-    "tagline": "Clone detection"
+    "tagline": "Clone detection",
+    "screenshot": "/screenshots/codeclone-suite.png",
+    "screenshotType": "placeholder"
   },
   "codecomfy-vscode": {
     "tags": [
@@ -658,7 +673,13 @@
     "stability": "beta",
     "kind": "vscode-extension",
     "tagline": "VS Code extension for code analysis and coverage display.",
+    "screenshot": "/screenshots/codecomfy-vscode.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
+  },
+  "codeteam": {
+    "screenshot": "/screenshots/codeteam.png",
+    "screenshotType": "placeholder"
   },
   "codeteam-suite": {
     "tags": [
@@ -670,6 +691,8 @@
     "stability": "experimental",
     "kind": "cli",
     "tagline": "Code analysis protocol and tools — CLI engine with editor extensions.",
+    "screenshot": "/screenshots/codeteam-suite.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "comfy-headless": {
@@ -702,7 +725,9 @@
     "category": "devtools",
     "stability": "beta",
     "kind": "library",
-    "tagline": "Context optimization"
+    "tagline": "Context optimization",
+    "screenshot": "/screenshots/context-window-manager.png",
+    "screenshotType": "placeholder"
   },
   "control-room": {
     "tags": [
@@ -714,6 +739,8 @@
     "stability": "stable",
     "kind": "desktop-app",
     "tagline": "Dashboard and monitoring for MCP tool ecosystems.",
+    "screenshot": "/screenshots/control-room.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "dev-op-typer": {
@@ -779,7 +806,9 @@
     "category": "infrastructure",
     "stability": "beta",
     "kind": "library",
-    "tagline": "Workflow orchestration"
+    "tagline": "Workflow orchestration",
+    "screenshot": "/screenshots/flexiflow.png",
+    "screenshotType": "placeholder"
   },
   "game-dev-mcp": {
     "tags": [
@@ -809,7 +838,13 @@
     "kind": "cli",
     "install": "pipx install headless-wheel-builder",
     "tagline": "CLI-first build/validate/release tooling for Python wheels and sdists.",
+    "screenshot": "/screenshots/headless-wheel-builder.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
+  },
+  "homebrew-core": {
+    "screenshot": "/screenshots/homebrew-core.png",
+    "screenshotType": "placeholder"
   },
   "integradio": {
     "tags": [
@@ -822,6 +857,8 @@
     "kind": "library",
     "install": "pip install integradio",
     "tagline": "Structure layer for building maintainable Gradio apps (UI + execution separation).",
+    "screenshot": "/screenshots/integradio.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "jam-session-plugin": {
@@ -844,6 +881,8 @@
     "stability": "experimental",
     "kind": "library",
     "tagline": "Unified monorepo for cryptographic provenance ledgers — ClaimLedger and CreatorLedger.",
+    "screenshot": "/screenshots/ledger-suite.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "linux-dev-typer": {
@@ -895,6 +934,14 @@
     "install": "pip install mcp-bouncer",
     "tagline": "SessionStart hook that health-checks MCP servers, quarantines broken ones, and...",
     "needsHumanReview": true
+  },
+  "mcp-docs": {
+    "screenshot": "/screenshots/mcp-docs.png",
+    "screenshotType": "placeholder"
+  },
+  "mcp-examples": {
+    "screenshot": "/screenshots/mcp-examples.png",
+    "screenshotType": "placeholder"
   },
   "mcp-file-forge": {
     "tags": [
@@ -973,6 +1020,10 @@
     "smithery": "https://smithery.ai/servers/DemumuMind/voice-soundboard",
     "flyio": "https://voice-soundboard-mcp.fly.dev"
   },
+  "mcpt": {
+    "screenshot": "/screenshots/mcpt.png",
+    "screenshotType": "placeholder"
+  },
   "meta-content-system": {
     "tags": [
       "content-system",
@@ -986,6 +1037,10 @@
     "kind": "desktop-app",
     "tagline": "Shared content system for typing-practice apps — lessons, progression, and adaptive...",
     "needsHumanReview": true
+  },
+  "next-gallery": {
+    "screenshot": "/screenshots/next-gallery.png",
+    "screenshotType": "placeholder"
   },
   "nexus-attest": {
     "tags": [
@@ -1026,7 +1081,9 @@
     "category": "devtools",
     "stability": "beta",
     "kind": "library",
-    "tagline": "Dev suite"
+    "tagline": "Dev suite",
+    "screenshot": "/screenshots/nexus-suite.png",
+    "screenshotType": "placeholder"
   },
   "npm-escape-the-valley": {
     "tags": [
@@ -1132,6 +1189,10 @@
     "tagline": "Production-ready TTS library and MCP server for AI assistants.",
     "needsHumanReview": true
   },
+  "pathway": {
+    "screenshot": "/screenshots/pathway.png",
+    "screenshotType": "placeholder"
+  },
   "payroll-engine": {
     "tags": [
       "finance"
@@ -1139,7 +1200,9 @@
     "category": "infrastructure",
     "stability": "beta",
     "kind": "library",
-    "tagline": "Payroll processing"
+    "tagline": "Payroll processing",
+    "screenshot": "/screenshots/payroll-engine.png",
+    "screenshotType": "placeholder"
   },
   "pocket-ledger": {
     "tags": [
@@ -1198,6 +1261,8 @@
     "kind": "library",
     "install": "npm install prov-engine-js",
     "tagline": "JavaScript/TypeScript provenance and traceability engine.",
+    "screenshot": "/screenshots/prov-engine-js.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "py-polyglot": {
@@ -1233,11 +1298,6 @@
     "needsHumanReview": true
   },
   "registry-stats": {
-    "category": "infrastructure",
-    "stability": "experimental",
-    "kind": "meta",
-    "tagline": "Multi-registry download stats for npm, PyPI, NuGet, VS Code Marketplace, and Docker Hub.",
-    "needsHumanReview": true,
     "tags": [
       "docker",
       "download-stats",
@@ -1245,7 +1305,12 @@
       "nuget",
       "pypi",
       "registry"
-    ]
+    ],
+    "category": "infrastructure",
+    "stability": "experimental",
+    "kind": "meta",
+    "tagline": "Multi-registry download stats for npm, PyPI, NuGet, VS Code Marketplace, and Docker Hub.",
+    "needsHumanReview": true
   },
   "registry-stats-vscode": {
     "tags": [
@@ -1331,6 +1396,8 @@
     "stability": "beta",
     "kind": "desktop-app",
     "tagline": "Windows desktop application for AI workflow execution.",
+    "screenshot": "/screenshots/runforge-desktop.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "runforge-vscode": {
@@ -1344,6 +1411,8 @@
     "stability": "beta",
     "kind": "vscode-extension",
     "tagline": "VS Code extension for AI workflow execution.",
+    "screenshot": "/screenshots/runforge-vscode.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "shipcheck": {
@@ -1442,6 +1511,10 @@
     "screenshot": "/screenshots/stresskit-mcp.png",
     "screenshotType": "placeholder"
   },
+  "synthesis": {
+    "screenshot": "/screenshots/synthesis.png",
+    "screenshotType": "placeholder"
+  },
   "tool-compass": {
     "featured": true,
     "tags": [
@@ -1492,6 +1565,8 @@
     "kind": "library",
     "install": "npm install training-studio",
     "tagline": "TensorFlow.js ML bundle validator with security-first design and zero code execution.",
+    "screenshot": "/screenshots/training-studio.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "venvkit": {
@@ -1505,6 +1580,8 @@
     "kind": "library",
     "install": "npm install venvkit",
     "tagline": "Python virtual environment diagnostics and utilities.",
+    "screenshot": "/screenshots/venvkit.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "vocal-synth-engine": {
@@ -1558,7 +1635,13 @@
     "kind": "cli",
     "install": "npx websketch-cli",
     "tagline": "Command-line interface for web component analysis.",
+    "screenshot": "/screenshots/websketch-cli.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
+  },
+  "websketch-demo": {
+    "screenshot": "/screenshots/websketch-demo.png",
+    "screenshotType": "placeholder"
   },
   "websketch-extension": {
     "tags": [
@@ -1570,6 +1653,8 @@
     "stability": "beta",
     "kind": "library",
     "tagline": "Browser extension for web page analysis and code generation.",
+    "screenshot": "/screenshots/websketch-extension.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "websketch-ir": {
@@ -1583,6 +1668,8 @@
     "kind": "library",
     "install": "npm install websketch-ir",
     "tagline": "Intermediate representation library for web component analysis.",
+    "screenshot": "/screenshots/websketch-ir.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "websketch-mcp": {
@@ -1596,6 +1683,8 @@
     "kind": "mcp-server",
     "install": "npx websketch-mcp",
     "tagline": "MCP server for AI-assisted web analysis.",
+    "screenshot": "/screenshots/websketch-mcp.png",
+    "screenshotType": "placeholder",
     "needsHumanReview": true
   },
   "websketch-vscode": {
@@ -1604,6 +1693,10 @@
     "kind": "vscode-extension",
     "tagline": "VS Code extension — capture web pages as grammar-based IR for LLMs.",
     "needsHumanReview": true
+  },
+  "winget-pkgs": {
+    "screenshot": "/screenshots/winget-pkgs.png",
+    "screenshotType": "placeholder"
   },
   "witness": {
     "tags": [
