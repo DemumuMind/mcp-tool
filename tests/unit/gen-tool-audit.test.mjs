@@ -22,14 +22,14 @@ describe("resolveAuditPathModule", () => {
 
 describe("resolveToolAuditPaths", () => {
   it("writes truth-matrix inside the marketing repo audit directory", () => {
-    const scriptDir = path.join("C:", "workspace", "repo", "mcp-tool", "scripts");
+    const scriptDir = path.win32.join("C:", "workspace", "repo", "mcp-tool", "scripts");
     const paths = resolveToolAuditPaths(scriptDir);
 
-    assert.equal(paths.shopRoot, path.join("C:", "workspace", "repo", "mcp-tool"));
-    assert.equal(paths.workspaceRoot, path.join("C:", "workspace", "repo"));
+    assert.equal(paths.shopRoot, path.win32.join("C:", "workspace", "repo", "mcp-tool"));
+    assert.equal(paths.workspaceRoot, path.win32.join("C:", "workspace", "repo"));
     assert.equal(
       paths.truthMatrixPath,
-      path.join("C:", "workspace", "repo", "mcp-tool", "audit", "truth-matrix.json")
+      path.win32.join("C:", "workspace", "repo", "mcp-tool", "audit", "truth-matrix.json")
     );
   });
 
