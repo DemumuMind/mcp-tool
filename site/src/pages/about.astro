@@ -1,29 +1,23 @@
 ---
-import Base from '../layouts/Base.astro';
+import PageHero from "../components/PageHero.astro";
+import Base from "../layouts/Base.astro";
 ---
 
-<Base
-  title="About - DemumuMind"
-  description="What DemumuMind is building and why."
-  currentPath="/about/"
->
+<Base title="About - DemumuMind" description="What DemumuMind is building and why." currentPath="/about/">
   <div class="page-content">
-    <h1>About</h1>
-    <p>
-      DemumuMind builds MCP servers, desktop apps, and AI infrastructure.
-      Everything runs locally. No cloud dependencies for core functionality.
-    </p>
+    <PageHero
+      eyebrow="Philosophy"
+      title="Local-first tools with receipts, not mystique."
+      lede="DemumuMind builds MCP servers, desktop apps, and AI infrastructure that stay inspectable, composable, and deterministic."
+      meta={["Open source", "Windows-first", "Protocol-native"]}
+    />
 
-    <h2>Philosophy</h2>
-    <p>
-      Tools compose through the Model Context Protocol. Append-only where it matters.
-      Accessibility baked in, not bolted on.
-    </p>
+    <h2>Operating principles</h2>
     <ul>
-      <li><strong>Local-first:</strong> Your data stays on your machine. Every tool works offline.</li>
-      <li><strong>Composable:</strong> MCP-native from day one. Tools talk to each other through a shared protocol.</li>
-      <li><strong>Deterministic:</strong> Same input, same output. No hidden randomness in critical paths.</li>
-      <li><strong>Windows-first:</strong> Built and tested on Windows. Linux and macOS supported where applicable.</li>
+      <li><strong>Local-first:</strong> data stays on your machine and core paths keep working offline.</li>
+      <li><strong>Composable:</strong> MCP-native from day one so tools can talk through a shared protocol instead of bespoke glue.</li>
+      <li><strong>Deterministic:</strong> critical paths should produce the same output from the same inputs.</li>
+      <li><strong>Evidence-backed:</strong> promotion, proof, and releases should leave receipts behind.</li>
     </ul>
 
     <h2>Stack</h2>
@@ -42,9 +36,8 @@ import Base from '../layouts/Base.astro';
 
     <h2>Who</h2>
     <p>
-      One developer, shipping tools under the
-      <a href="https://github.com/DemumuMind" rel="noopener">DemumuMind</a>
-      GitHub organization. All code is open source.
+      One developer shipping under the <a href="https://github.com/DemumuMind" rel="noopener">DemumuMind</a> organization.
+      The point is not to look like a SaaS facade. The point is to ship useful, inspectable tools and make their quality legible.
     </p>
   </div>
 </Base>

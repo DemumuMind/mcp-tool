@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../components/InternalHero.astro';
 import Base from '../../layouts/Base.astro';
 ---
 
@@ -12,10 +13,7 @@ import Base from '../../layouts/Base.astro';
   </head>
 
   <div class="export-page">
-    <div class="internal-badge">Internal Preview</div>
-
-    <h1>Telemetry Export</h1>
-    <p class="subtitle">Download buffered events from this browser's localStorage.</p>
+    <InternalHero badge="Operator Surface" eyebrow="Internal systems" title="Telemetry Export" lede="Download buffered events from this browser's localStorage." />
 
     {/* Controls */}
     <div class="controls">
@@ -136,8 +134,8 @@ import Base from '../../layouts/Base.astro';
   }
   .internal-badge {
     display: inline-block;
-    background: #d2992233;
-    color: #d29922;
+    background: rgba(217, 107, 59, 0.12);
+    color: var(--color-warning);
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius);
     font-size: 0.75rem;
@@ -173,7 +171,7 @@ import Base from '../../layouts/Base.astro';
   }
   .count-badge span {
     font-size: 1.5rem;
-    color: #58a6ff;
+    color: var(--color-system);
   }
   .actions {
     display: flex;
@@ -190,7 +188,7 @@ import Base from '../../layouts/Base.astro';
     color: var(--color-text);
   }
   .btn:hover {
-    border-color: #58a6ff;
+    border-color: var(--color-system);
   }
   .btn-primary {
     background: #238636;
@@ -228,7 +226,7 @@ import Base from '../../layouts/Base.astro';
     line-height: 1.7;
   }
   .instructions a {
-    color: #388bfd;
+    color: var(--color-system);
     text-decoration: none;
   }
   .instructions a:hover {

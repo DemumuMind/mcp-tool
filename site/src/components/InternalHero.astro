@@ -1,0 +1,35 @@
+---
+interface Props {
+  badge?: string;
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  meta?: string[];
+}
+
+const {
+  badge = "Operator Surface",
+  eyebrow = "Internal systems",
+  title,
+  lede,
+  meta = [],
+} = Astro.props;
+---
+
+<section class="ops-hero reveal-stage">
+  <div class="ops-hero__topline">
+    <span class="internal-chip">{badge}</span>
+    {eyebrow && <span class="ops-hero__eyebrow">{eyebrow}</span>}
+  </div>
+  <h1 class="ops-hero__title">{title}</h1>
+  {lede && <p class="ops-hero__lede">{lede}</p>}
+  {meta.length > 0 && (
+    <div class="ops-summary-grid">
+      {meta.map((item) => (
+        <div class="ops-summary-card">
+          <span>{item}</span>
+        </div>
+      ))}
+    </div>
+  )}
+</section>

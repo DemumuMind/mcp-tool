@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../../components/InternalHero.astro';
 import Layout from '../../../layouts/Base.astro';
 import healthData from '../../../data/readme-health.json';
 
@@ -65,13 +66,20 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
 });
 ---
 
-<Layout title="Health Dashboard">
-  <main class="dashboard">
-    <header class="dashboard-header">
+<Layout title="Health Dashboard" currentPath="/lab/health/" routeFamily="ops">
+  <div class="ops-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Documentation health"
+      title="Repo Health Lab"
+      lede="README quality, install-path coverage, and documentation gaps across the catalog."
+      meta={[`Run ${meta.runId.slice(0, 8)}`, `${stats.healthy} healthy`, `${stats.broken} broken`, `${results.length} total`]}
+    />
+
+    <div class="dashboard-header">
       <div class="title-block">
-        <h1>Repo Health Lab</h1>
         <p class="meta">
-          Run {meta.runId.slice(0, 8)} • {lastRun} • v{meta.version}
+          Run {meta.runId.slice(0, 8)} | {lastRun} | v{meta.version}
         </p>
       </div>
       <div class="stats-strip">
@@ -92,7 +100,7 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
           <span class="value">{results.length}</span>
         </div>
       </div>
-    </header>
+    </div>
 
     <div class="controls">
       <input type="text" id="search" placeholder="Search repos..." class="search-input">
@@ -156,7 +164,7 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
         <p>No repos match your filters.</p>
       </div>
     </div>
-  </main>
+  </div>
 </Layout>
 
 <script>
@@ -241,12 +249,25 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
     align-items: flex-end;
     flex-wrap: wrap;
     gap: 1rem;
+    min-width: 0;
+  }
+
+  .ops-page > *,
+  .fix-queue,
+  .queue-body,
+  .queue-row,
+  .col-repo,
+  .col-issue,
+  .col-step,
+  .col-stats,
+  .col-action {
+    min-width: 0;
   }
   
   h1 { font-size: 1.8rem; font-weight: 700; margin: 0 0 0.5rem 0; letter-spacing: -0.02em; }
   .meta { color: var(--c-text-muted); font-size: 0.9rem; margin: 0; }
 
-  .stats-strip { display: flex; gap: 1rem; }
+  .stats-strip { display: flex; gap: 1rem; flex-wrap: wrap; }
   .stat-pill {
     display: flex; flex-direction: column; 
     background: var(--c-card); border: 1px solid var(--c-border);
@@ -260,7 +281,7 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
   .stat-pill.critical .value { color: var(--c-critical); }
 
   /* Controls */
-  .controls { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .controls { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; min-width: 0; }
   .search-input {
     padding: 0.5rem 1rem;
     background: var(--c-input-bg);
@@ -271,7 +292,7 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
     min-width: 250px;
   }
   
-  .filter-chips { display: flex; gap: 0.5rem; }
+  .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; min-width: 0; }
   .chip {
     background: transparent; border: 1px solid var(--c-border);
     padding: 0.4rem 0.8rem; border-radius: 20px;
@@ -365,6 +386,8 @@ const lastRun = new Date(meta.generatedAt).toLocaleString('en-US', {
     .queue-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.5rem; }
     .col-action { margin-top: 1rem; }
     .controls { flex-direction: column; }
-    .search-input { width: 100%; }
+    .stats-strip { gap: 0.75rem; }
+    .search-input { width: 100%; min-width: 0; }
+    .filter-chips { width: 100%; }
   }
 </style>

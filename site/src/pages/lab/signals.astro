@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../components/InternalHero.astro';
 import Base from '../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,7 +29,7 @@ try {
     latestSignals = loadJson(path.join(signalsDir, files[0]));
   }
 } catch {
-  // signals dir doesn't exist yet — that's fine
+  // signals dir doesn't exist yet вЂ” that's fine
 }
 
 const linksData = loadJson(linksPath);
@@ -59,13 +60,13 @@ const facts = latestSignals?.githubFacts || [];
 
 // Channel colors
 const channelColors: Record<string, string> = {
-  web: '#58a6ff',
-  readme: '#3fb950',
+  web: 'var(--color-system)',
+  readme: 'var(--color-success)',
   hn: '#ff7b72',
   x: '#8b949e',
-  linkedin: '#58a6ff',
-  cta: '#d29922',
-  newsletter: '#bc8cff',
+  linkedin: 'var(--color-system)',
+  cta: 'var(--color-warning)',
+  newsletter: 'var(--color-system)',
   presskit: '#f0883e',
 };
 ---
@@ -80,10 +81,7 @@ const channelColors: Record<string, string> = {
   </head>
 
   <div class="signals-page">
-    <div class="internal-badge">Internal Preview</div>
-
-    <h1>Distribution Signals</h1>
-    <p class="subtitle">Go-link usage, code search mentions, and GitHub adoption metrics.</p>
+    <InternalHero badge="Operator Surface" eyebrow="Internal systems" title="Distribution Signals" lede="Go-link usage, code search mentions, and GitHub adoption metrics." />
 
     {/* Summary banner */}
     {latestSignals ? (
@@ -141,8 +139,8 @@ const channelColors: Record<string, string> = {
           <tbody>
             {links.map((link: any) => {
               const sig = signalByLink.get(link.id);
-              const hits = sig?.codeSearchHits ?? '—';
-              const ext = sig?.externalHits ?? '—';
+              const hits = sig?.codeSearchHits ?? 'вЂ”';
+              const ext = sig?.externalHits ?? 'вЂ”';
               const hasHits = sig?.externalHits > 0;
               return (
                 <tr class={hasHits ? 'has-hits' : ''}>
@@ -315,8 +313,8 @@ const channelColors: Record<string, string> = {
   }
   .internal-badge {
     display: inline-block;
-    background: #d2992233;
-    color: #d29922;
+    background: rgba(217, 107, 59, 0.12);
+    color: var(--color-warning);
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius);
     font-size: 0.75rem;
@@ -413,7 +411,7 @@ const channelColors: Record<string, string> = {
     border-bottom: 1px solid var(--color-border);
   }
   tr.has-hits {
-    background: #3fb95008;
+    background: rgba(120, 197, 140, 0.08);
   }
   .link-id {
     font-size: 0.8rem;

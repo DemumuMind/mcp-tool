@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../../components/InternalHero.astro';
 import Layout from '../../../layouts/Base.astro';
 import scoreboardData from '../../../data/audit/scoreboard.json';
 import metaFindings from '../../../data/audit/metadata-findings.json';
@@ -21,12 +22,19 @@ const stats = {
 const lastRun = new Date(scoreboardData.generatedAt).toLocaleString();
 ---
 
-<Layout title="Tool Audit Scoreboard">
-  <main class="dashboard">
-    <header class="dashboard-header">
+<Layout title="Tool Audit Scoreboard" currentPath="/lab/audit/" routeFamily="ops">
+  <div class="ops-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Metadata audit"
+      title="Tool Audit Scoreboard"
+      lede="Registry and reality checks summarized as a scored operator review surface."
+      meta={[`${stats.total} tools scanned`, `${stats.stable} stable`, `${stats.needsWork} need work`, `${stats.deprecated} deprecated`]}
+    />
+
+    <div class="dashboard-header">
       <div class="title-block">
-        <h1>Tool Audit Scoreboard</h1>
-        <p class="meta">Run {lastRun} • {stats.total} tools scanned</p>
+        <p class="meta">Run {lastRun} | {stats.total} tools scanned</p>
       </div>
       <div class="stats-strip">
         <div class="stat-pill success">
@@ -46,7 +54,7 @@ const lastRun = new Date(scoreboardData.generatedAt).toLocaleString();
           <span class="value">{stats.deprecated}</span>
         </div>
       </div>
-    </header>
+    </div>
     
     <div class="controls">
        <input type="text" id="search" placeholder="Search tools..." class="search-input">
@@ -103,7 +111,7 @@ const lastRun = new Date(scoreboardData.generatedAt).toLocaleString();
         </div>
     </div>
 
-  </main>
+  </div>
 </Layout>
 
 <script>

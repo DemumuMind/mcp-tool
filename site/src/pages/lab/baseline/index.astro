@@ -1,10 +1,11 @@
 ---
+import InternalHero from "../../../components/InternalHero.astro";
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
 
 const title = "Pipeline Baseline";
-const description = "NameOps pipeline baseline — performance stats, cost projection, risk items";
+const description = "NameOps pipeline baseline вЂ” performance stats, cost projection, risk items";
 
 // Load baseline data
 let baseline: any = null;
@@ -30,11 +31,14 @@ function formatDuration(ms: number) {
     <meta name="robots" content="noindex, nofollow" />
   </head>
 
-  <div class="baseline-page">
-    <span class="internal-badge">Internal</span>
-
-    <h1>Pipeline Baseline</h1>
-    <p class="subtitle">Performance statistics, cost projection, and risk assessment.</p>
+  <div class="ops-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Performance baseline"
+      title="Pipeline Baseline"
+      lede="Performance statistics, cost projection, and risk assessment for the NameOps pipeline."
+      meta={[`${baseline?.runCount || 0} runs`, `${baseline?.avgMinutesPerRun || 0} min/run`, `${Math.round((baseline?.avgCacheHitRate || 0) * 100)}% cache`, `$${baseline?.projection?.estimatedCost?.toFixed(3) || "0.000"}/mo`]}
+    />
 
     {!baseline || baseline.runCount === 0 ? (
       <div class="empty-state">
@@ -267,7 +271,7 @@ function formatDuration(ms: number) {
                 return (
                   <div class="all-nominal">
                     <span class="nominal-icon">{"\u2705"}</span>
-                    <span>All systems nominal — all schedule presets fit within 200 min/month.</span>
+                    <span>All systems nominal вЂ” all schedule presets fit within 200 min/month.</span>
                   </div>
                 );
               }
@@ -311,7 +315,7 @@ function formatDuration(ms: number) {
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -460,12 +464,12 @@ function formatDuration(ms: number) {
 
   .confidence-medium {
     background: rgba(210, 153, 34, 0.15);
-    color: #d29922;
+    color: var(--color-warning);
   }
 
   .confidence-high {
     background: rgba(63, 185, 80, 0.15);
-    color: #3fb950;
+    color: var(--color-success);
   }
 
   /* Schedule presets */
@@ -490,7 +494,7 @@ function formatDuration(ms: number) {
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
     background: rgba(210, 153, 34, 0.08);
-    border-left: 3px solid #d29922;
+    border-left: 3px solid var(--color-warning);
     border-radius: 4px;
     font-size: 0.85rem;
     color: var(--color-text, #e6edf3);
@@ -510,7 +514,7 @@ function formatDuration(ms: number) {
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     background: rgba(63, 185, 80, 0.08);
-    border-left: 3px solid #3fb950;
+    border-left: 3px solid var(--color-success);
     border-radius: 4px;
     font-size: 0.85rem;
     color: var(--color-text, #e6edf3);

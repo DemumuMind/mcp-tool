@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../components/InternalHero.astro';
 import Base from '../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -49,21 +50,21 @@ if (evidenceManifest) {
 // Status ordering for claims
 const statusOrder = { proven: 0, aspirational: 1, deprecated: 2 };
 const statusColors: Record<string, string> = {
-  proven: '#3fb950',
-  aspirational: '#d29922',
+  proven: 'var(--color-success)',
+  aspirational: 'var(--color-warning)',
   deprecated: '#8b949e',
 };
 const toneColors: Record<string, string> = {
-  technical: '#58a6ff',
-  pragmatic: '#3fb950',
-  playful: '#d29922',
-  executive: '#bc8cff',
+  technical: 'var(--color-system)',
+  pragmatic: 'var(--color-success)',
+  playful: 'var(--color-warning)',
+  executive: 'var(--color-system)',
 };
 ---
 
 <Base
   title="MarketIR Preview - Internal"
-  description="Internal preview of MarketIR messaging data."
+  description="Operator Surface of MarketIR messaging data."
   currentPath="/lab/marketir/"
 >
   <head>
@@ -71,10 +72,7 @@ const toneColors: Record<string, string> = {
   </head>
 
   <div class="mir-page">
-    <div class="internal-badge">Internal Preview</div>
-
-    <h1>MarketIR Preview</h1>
-    <p class="subtitle">Deterministic marketing IR — claims, evidence, and channel messaging.</p>
+    <InternalHero badge="Operator Surface" eyebrow="Internal systems" title="MarketIR Preview" lede="Deterministic marketing IR вЂ” claims, evidence, and channel messaging." />
 
     {/* Snapshot banner */}
     {snapshot ? (
@@ -281,8 +279,8 @@ const toneColors: Record<string, string> = {
   }
   .internal-badge {
     display: inline-block;
-    background: #d2992233;
-    color: #d29922;
+    background: rgba(217, 107, 59, 0.12);
+    color: var(--color-warning);
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius);
     font-size: 0.75rem;
@@ -464,8 +462,8 @@ const toneColors: Record<string, string> = {
     margin-bottom: 0.25rem;
   }
   .ev-type {
-    background: #58a6ff22;
-    color: #58a6ff;
+    background: rgba(122, 141, 255, 0.14);
+    color: var(--color-system);
     padding: 0.1rem 0.4rem;
     border-radius: 3px;
     font-size: 0.7rem;
@@ -610,7 +608,7 @@ const toneColors: Record<string, string> = {
   }
   .channel-tag {
     background: #23863622;
-    color: #3fb950;
+    color: var(--color-success);
     padding: 0.15rem 0.5rem;
     border-radius: 3px;
     font-size: 0.7rem;

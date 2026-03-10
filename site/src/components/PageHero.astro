@@ -1,0 +1,31 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  meta?: string[];
+  align?: "left" | "center";
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  meta = [],
+  align = "left",
+} = Astro.props;
+---
+
+<section class:list={["page-hero", align === "center" && "page-hero--center"]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h1 class="page-hero__title">{title}</h1>
+  {lede && <p class="page-hero__lede">{lede}</p>}
+  {meta.length > 0 && (
+    <div class="page-hero__meta">
+      {meta.map((item) => <span>{item}</span>)}
+    </div>
+  )}
+  <div class="page-hero__actions">
+    <slot name="actions" />
+  </div>
+</section>

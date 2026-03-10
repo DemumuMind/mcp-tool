@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../components/InternalHero.astro';
 import Base from '../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -29,13 +30,13 @@ try {
     }
   }
 } catch {
-  // targets dir doesn't exist yet — that's fine
+  // targets dir doesn't exist yet вЂ” that's fine
 }
 
 // Aggregate stats
 const totalCandidates = allTargets.reduce((sum, t) => sum + (t.data.candidateCount || 0), 0);
 const totalErrors = allTargets.reduce((sum, t) => sum + (t.data.errors?.length || 0), 0);
-const scoringVersion = allTargets[0]?.data.scoringVersion || '—';
+const scoringVersion = allTargets[0]?.data.scoringVersion || 'вЂ”';
 const generatedAt = allTargets[0]?.data.generatedAt || null;
 ---
 
@@ -49,10 +50,7 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
   </head>
 
   <div class="targets-page">
-    <div class="internal-badge">Internal Preview</div>
-
-    <h1>Target Lists</h1>
-    <p class="subtitle">Partner/integrator discovery — scored, ranked, and draft-ready.</p>
+    <InternalHero badge="Operator Surface" eyebrow="Internal systems" title="Target Lists" lede="Partner/integrator discovery вЂ” scored, ranked, and draft-ready." />
 
     {allTargets.length > 0 ? (
       <div class="summary-banner">
@@ -134,7 +132,7 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
                     </td>
                     <td class="num">{c.stars?.toLocaleString()}</td>
                     <td class="num score-cell">{c.score}</td>
-                    <td>{c.language || '—'}</td>
+                    <td>{c.language || 'вЂ”'}</td>
                     <td>
                       <span class={`type-tag ${c.ownerType}`}>{c.ownerType}</span>
                     </td>
@@ -160,8 +158,8 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
                           ))}
                         </div>
                         <div class="meta-info">
-                          <p>Pushed: {c.pushedAt?.slice(0, 10) || '—'}</p>
-                          <p>Topics: {(c.topics || []).join(', ') || '—'}</p>
+                          <p>Pushed: {c.pushedAt?.slice(0, 10) || 'вЂ”'}</p>
+                          <p>Topics: {(c.topics || []).join(', ') || 'вЂ”'}</p>
                           {i < 25 && (
                             <p><a href={`/targets/${slug}/drafts/${c.owner}--${c.repo}.md`}>Draft outreach</a></p>
                           )}
@@ -190,7 +188,7 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
         <li>MarketIR targeting spec: keywords, topics, languages, seed repos</li>
         <li>GitHub Search API: topic + keyword + comparable expansion</li>
         <li>Distribution signals: go-link mentions in external repos (optional)</li>
-        <li>Scoring: v{scoringVersion} — deterministic, versioned weights</li>
+        <li>Scoring: v{scoringVersion} вЂ” deterministic, versioned weights</li>
         <li>Generator: <code>gen-targets.mjs</code> (manual/scheduled, NOT every deploy)</li>
       </ul>
     </section>
@@ -207,7 +205,7 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
       if (!row) return;
       const isVisible = row.style.display !== 'none';
       row.style.display = isVisible ? 'none' : 'table-row';
-      btn.textContent = isVisible ? '+' : '−';
+      btn.textContent = isVisible ? '+' : 'в€’';
     });
   });
 </script>
@@ -218,8 +216,8 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
   }
   .internal-badge {
     display: inline-block;
-    background: #d2992233;
-    color: #d29922;
+    background: rgba(217, 107, 59, 0.12);
+    color: var(--color-warning);
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius);
     font-size: 0.75rem;
@@ -334,10 +332,10 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
     font-weight: 700;
   }
   tr.high-score {
-    background: #3fb95008;
+    background: rgba(120, 197, 140, 0.08);
   }
   tr.mid-score {
-    background: #d2992208;
+    background: rgba(217, 107, 59, 0.08);
   }
 
   /* Repo link & desc */
@@ -366,8 +364,8 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
     text-transform: uppercase;
   }
   .type-tag.organization {
-    background: #58a6ff22;
-    color: #58a6ff;
+    background: rgba(122, 141, 255, 0.14);
+    color: var(--color-system);
   }
   .type-tag.user {
     background: #8b949e22;

@@ -1,170 +1,137 @@
 ---
-import Layout from '../../layouts/Base.astro';
+import InternalHero from "../../components/InternalHero.astro";
+import Layout from "../../layouts/Base.astro";
 
 const LAB_SECTIONS = [
   {
     id: "quality",
     title: "Quality & Compliance",
     items: [
-      { href: "/lab/audit/", icon: "🧾", title: "Audit Scoreboard", desc: "Tool metadata accuracy and validation status", badge: "Live" },
-      { href: "/lab/health/", icon: "❤️", title: "README Health", desc: "Content quality analysis for tool documentation", badge: "Live" },
-      { href: "/lab/clearance/", icon: "🛡️", title: "Safety Clearance", desc: "Security and safety compliance checks", badge: "Internal" },
+      { href: "/lab/audit/", code: "AUD", title: "Audit Scoreboard", desc: "Tool metadata accuracy and validation status", badge: "Live" },
+      { href: "/lab/health/", code: "DOC", title: "README Health", desc: "Content quality analysis for tool documentation", badge: "Live" },
+      { href: "/lab/clearance/", code: "CLR", title: "Safety Clearance", desc: "Security and safety compliance checks", badge: "Internal" },
     ],
   },
   {
     id: "pipeline",
     title: "Pipeline Monitoring",
     items: [
-      { href: "/lab/baseline/", icon: "📈", title: "Baseline Performance", desc: "Benchmarks and regression testing", badge: "Internal" },
-      { href: "/lab/drift/", icon: "🧭", title: "Drift Detection", desc: "Configuration and infrastructure drift analysis", badge: "Internal" },
-      { href: "/lab/ops/", icon: "⚙️", title: "Ops History", desc: "Pipeline execution logs and success rates", badge: "Internal" },
-      { href: "/lab/telemetry-export/", icon: "🧪", title: "Telemetry", desc: "Raw data retention and export", badge: "Internal" },
+      { href: "/lab/baseline/", code: "BAS", title: "Baseline Performance", desc: "Benchmarks and regression testing", badge: "Internal" },
+      { href: "/lab/drift/", code: "DRF", title: "Drift Detection", desc: "Configuration and infrastructure drift analysis", badge: "Internal" },
+      { href: "/lab/ops/", code: "OPS", title: "Ops History", desc: "Pipeline execution logs and success rates", badge: "Internal" },
+      { href: "/lab/telemetry-export/", code: "TEL", title: "Telemetry", desc: "Raw data retention and export", badge: "Internal" },
     ],
   },
   {
     id: "governance",
     title: "Governance & Promotion",
     items: [
-      { href: "/lab/control/", icon: "🎛️", title: "Control Surface", desc: "Operator actions for governance and promotion", badge: "Internal" },
-      { href: "/lab/promo/", icon: "📣", title: "Promotion Track", desc: "Active promotion campaigns and status", badge: "Internal" },
-      { href: "/lab/worthy/", icon: "⭐", title: "Worthy Candidates", desc: "Tools flagged for potential promotion", badge: "Internal" },
-      { href: "/lab/queue/", icon: "🧵", title: "Queue", desc: "Pending review and processing queue", badge: "Internal" },
+      { href: "/lab/control/", code: "CTL", title: "Control Surface", desc: "Operator actions for governance and promotion", badge: "Internal" },
+      { href: "/lab/promo/", code: "PRM", title: "Promotion Track", desc: "Active promotion campaigns and status", badge: "Internal" },
+      { href: "/lab/worthy/", code: "WRT", title: "Worthy Candidates", desc: "Tools flagged for potential promotion", badge: "Internal" },
+      { href: "/lab/queue/", code: "QUE", title: "Queue", desc: "Pending review and processing queue", badge: "Internal" },
     ],
   },
   {
     id: "instruments",
     title: "Live Instruments",
     items: [
-      { href: "https://github.com/DemumuMind/vocal-synth-engine", icon: "🎹", title: "Vocal Synth Cockpit", desc: "Piano roll, render bank, and A/B comparison for the vocal synthesis engine", badge: "Lab", external: true },
+      { href: "https://github.com/DemumuMind/vocal-synth-engine", code: "VOC", title: "Vocal Synth Cockpit", desc: "Piano roll, render bank, and A/B comparison for the vocal synthesis engine", badge: "Lab", external: true },
     ],
   },
   {
     id: "intel",
     title: "Market Intelligence",
     items: [
-      { href: "https://demumumind.github.io/registry-stats/dashboard/", icon: "📦", title: "Registry Pulse", desc: "Weekly download stats, growth pulse, and data health across npm, PyPI, VS Code, NuGet, and Docker Hub", badge: "Live", external: true },
-      { href: "/lab/marketir/", icon: "📊", title: "Market IR", desc: "Investor relations and market analysis", badge: "Internal" },
-      { href: "/lab/metrics/", icon: "🌱", title: "Growth Metrics", desc: "User adoption and catalog growth stats", badge: "Internal" },
-      { href: "/lab/signals/", icon: "📡", title: "Signals", desc: "Early warning indicators and trends", badge: "Internal" },
-      { href: "/lab/targets/", icon: "🎯", title: "Targets", desc: "Strategic acquisition and integration targets", badge: "Internal" },
+      { href: "https://demumumind.github.io/registry-stats/dashboard/", code: "REG", title: "Registry Pulse", desc: "Weekly download stats, growth pulse, and data health across npm, PyPI, VS Code, NuGet, and Docker Hub", badge: "Live", external: true },
+      { href: "/lab/marketir/", code: "MIR", title: "Market IR", desc: "Investor relations and market analysis", badge: "Internal" },
+      { href: "/lab/metrics/", code: "MET", title: "Growth Metrics", desc: "User adoption and catalog growth stats", badge: "Internal" },
+      { href: "/lab/signals/", code: "SIG", title: "Signals", desc: "Early warning indicators and trends", badge: "Internal" },
+      { href: "/lab/targets/", code: "TGT", title: "Targets", desc: "Strategic acquisition and integration targets", badge: "Internal" },
     ],
   },
 ];
 ---
 
-<Layout title="The Lab" description="Experimental tools, dashboards, and internal utilities for managing DemumuMind.">
-  <style>
-    .subhead { max-width: 70ch; opacity: 0.85; margin-top: 0.75rem; color: #a1a1aa; font-size: 1.125rem; line-height: 1.75rem; }
-    .section { margin-top: 3rem; }
-    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(1, minmax(0, 1fr)); }
-    @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  
-    .card {
-      display: flex; flex-direction: column; gap: 0.5rem;
-      padding: 1.25rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 0.75rem;
-      text-decoration: none;
-      background: rgba(255,255,255,0.03);
-      transition: all 0.2s ease;
-      min-height: 140px;
-      position: relative; /* Anchor for absolute arrow */
-      overflow: hidden;   /* Clip the arrow if needed */
-    }
-    .card:hover { 
-      transform: translateY(-2px); 
-      background: rgba(255,255,255,0.06); 
-      border-color: rgba(255,255,255,0.2); 
-    }
-    /* Arrow style - "Airport Signage" fix */
-    .card-arrow {
-      position: absolute;
-      right: 18px;
-      bottom: 18px;
-      width: 48px;
-      height: 48px;
-      opacity: 0;
-      transform: translateX(-4px);
-      transition: all 0.2s ease;
-      color: white; /* Use white with low opacity for subtle watermark */
-      pointer-events: none;
-    }
-    .card:hover .card-arrow {
-      opacity: 0.18;
-      transform: translateX(0);
-    }
-    .title-group { display: flex; align-items: center; gap: 0.75rem; }
-    .icon { font-size: 1.5rem; }
-    .title { font-weight: 600; color: white; font-size: 1.125rem; }
-    .desc { opacity: 0.7; line-height: 1.5; color: #d4d4d8; font-size: 0.95rem; }
-    .badge {
-      font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 9999px;
-      border: 1px solid rgba(255,255,255,0.15); opacity: 0.8;
-      background: rgba(255,255,255,0.05);
-      white-space: nowrap; color: #e4e4e7; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500;
-    }
-    
-    /* Admin nav helper */
-    #admin-nav-hint { font-size: 0.875rem; margin-top: 4rem; opacity: 0.4; color: #a1a1aa; text-align: center; }
-  </style>
+<Layout title="The Lab" description="Experimental tools, dashboards, and internal utilities for managing DemumuMind." currentPath="/lab/" routeFamily="ops">
+  <div class="ops-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Lab console"
+      title="The Lab"
+      lede="Experimental dashboards, audit rooms, and pipeline controls for the DemumuMind operating surface."
+      meta={["Quality and compliance", "Pipeline monitoring", "Promotion governance", "Market intelligence"]}
+    />
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">The Lab</h1>
-    <p class="subhead">Experimental tools & dashboards for auditing, monitoring, and growing the ecosystem.</p>
-  
-    {LAB_SECTIONS.map((sec) => (
-      <section class="section" aria-labelledby={sec.id}>
-        <h2 id={sec.id} class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-            {sec.title}
-        </h2>
-        <div class="grid">
-          {sec.items.map((it) => (
-            <a class="card group" href={it.href} {...(it.external ? { target: "_blank", rel: "noopener" } : {})}>
-              <div class="row">
-                <div class="title-group">
-                    <span class="icon">{it.icon}</span>
-                    <span class="title">{it.title}</span>
+    {LAB_SECTIONS.map((section) => (
+      <section class="ops-section reveal-stage" aria-labelledby={section.id}>
+        <div class="ops-section-header">
+          <div>
+            <span class="ops-kicker">Subsystem</span>
+            <h2 id={section.id}>{section.title}</h2>
+          </div>
+        </div>
+
+        <div class="ops-card-grid">
+          {section.items.map((item) => (
+            <a class="ops-card ops-link-card" href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+              <div class="ops-link-card__header">
+                <div class="ops-link-card__title">
+                  <span class="ops-link-card__code">{item.code}</span>
+                  <span>{item.title}</span>
                 </div>
-                {it.badge ? <span class="badge">{it.badge}</span> : null}
+                <span class:list={["ops-pill", item.badge === "Live" ? "ops-pill--ok" : item.badge === "Lab" ? "ops-pill--sys" : "ops-pill--warn"]}>{item.badge}</span>
               </div>
-              <div class="desc">{it.desc}</div>
-              <svg class="card-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              <p class="ops-muted">{item.desc}</p>
             </a>
           ))}
         </div>
       </section>
     ))}
-    
-    <div id="admin-nav-hint">
-      Tip: append <code>?admin=1</code> to enable the admin nav dropdown.
-    </div>
+
+    <p class="ops-caption">Use `?admin=1` or `Ctrl+Shift+L` to expose the lab link in the main navigation.</p>
   </div>
-  
-  <script is:inline>
-    (function () {
-      const KEY = "demumumind_admin_nav";
-      
-      if (typeof window !== "undefined") {
-        const url = new URL(window.location.href);
-
-        // Enable via ?admin=1
-        if (url.searchParams.get("admin") === "1") {
-          localStorage.setItem(KEY, "1");
-          url.searchParams.delete("admin");
-          window.history.replaceState({}, "", url.toString());
-          // Optional: visually acknowledge
-        }
-
-        // Enable via Ctrl+Shift+L
-        window.addEventListener("keydown", (e) => {
-          if (e.ctrlKey && e.shiftKey && (e.key === "L" || e.key === "l")) {
-            localStorage.setItem(KEY, "1");
-            alert("Lab mode enabled. Reloading...");
-            window.location.reload();
-          }
-        });
-      }
-    })();
-  </script>
 </Layout>
+
+<style>
+  .ops-link-card {
+    text-decoration: none;
+    transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease;
+  }
+
+  .ops-link-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(122, 141, 255, 0.22);
+  }
+
+  .ops-link-card__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .ops-link-card__title {
+    display: inline-flex;
+    gap: 0.65rem;
+    align-items: center;
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .ops-link-card__code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    min-height: 2rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-system);
+  }
+</style>

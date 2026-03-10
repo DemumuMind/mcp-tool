@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const title = "Clearance Lab";
-const description = "Name clearance reports — automated namespace + similarity analysis";
+const description = "Name clearance reports вЂ” automated namespace + similarity analysis";
 
 // Load runs data
 let runs: any[] = [];
@@ -44,7 +44,7 @@ function formatDate(dateStr: string) {
       year: "numeric",
     });
   } catch {
-    return dateStr || "—";
+    return dateStr || "вЂ”";
   }
 }
 ---
@@ -62,7 +62,7 @@ function formatDate(dateStr: string) {
     <span class="internal-badge">Internal</span>
 
     <h1>Clearance Lab</h1>
-    <p class="subtitle">Name clearance reports — automated namespace and similarity analysis for new tool names.</p>
+    <p class="subtitle">Name clearance reports вЂ” automated namespace and similarity analysis for new tool names.</p>
 
     {runs.length === 0 ? (
       <div class="empty-state">
@@ -90,16 +90,16 @@ function formatDate(dateStr: string) {
                     class="tier-badge"
                     style={`background: ${tierBg(run.tier)}; color: ${tierColor(run.tier)};`}
                   >
-                    {run.tier?.toUpperCase() || "—"}
+                    {run.tier?.toUpperCase() || "вЂ”"}
                   </span>
                 </td>
-                <td class="num">{run.score ?? "—"}</td>
+                <td class="num">{run.score ?? "вЂ”"}</td>
                 <td class="date-cell">{formatDate(run.date)}</td>
                 <td>
                   {run.slug ? (
                     <a href={`/lab/clearance/${run.slug}/`} class="report-link">View</a>
                   ) : (
-                    <span class="no-link">—</span>
+                    <span class="no-link">вЂ”</span>
                   )}
                 </td>
               </tr>
@@ -128,7 +128,7 @@ function formatDate(dateStr: string) {
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -224,7 +224,7 @@ function formatDate(dateStr: string) {
   }
 
   .report-link {
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
     font-size: 0.85rem;
     padding: 0.2rem 0.5rem;

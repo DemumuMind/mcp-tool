@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../components/InternalHero.astro';
 import Base from '../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -57,14 +58,22 @@ function catBadge(category: string) {
     <meta name="robots" content="noindex, nofollow" />
   </head>
 
-  <div class="queue-page">
-    <div class="internal-badge">Internal Preview</div>
-
-    <h1>Outreach Queue</h1>
-    <p class="subtitle">Drift-triggered micro-campaign packets pending human review. No sending — advisory only.</p>
+  <div class="ops-page queue-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Queue review"
+      title="Outreach Queue"
+      lede="Drift-triggered micro-campaign packets pending human review. Advisory only, no automatic sending."
+      meta={[
+        `${stats.queued || 0} queued`,
+        `${stats.suppressed || 0} suppressed`,
+        `${slugs.length} tools`,
+        policy.maxPerToolPerWeek ? `rate ${policy.maxPerToolPerWeek}/tool/week` : "rate unset",
+      ]}
+    />
 
     {queue ? (
-      <div class="summary-banner">
+      <div class="summary-banner ops-panel">
         <div class="summary-grid">
           <div class="summary-item">
             <span class="value">{stats.queued}</span>
@@ -92,19 +101,19 @@ function catBadge(category: string) {
           <div class="policy-meta">
             Rate limit: {policy.maxPerToolPerWeek}/tool/week
             {policy.dedupeWindowDays ? ` | Dedup: ${policy.dedupeWindowDays}d` : ''}
-            {policy.quietHours ? ` | Quiet: ${policy.quietHours.start}–${policy.quietHours.end}` : ''}
+            {policy.quietHours ? ` | Quiet: ${policy.quietHours.start}вЂ“${policy.quietHours.end}` : ''}
           </div>
         )}
       </div>
     ) : (
-      <div class="summary-banner empty">
+      <div class="summary-banner empty ops-callout">
         <p>No outreach queue generated yet.</p>
         <p>Run <code>node src/index.mjs --dry-run --config sync.config.json</code> in mcpt-link-fresh with outreach enabled.</p>
       </div>
     )}
 
     {items.length === 0 && queue && (
-      <div class="empty-state">
+      <div class="empty-state ops-callout">
         <p>Queue is empty. No outreach triggers detected.</p>
       </div>
     )}
@@ -113,11 +122,11 @@ function catBadge(category: string) {
       const slugItems = bySlug.get(slug) || [];
 
       return (
-        <section class="section">
+        <section class="ops-section">
           <h2>{slug}</h2>
 
           {slugItems.map((item: any, idx: number) => (
-            <div class={`queue-card ${item.priority === 'high' ? 'high-priority' : ''}`}>
+            <div class={`queue-card ops-panel ${item.priority === 'high' ? 'high-priority' : ''}`}>
               <div class="card-header">
                 <span class={`cat-badge cat-${item.triggerCategory}`}>{catBadge(item.triggerCategory)}</span>
                 <span class={`prio-badge prio-${item.priority}`}>{prioBadge(item.priority)}</span>
@@ -219,7 +228,7 @@ function catBadge(category: string) {
     })}
 
     {suppressed.length > 0 && (
-      <section class="section suppressed-section">
+      <section class="ops-section suppressed-section">
         <h2>Suppressed ({suppressed.length})</h2>
         <div class="table-wrap">
           <table>
@@ -246,12 +255,12 @@ function catBadge(category: string) {
       </section>
     )}
 
-    <div class="provenance">
+    <div class="provenance ops-callout">
       <h3>Data Sources</h3>
       <ul>
         <li>Queue: <code>public/queue/outreach-queue.json</code></li>
         <li>Generator: <a href="https://github.com/DemumuMind/mcpt-link-fresh" target="_blank" rel="noopener">mcpt-link-fresh</a></li>
-        <li>Policy: max {policy.maxPerToolPerWeek || '—'}/tool/week, {policy.dedupeWindowDays || '—'}d dedup window</li>
+        <li>Policy: max {policy.maxPerToolPerWeek || 'вЂ”'}/tool/week, {policy.dedupeWindowDays || 'вЂ”'}d dedup window</li>
       </ul>
     </div>
   </div>
@@ -266,7 +275,7 @@ function catBadge(category: string) {
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -387,10 +396,10 @@ function catBadge(category: string) {
     letter-spacing: 0.05em;
   }
 
-  .cat-claim-change { background: #388bfd33; color: #58a6ff; }
-  .cat-evidence-added { background: #3fb95033; color: #3fb950; }
-  .cat-release-published { background: #d2992233; color: #d29922; }
-  .cat-presskit-material { background: #bc8cff33; color: #bc8cff; }
+  .cat-claim-change { background: rgba(122, 141, 255, 0.16); color: var(--color-system); }
+  .cat-evidence-added { background: rgba(120, 197, 140, 0.16); color: var(--color-success); }
+  .cat-release-published { background: rgba(217, 107, 59, 0.12); color: var(--color-warning); }
+  .cat-presskit-material { background: rgba(122, 141, 255, 0.18); color: var(--color-system); }
 
   .prio-badge {
     font-size: 0.65rem;
@@ -455,7 +464,7 @@ function catBadge(category: string) {
   }
 
   .field-value a {
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
   }
 
@@ -509,7 +518,7 @@ function catBadge(category: string) {
   }
 
   .targets-table td a {
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
   }
 
@@ -529,8 +538,8 @@ function catBadge(category: string) {
     font-weight: 600;
   }
 
-  .type-tag.Organization { background: #388bfd33; color: #58a6ff; }
-  .type-tag.User { background: #3fb95033; color: #3fb950; }
+  .type-tag.Organization { background: rgba(122, 141, 255, 0.16); color: var(--color-system); }
+  .type-tag.User { background: rgba(120, 197, 140, 0.16); color: var(--color-success); }
 
   .why-cell {
     display: flex;
@@ -558,8 +567,8 @@ function catBadge(category: string) {
     font-weight: 700;
     padding: 0.1rem 0.35rem;
     border-radius: 3px;
-    background: #3fb95033;
-    color: #3fb950;
+    background: rgba(120, 197, 140, 0.16);
+    color: var(--color-success);
     text-transform: uppercase;
     margin-right: 0.4rem;
   }
@@ -572,7 +581,7 @@ function catBadge(category: string) {
 
   .resource-link {
     font-size: 0.8rem;
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
     padding: 0.3rem 0.6rem;
     border: 1px solid var(--color-border, #30363d);
@@ -596,9 +605,9 @@ function catBadge(category: string) {
     text-transform: uppercase;
   }
 
-  .reason-dedup { background: #d2992233; color: #d29922; }
+  .reason-dedup { background: rgba(217, 107, 59, 0.12); color: var(--color-warning); }
   .reason-rate-limit { background: #f8514933; color: #f85149; }
-  .reason-quiet-hours { background: #bc8cff33; color: #bc8cff; }
+  .reason-quiet-hours { background: rgba(122, 141, 255, 0.18); color: var(--color-system); }
 
   /* Provenance */
   .provenance {
@@ -633,7 +642,7 @@ function catBadge(category: string) {
   }
 
   .provenance a {
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
   }
 

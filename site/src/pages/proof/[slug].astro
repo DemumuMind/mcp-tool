@@ -1,18 +1,21 @@
 ---
-import Base from '../../layouts/Base.astro';
-import { kit } from '../../lib/kit';
-import overrides from '../../data/overrides.json';
-import fs from 'node:fs';
-import path from 'node:path';
-import { getToolsWithPress, getProofData, loadSnapshot } from '../../lib/marketir/loader.mjs';
+import Base from "../../layouts/Base.astro";
+import overrides from "../../data/overrides.json";
+import fs from "node:fs";
+import path from "node:path";
+import { getProofData, getSnapshotMeta, getToolBySlug, loadSnapshot } from "../../lib/marketir/loader.mjs";
 
-const ovr = overrides as Record<string, any>;
+const overrideMap = overrides as Record<string, any>;
 
 export function getStaticPaths() {
-  const _ovr = overrides as Record<string, any>;
-  const toolsWithPress = getToolsWithPress();
-  return toolsWithPress
-    .filter(({ slug }) => _ovr[slug]?.publicProof === true)
+  const overridesBySlug = overrides as Record<string, any>;
+  return Object.keys(overridesBySlug)
+    .filter((slug) => overridesBySlug[slug]?.publicProof === true)
+    .map((slug) => ({
+      slug,
+      tool: getToolBySlug(slug),
+    }))
+    .filter(({ tool }) => tool)
     .map(({ slug, tool }) => ({
       params: { slug },
       props: { slug, tool },
@@ -20,195 +23,216 @@ export function getStaticPaths() {
 }
 
 const { slug, tool } = Astro.props;
-const override = ovr[slug] || {};
+const override = overrideMap[slug] || {};
 const proofData = getProofData(slug);
 const snapshot = loadSnapshot();
+const snapshotMeta = getSnapshotMeta(snapshot);
 
-// GitHub facts (fail-soft)
 let facts: any = null;
 try {
-  const factsPath = path.join(process.cwd(), 'src/data/github-facts', `${slug}.json`);
-  facts = JSON.parse(fs.readFileSync(factsPath, 'utf8'));
+  const factsPath = path.join(process.cwd(), "src/data/github-facts", `${slug}.json`);
+  facts = JSON.parse(fs.readFileSync(factsPath, "utf8"));
 } catch {}
 
-// Tracked links (fail-soft)
 let toolLinks: any[] = [];
 try {
-  const linksPath = path.join(process.cwd(), 'src/data/links.json');
-  const linksData = JSON.parse(fs.readFileSync(linksPath, 'utf8'));
-  toolLinks = (linksData.links || []).filter((l: any) => l.slug === slug);
+  const linksPath = path.join(process.cwd(), "src/data/links.json");
+  const linksData = JSON.parse(fs.readFileSync(linksPath, "utf8"));
+  toolLinks = (linksData.links || []).filter((link: any) => link.slug === slug);
 } catch {}
 
-// Clearance data (fail-soft)
 let clearance: any = null;
 try {
-  const clearancePath = path.join(process.cwd(), '../site/public/lab/clearance', `${slug}.json`);
-  clearance = JSON.parse(fs.readFileSync(clearancePath, 'utf8'));
+  const clearancePath = path.join(process.cwd(), "../site/public/lab/clearance", `${slug}.json`);
+  clearance = JSON.parse(fs.readFileSync(clearancePath, "utf8"));
 } catch {}
 
-const orgUrl = `${kit.org.url || 'https://github.com/DemumuMind'}/${slug}`;
-const siteUrl = kit.site.url || 'http://localhost:4321/';
+const orgUrl = `https://github.com/DemumuMind/${slug}`;
+const factsObservedAt = facts?.fetchedAt
+  ? new Date(facts.fetchedAt).toLocaleDateString("en-US", { dateStyle: "medium" })
+  : null;
+const snapshotObservedAt = snapshot?.fetchedAt
+  ? new Date(snapshot.fetchedAt).toLocaleDateString("en-US", { dateStyle: "medium" })
+  : null;
 
-// Determine "last updated" dates
-const factsFetchedAt = facts?.fetchedAt ? new Date(facts.fetchedAt).toLocaleDateString('en-US', { dateStyle: 'medium' }) : null;
-const snapshotFetchedAt = snapshot?.fetchedAt ? new Date(snapshot.fetchedAt).toLocaleDateString('en-US', { dateStyle: 'medium' }) : null;
-
-// Clearance tier label
 function getTierLabel(score: number): string {
-  if (score >= 80) return 'GREEN';
-  if (score >= 50) return 'YELLOW';
-  return 'RED';
+  if (score >= 80) return "GREEN";
+  if (score >= 50) return "YELLOW";
+  return "RED";
 }
 ---
 
-<Base
-  title={`${tool.name} — Proof`}
-  description={`Verified claims, evidence chain, and transparency data for ${tool.name}.`}
-  currentPath={`/proof/${slug}/`}
->
+<Base title={`${tool.name} - Proof`} description={`Verified claims, evidence chains, and transparency data for ${tool.name}.`} currentPath={`/proof/${slug}/`}>
   <div class="proof-page">
     <a href="/proof/" class="back-link">&larr; All proof pages</a>
 
-    {/* Header */}
-    <header class="proof-header">
-      <h1>{tool.name}</h1>
-      <p class="one-liner">{tool.positioning?.oneLiner}</p>
-      <div class="badges">
-        {override.stability && <span class={`badge badge-${override.stability}`}>{override.stability}</span>}
-        {override.kind && <span class="badge badge-kind">{override.kind}</span>}
+    <section class="proof-hero">
+      <div>
+        <p class="eyebrow">Proof dossier</p>
+        <h1>{tool.name}</h1>
+        <p class="one-liner">{tool.positioning?.oneLiner}</p>
+        <div class="badges">
+          {override.stability && <span class={`badge badge-${override.stability}`}>{override.stability}</span>}
+          {override.kind && <span class="badge badge-kind">{override.kind}</span>}
+        </div>
       </div>
-    </header>
+      <div class="proof-hero__meta">
+        {proofData?.proven?.length > 0 && (
+          <div class="meta-block">
+            <span class="meta-label">Proven</span>
+            <span class="meta-value">{proofData.proven.length}</span>
+          </div>
+        )}
+        {proofData?.aspirational?.length > 0 && (
+          <div class="meta-block">
+            <span class="meta-label">Aspirational</span>
+            <span class="meta-value">{proofData.aspirational.length}</span>
+          </div>
+        )}
+        {proofData?.antiClaims?.length > 0 && (
+          <div class="meta-block">
+            <span class="meta-label">Anti-claims</span>
+            <span class="meta-value">{proofData.antiClaims.length}</span>
+          </div>
+        )}
+      </div>
+    </section>
 
-    {/* Proven Claims */}
-    {proofData?.proven && proofData.proven.length > 0 && (
-      <section class="section" data-verified-claims>
-        <h2>Proven Claims</h2>
-        <p class="section-note">Every claim below is backed by evidence. Status: proven.</p>
+    {proofData?.proven?.length > 0 && (
+      <section class="section">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Verified record</p>
+            <h2 class="section-shell__title">Proven claims</h2>
+          </div>
+        </div>
         <div class="claims-list">
           {proofData.proven.map((claim: any) => (
-            <div class="claim claim-proven">
+            <article class="claim claim-proven">
               <div class="claim-top-row">
-                <div class="claim-status">PROVEN</div>
-                <button class="claim-copy-btn" data-claim-text={claim.statement} type="button" title="Copy claim">Copy</button>
+                <span class="badge badge-stable">Proven</span>
+                <button class="claim-copy-btn" data-claim-text={claim.statement} type="button">Copy</button>
               </div>
               <div class="claim-statement">{claim.statement}</div>
               {claim.evidence?.length > 0 && (
                 <div class="claim-evidence">
-                  {claim.evidence.map((ev: any) => (
-                    <span class="ev-badge">
-                      {ev.url ? (
-                        <a href={ev.url} target="_blank" rel="noopener">{ev.type}: {ev.id.split('.').pop()}</a>
-                      ) : ev.path ? (
-                        <a href={`/marketir/evidence/${ev.path.split('/').pop()}`} target="_blank" rel="noopener">{ev.type}: {ev.id.split('.').pop()}</a>
+                  {claim.evidence.map((evidence: any) => (
+                    <span class="tag">
+                      {evidence.url ? (
+                        <a href={evidence.url} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
+                      ) : evidence.path ? (
+                        <a href={`/marketir/evidence/${evidence.path.split("/").pop()}`} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
                       ) : (
-                        <span>{ev.type}: {ev.id.split('.').pop()}</span>
+                        <span>{evidence.type}: {evidence.id.split(".").pop()}</span>
                       )}
                     </span>
                   ))}
                 </div>
               )}
-            </div>
+            </article>
           ))}
         </div>
       </section>
     )}
 
-    {/* Proof Bullets — copy-ready summary of proven claims */}
-    {proofData?.proven && proofData.proven.length > 0 && (
-      <section class="section" id="proof-bullets" data-proof-section>
-        <h2>Proof Bullets</h2>
-        <p class="section-note">Copy-ready summary of proven claims.</p>
+    {proofData?.proven?.length > 0 && (
+      <section class="section">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Copy block</p>
+            <h2 class="section-shell__title">Proof bullets</h2>
+          </div>
+        </div>
         <div class="bullets-container">
           <ul id="proof-bullets-list">
-            {proofData.proven.slice(0, 5).map((claim: any) => (
-              <li>{claim.statement}</li>
-            ))}
+            {proofData.proven.slice(0, 5).map((claim: any) => <li>{claim.statement}</li>)}
           </ul>
-          <button class="copy-btn" id="copy-proof-bullets" type="button">Copy All</button>
+          <button class="copy-btn" id="copy-proof-bullets" type="button">Copy all</button>
         </div>
       </section>
     )}
 
-    {/* Aspirational Claims */}
-    {proofData?.aspirational && proofData.aspirational.length > 0 && (
+    {proofData?.aspirational?.length > 0 && (
       <section class="section">
-        <h2>Aspirational Claims</h2>
-        <p class="section-note">These claims are not yet backed by reproducible evidence.</p>
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Not yet proven</p>
+            <h2 class="section-shell__title">Aspirational claims</h2>
+          </div>
+        </div>
         <div class="claims-list">
           {proofData.aspirational.map((claim: any) => (
-            <div class="claim claim-aspirational">
-              <div class="claim-status aspirational">ASPIRATIONAL</div>
+            <article class="claim">
+              <span class="badge badge-beta">Aspirational</span>
               <div class="claim-statement">{claim.statement}</div>
-              {claim.notes && (
-                <div class="claim-notes">{claim.notes}</div>
-              )}
-            </div>
+              {claim.notes && <div class="claim-notes">{claim.notes}</div>}
+            </article>
           ))}
         </div>
       </section>
     )}
 
-    {/* Anti-Claims */}
-    {proofData?.antiClaims && proofData.antiClaims.length > 0 && (
+    {proofData?.antiClaims?.length > 0 && (
       <section class="section">
-        <h2>Anti-Claims</h2>
-        <p class="section-note">What this tool explicitly does <em>not</em> do.</p>
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Declared limits</p>
+            <h2 class="section-shell__title">Anti-claims</h2>
+          </div>
+        </div>
         <div class="claims-list">
-          {proofData.antiClaims.map((ac: any) => (
-            <div class="claim claim-anti">
-              <div class="claim-statement">{ac.statement}</div>
-            </div>
+          {proofData.antiClaims.map((claim: any) => (
+            <article class="claim">
+              <div class="claim-statement">{claim.statement}</div>
+            </article>
           ))}
         </div>
       </section>
     )}
 
-    {/* GitHub Facts */}
     {facts && (
       <section class="section">
-        <h2>GitHub Facts</h2>
-        <div class="facts-grid">
-          {facts.stars != null && (
-            <div class="fact"><span class="fact-value">{facts.stars}</span><span class="fact-label">Stars</span></div>
-          )}
-          {facts.forks != null && (
-            <div class="fact"><span class="fact-value">{facts.forks}</span><span class="fact-label">Forks</span></div>
-          )}
-          {facts.openIssues != null && (
-            <div class="fact"><span class="fact-value">{facts.openIssues}</span><span class="fact-label">Open issues</span></div>
-          )}
-          {facts.releasesLast90d != null && (
-            <div class="fact"><span class="fact-value">{facts.releasesLast90d}</span><span class="fact-label">Releases (90d)</span></div>
-          )}
-          {facts.latestRelease && (
-            <div class="fact"><span class="fact-value">{facts.latestRelease.tag}</span><span class="fact-label">Latest release</span></div>
-          )}
-          {facts.license && (
-            <div class="fact"><span class="fact-value">{facts.license}</span><span class="fact-label">License</span></div>
-          )}
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Observed facts</p>
+            <h2 class="section-shell__title">GitHub facts</h2>
+          </div>
         </div>
-        <p class="observed">Observed: {factsFetchedAt}. Non-authoritative — <a href={orgUrl} target="_blank" rel="noopener">verify at source</a>.</p>
+        <div class="facts-grid">
+          {facts.stars != null && <div class="fact"><span class="fact-value">{facts.stars}</span><span class="fact-label">Stars</span></div>}
+          {facts.forks != null && <div class="fact"><span class="fact-value">{facts.forks}</span><span class="fact-label">Forks</span></div>}
+          {facts.openIssues != null && <div class="fact"><span class="fact-value">{facts.openIssues}</span><span class="fact-label">Open issues</span></div>}
+          {facts.releasesLast90d != null && <div class="fact"><span class="fact-value">{facts.releasesLast90d}</span><span class="fact-label">Releases (90d)</span></div>}
+          {facts.latestRelease && <div class="fact"><span class="fact-value">{facts.latestRelease.tag}</span><span class="fact-label">Latest release</span></div>}
+          {facts.license && <div class="fact"><span class="fact-value">{facts.license}</span><span class="fact-label">License</span></div>}
+        </div>
+        {factsObservedAt && <p class="observed">Observed {factsObservedAt}. Verify at source if you need authoritative data.</p>}
       </section>
     )}
 
-    {/* Clearance Status */}
-    {clearance && clearance.overallScore != null && (
+    {clearance?.overallScore != null && (
       <section class="section">
-        <h2>Clearance Status</h2>
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Operational posture</p>
+            <h2 class="section-shell__title">Clearance status</h2>
+          </div>
+        </div>
         <div class="clearance-card">
-          <span class={`tier-badge tier-${getTierLabel(clearance.overallScore).toLowerCase()}`}>
-            {getTierLabel(clearance.overallScore)}
-          </span>
+          <span class={`badge badge-kind`}>{getTierLabel(clearance.overallScore)}</span>
           <span class="clearance-score">Score: {clearance.overallScore}/100</span>
         </div>
       </section>
     )}
 
-    {/* Tracked Links */}
     {toolLinks.length > 0 && (
       <section class="section">
-        <h2>Tracked Links</h2>
-        <p class="section-note">Attribution-tracked links for distribution channels.</p>
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Distribution</p>
+            <h2 class="section-shell__title">Tracked links</h2>
+          </div>
+        </div>
         <div class="links-table-wrap">
           <table class="links-table">
             <thead>
@@ -224,8 +248,8 @@ function getTierLabel(score: number): string {
                 <tr>
                   <td class="mono">{link.id}</td>
                   <td>{link.channel}</td>
-                  <td><a href={link.target} target="_blank" rel="noopener">{link.target.replace('https://', '').slice(0, 40)}{link.target.length > 48 ? '...' : ''}</a></td>
-                  <td class="mono">{link.utm?.campaign || '--'}</td>
+                  <td><a href={link.target} target="_blank" rel="noopener">{link.target.replace("https://", "").slice(0, 40)}{link.target.length > 48 ? "..." : ""}</a></td>
+                  <td class="mono">{link.utm?.campaign || "--"}</td>
                 </tr>
               ))}
             </tbody>
@@ -234,61 +258,65 @@ function getTierLabel(score: number): string {
       </section>
     )}
 
-    {/* Cross-links */}
     <section class="section">
-      <h2>Related</h2>
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Related surfaces</p>
+          <h2 class="section-shell__title">Open next</h2>
+        </div>
+      </div>
       <div class="related-links">
-        <a href={`/press/${slug}/`} class="btn">Press Page</a>
-        <a href={`/presskit/${slug}/`} class="btn">Press Kit</a>
-        <a href={`/tools/${slug}/`} class="btn">Tool Page</a>
-        <a href={orgUrl} class="btn" target="_blank" rel="noopener">GitHub</a>
+        {tool.press && <a href={`/press/${slug}/`} class="btn btn-secondary">Press page</a>}
+        <a href={`/tools/${slug}/`} class="btn btn-secondary">Tool page</a>
+        <a href={orgUrl} class="btn btn-secondary" target="_blank" rel="noopener">GitHub</a>
       </div>
     </section>
 
-    {/* Last Updated */}
     <footer class="proof-footer">
       <div class="updated-banner">
-        <span class="updated-label">Last updated</span>
+        <span class="updated-label">Last observed</span>
         <div class="updated-dates">
-          {snapshotFetchedAt && <span>MarketIR snapshot: {snapshotFetchedAt}</span>}
-          {factsFetchedAt && <span>GitHub facts: {factsFetchedAt}</span>}
+          {snapshotObservedAt && <span>{snapshotMeta.snapshotLabel}: {snapshotObservedAt}</span>}
+          {factsObservedAt && <span>GitHub facts: {factsObservedAt}</span>}
         </div>
       </div>
-      {snapshot && (
-        <p class="lock-hash">MarketIR lock: {snapshot.lockSha256?.slice(0, 12)}</p>
-      )}
+      {snapshot && <p class="lock-hash">{snapshotMeta.lockLabel}: {snapshot.lockSha256?.slice(0, 12)}</p>}
     </footer>
   </div>
 
   <script>
-    import { trackEvent } from '../../lib/tracker';
+    import { trackEvent } from "../../lib/tracker";
 
-    const slug = window.location.pathname.split('/proof/')[1]?.replace(/\/$/, '') || '';
+    const slug = window.location.pathname.split("/proof/")[1]?.replace(/\/$/, "") || "";
 
-    // Copy all proof bullets
-    document.getElementById('copy-proof-bullets')?.addEventListener('click', async function() {
-      const items = document.querySelectorAll('#proof-bullets-list li');
-      const text = Array.from(items).map(li => `- ${li.textContent}`).join('\n');
+    document.getElementById("copy-proof-bullets")?.addEventListener("click", async function () {
+      const items = document.querySelectorAll("#proof-bullets-list li");
+      const text = Array.from(items).map((item) => `- ${item.textContent}`).join("\n");
       try {
         await navigator.clipboard.writeText(text);
-        trackEvent('copy_proof_bullets', { slug });
-        this.textContent = 'Copied!';
-        setTimeout(() => { this.textContent = 'Copy All'; }, 1500);
-      } catch { this.textContent = 'Failed'; setTimeout(() => { this.textContent = 'Copy All'; }, 1500); }
+        trackEvent("copy_proof_bullets", { slug });
+        this.textContent = "Copied";
+        setTimeout(() => { this.textContent = "Copy all"; }, 1500);
+      } catch {
+        this.textContent = "Failed";
+        setTimeout(() => { this.textContent = "Copy all"; }, 1500);
+      }
     });
 
-    // Copy individual claims
-    let claimIdx = 0;
-    document.querySelectorAll('.claim-copy-btn').forEach(btn => {
-      const idx = claimIdx++;
-      btn.addEventListener('click', async function() {
-        const text = this.getAttribute('data-claim-text') || '';
+    let claimIndex = 0;
+    document.querySelectorAll(".claim-copy-btn").forEach((button) => {
+      const currentIndex = claimIndex++;
+      button.addEventListener("click", async function () {
+        const text = this.getAttribute("data-claim-text") || "";
         try {
           await navigator.clipboard.writeText(text);
-          trackEvent('copy_claim', { slug, claimIndex: idx });
-          this.textContent = 'Copied!';
-          setTimeout(() => { this.textContent = 'Copy'; }, 1500);
-        } catch { this.textContent = 'Failed'; setTimeout(() => { this.textContent = 'Copy'; }, 1500); }
+          trackEvent("copy_claim", { slug, claimIndex: currentIndex });
+          this.textContent = "Copied";
+          setTimeout(() => { this.textContent = "Copy"; }, 1500);
+        } catch {
+          this.textContent = "Failed";
+          setTimeout(() => { this.textContent = "Copy"; }, 1500);
+        }
       });
     });
   </script>
@@ -296,324 +324,127 @@ function getTierLabel(score: number): string {
 
 <style>
   .proof-page {
-    padding: 2rem 0;
-  }
-  .back-link {
-    display: inline-block;
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    margin-bottom: 1rem;
-    text-decoration: none;
-  }
-  .back-link:hover {
-    color: var(--color-accent);
-  }
-
-  .proof-header {
-    margin-bottom: 2rem;
-  }
-  .proof-header h1 {
-    margin: 0 0 0.25rem;
-  }
-  .one-liner {
-    color: var(--color-text-muted);
-    margin: 0 0 0.75rem;
-    font-style: italic;
-  }
-  .badges {
-    display: flex;
-    gap: 0.35rem;
-  }
-  .badge {
-    font-size: 0.65rem;
-    padding: 0.15rem 0.4rem;
-    border-radius: 3px;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-  }
-  .badge-stable { background: #23863622; color: #3fb950; }
-  .badge-beta { background: #d2992222; color: #d29922; }
-  .badge-experimental { background: #f8514922; color: #f85149; }
-  .badge-kind { background: #58a6ff22; color: #58a6ff; }
-
-  /* Sections */
-  .section {
-    margin-bottom: 2rem;
-  }
-  .section h2 {
-    font-size: 1.1rem;
-    margin: 0 0 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .section-note {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    margin: 0 0 0.75rem;
-  }
-
-  /* Claims */
-  .claims-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  .claim {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 0.75rem 1rem;
-  }
-  .claim-proven {
-    border-left: 3px solid #3fb950;
-  }
-  .claim-aspirational {
-    border-left: 3px solid #d29922;
-  }
-  .claim-anti {
-    border-left: 3px solid #8b949e;
-  }
-  .claim-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.25rem;
-  }
-  .claim-status {
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #3fb950;
-  }
-  .claim-status.aspirational {
-    color: #d29922;
-  }
-  .claim-statement {
-    font-size: 0.9rem;
-    margin-bottom: 0.35rem;
-  }
-  .claim-notes {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-  .claim-evidence {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-  }
-  .ev-badge {
-    font-size: 0.7rem;
-  }
-  .ev-badge a {
-    background: #58a6ff22;
-    color: #58a6ff;
-    padding: 0.15rem 0.4rem;
-    border-radius: 3px;
-    text-decoration: none;
-  }
-  .ev-badge a:hover {
-    background: #58a6ff33;
-  }
-
-  /* Facts grid */
-  .facts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-  }
-  .fact {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 0.75rem;
-    text-align: center;
-  }
-  .fact-value {
-    display: block;
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-  .fact-label {
-    display: block;
-    font-size: 0.7rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .observed {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-  .observed a {
-    color: var(--color-accent);
+    gap: 1.5rem;
   }
 
-  /* Clearance */
-  .clearance-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 0.75rem 1rem;
-  }
-  .tier-badge {
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
+  .back-link {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .tier-green { background: #3fb95022; color: #3fb950; }
-  .tier-yellow { background: #d2992222; color: #d29922; }
-  .tier-red { background: #f8514922; color: #f85149; }
-  .clearance-score {
-    font-size: 0.9rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Links table */
-  .links-table-wrap {
-    overflow-x: auto;
-  }
-  .links-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-  }
-  .links-table th {
-    text-align: left;
-    padding: 0.5rem;
-    border-bottom: 2px solid var(--color-border);
-    color: var(--color-text-muted);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .links-table td {
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .links-table a {
-    color: var(--color-accent);
     text-decoration: none;
   }
-  .links-table a:hover {
-    text-decoration: underline;
-  }
-  .mono {
-    font-family: monospace;
-    font-size: 0.8rem;
+
+  .proof-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.6fr);
+    gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
+      var(--color-surface);
   }
 
-  /* Related */
-  .related-links {
+  .proof-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 4vw, 4rem);
+    letter-spacing: -0.05em;
+  }
+
+  .one-liner {
+    margin-top: 0.8rem;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+  }
+
+  .badges,
+  .claim-evidence {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  .btn {
-    display: inline-block;
-    padding: 0.4rem 0.75rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    color: var(--color-text);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: border-color 0.15s;
-  }
-  .btn:hover {
-    border-color: var(--color-accent);
+
+  .proof-hero__meta {
+    display: grid;
+    gap: 0.75rem;
   }
 
-  /* Footer */
-  .proof-footer {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-border);
+  .claim-top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
   }
+
+  .claim-copy-btn,
+  .copy-btn {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text-muted);
+    min-height: 2.2rem;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .claim-statement {
+    color: var(--color-text);
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .claim-notes,
+  .observed,
+  .updated-dates,
+  .lock-hash {
+    color: var(--color-text-dim);
+  }
+
+  .bullets-container {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  #proof-bullets-list {
+    margin: 0;
+    padding-left: 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .clearance-score,
+  .updated-label {
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
   .updated-banner {
     display: flex;
-    align-items: flex-start;
     gap: 1rem;
-    margin-bottom: 0.5rem;
+    align-items: flex-start;
   }
-  .updated-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-text-muted);
-    padding-top: 0.1rem;
-  }
+
   .updated-dates {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-  }
-  .lock-hash {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-family: monospace;
-    margin: 0.25rem 0 0;
+    display: grid;
+    gap: 0.2rem;
   }
 
-  /* Copy buttons */
-  .claim-copy-btn {
-    font-size: 0.65rem;
-    padding: 0.15rem 0.4rem;
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
-    background: var(--color-surface);
-    color: var(--color-text-muted);
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .claim-copy-btn:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-
-  /* Proof bullets */
-  .bullets-container {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    position: relative;
-  }
-  #proof-bullets-list {
-    margin: 0 0 0.75rem;
-    padding-left: 1.25rem;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-  #proof-bullets-list li {
-    margin-bottom: 0.25rem;
-  }
-  .copy-btn {
-    display: inline-block;
-    font-size: 0.8rem;
-    padding: 0.35rem 0.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background: var(--color-surface);
-    color: var(--color-text);
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .copy-btn:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+  @media (max-width: 900px) {
+    .proof-hero {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

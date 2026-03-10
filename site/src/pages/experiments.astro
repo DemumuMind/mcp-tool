@@ -1,4 +1,5 @@
 ---
+import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
@@ -67,8 +68,16 @@ function dimensionColor(dim: string): string {
   currentPath="/experiments/"
 >
   <div class="experiments-page">
-    <h1>Experiments</h1>
-    <p class="subtitle">How we test and improve.</p>
+    <PageHero
+      eyebrow="Experiment log"
+      title="Controlled copy changes, openly tracked."
+      lede="Control and variant pairs stay visible here so editorial improvements read like measured operations, not hidden growth hacks."
+      meta={[
+        `${active.length} active`,
+        `${concluded.length} concluded`,
+        `${draft.length} planned`,
+      ]}
+    />
 
     <div class="how-it-works">
       <h2>How it works</h2>

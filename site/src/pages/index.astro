@@ -1,159 +1,146 @@
 ---
-import Base from '../layouts/Base.astro';
-import projects from '../data/projects.json';
-import collections from '../data/collections.json';
-import releases from '../data/releases.json';
-import stats from '../data/org-stats.json';
-import todaysPicks from '../data/todays-picks.json';
+import PageHero from "../components/PageHero.astro";
+import Base from "../layouts/Base.astro";
+import projects from "../data/projects.json";
+import collections from "../data/collections.json";
+import releases from "../data/releases.json";
+import stats from "../data/org-stats.json";
+import todaysPicks from "../data/todays-picks.json";
 
-const projectsByRepo = new Map((projects as any[]).map((p: any) => [p.repo, p]));
-const featuredRaw = (projects as any[]).filter((p: any) => p.featured);
+const projectsByRepo = new Map((projects as any[]).map((project: any) => [project.repo, project]));
+const featuredProjects = (projects as any[]).filter((project: any) => project.featured);
 const recentReleases = (releases as any[]).slice(0, 5);
-
-// Deterministic rotation for spotlight (based on day of year) so it doesn't flicker on refresh but rotates daily
 const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-const spotlightIndex = dayOfYear % featuredRaw.length;
-const spotlight = featuredRaw[spotlightIndex];
-
-// Grid is exact 6 items from daily picks generator
-const gridProjects = todaysPicks.picks.map(pick => projectsByRepo.get(pick.slug)).filter(Boolean);
+const spotlightIndex = featuredProjects.length > 0 ? dayOfYear % featuredProjects.length : 0;
+const spotlight = featuredProjects[spotlightIndex];
+const gridProjects = todaysPicks.picks.map((pick) => projectsByRepo.get(pick.slug)).filter(Boolean);
 
 function relativeDate(iso: string) {
-  if (!iso) return '';
+  if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
   const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'today';
-  if (days === 1) return 'yesterday';
+  if (days === 0) return "today";
+  if (days === 1) return "yesterday";
   if (days < 30) return `${days}d ago`;
   const months = Math.floor(days / 30);
-  return months === 1 ? '1mo ago' : `${months}mo ago`;
+  return months === 1 ? "1mo ago" : `${months}mo ago`;
 }
 
-const newestRelease = recentReleases[0];
-const daysSinceRelease = newestRelease 
-  ? Math.floor((Date.now() - new Date(newestRelease.publishedAt).getTime()) / 86400000)
-  : 999;
-const releaseHeading = daysSinceRelease > 14 ? 'Recent releases' : 'Recently shipped';
+const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : "Release chronicle";
 ---
 
 <Base title="DemumuMind" currentPath="/">
-  <section class="hero">
-    <h1>DemumuMind</h1>
-    <p class="tagline">
-      MCP servers, desktop apps, and AI infrastructure that run locally and compose through the Model Context Protocol.
-    </p>
-    <div class="cta-group">
+  <PageHero
+    eyebrow="Protocol Editorial / Dark Trust Infrastructure"
+    title="A trust-first index for serious agent tools."
+    lede="Curated MCP servers, desktop apps, proofs, receipts, and release evidence for local-first operator workflows."
+    align="center"
+    meta={[
+      `${stats.repoCount} public repos`,
+      "100% local-first posture",
+      "MCP-native surfaces",
+    ]}
+  >
+    <Fragment slot="actions">
       <a href="/tools/" class="btn btn-primary">Browse tools</a>
-      <a
-        href="https://github.com/DemumuMind"
-        class="btn btn-secondary"
-        rel="noopener"
-      >
-        Org on GitHub
-      </a>
-    </div>
-    <div class="proof-points">
-      <div class="proof-point">
-        <span class="number">{stats.repoCount}</span>
-        <span class="label">public repos</span>
-      </div>
-      <div class="proof-point">
-        <span class="number">100%</span>
-        <span class="label">local-first</span>
-      </div>
-      <div class="proof-point">
-        <span class="number">MCP</span>
-        <span class="label">native</span>
-      </div>
-    </div>
-  </section>
+      <a href="/trust/" class="btn btn-secondary">See trust model</a>
+    </Fragment>
+  </PageHero>
 
   {spotlight && (
     <section class="spotlight-section">
-      <div class="spotlight-card">
-        <div class="spotlight-content">
-          <span class="spotlight-label">Spotlight</span>
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Featured surface</p>
+          <h2 class="section-shell__title">Today&apos;s operator focus</h2>
+        </div>
+        <a href={`/tools/${spotlight.repo}/`} class="see-all">Open dossier</a>
+      </div>
+
+      <article class="spotlight-card">
+        <div class="spotlight-card__copy">
+          <span class="spotlight-card__label">Registry spotlight</span>
           <h3><a href={`/tools/${spotlight.repo}/`}>{spotlight.name}</a></h3>
-          <p class="spotlight-desc">{spotlight.description || spotlight.tagline}</p>
-          <div class="spotlight-meta">
-             {spotlight.language && <span>{spotlight.language}</span>}
-             {spotlight.stars > 0 && <span>• {spotlight.stars} stars</span>}
+          <p>{spotlight.description || spotlight.tagline}</p>
+          <div class="spotlight-card__meta">
+            {spotlight.language && <span>{spotlight.language}</span>}
+            {spotlight.stars > 0 && <span>{spotlight.stars} stars</span>}
+            {spotlight.kind && <span>{spotlight.kind}</span>}
           </div>
         </div>
-        <div class="spotlight-media">
-           <img 
-             src={`/screenshots/${spotlight.repo}.png`} 
-             alt={`Screenshot of ${spotlight.name}`}
-             width="600"
-             height="300"
-             loading="eager"
-             onerror="this.style.display='none'"
-           />
+        <div class="spotlight-card__media">
+          <img
+            src={`/screenshots/${spotlight.repo}.png`}
+            alt={`Screenshot of ${spotlight.name}`}
+            width="880"
+            height="540"
+            loading="eager"
+            onerror="this.closest('.spotlight-card__media').style.display='none'"
+          />
         </div>
-      </div>
+      </article>
     </section>
   )}
 
-  {recentReleases.length > 0 && (
-    <section class="recent-releases">
-      <div class="recent-header">
-        <h2 class="section-heading">{releaseHeading}</h2>
-        <a href="/releases/" class="see-all">All releases</a>
+  <section class="section-shell">
+    <div class="section-shell__header">
+      <div>
+        <p class="section-kicker">Release cadence</p>
+        <h2 class="section-shell__title">{releaseHeading}</h2>
       </div>
-      <div class="release-strip">
-        {recentReleases.map((rel: any) => (
-          <a href={`/tools/${rel.repo}/`} class="release-chip">
-            <span class="release-chip-name">{rel.toolName}</span>
-            <span class="release-chip-tag">{rel.tag}</span>
-            <span class="release-chip-date">{relativeDate(rel.publishedAt)}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
+      <a href="/releases/" class="see-all">All releases</a>
+    </div>
+    <div class="release-strip">
+      {recentReleases.map((release: any) => (
+        <a href={`/tools/${release.repo}/`} class="release-chip">
+          <span class="release-chip-name">{release.toolName}</span>
+          <span class="release-chip-tag">{release.tag}</span>
+          <span class="release-chip-date">{relativeDate(release.publishedAt)}</span>
+        </a>
+      ))}
+    </div>
+  </section>
 
-  <section>
-    <h2 class="section-heading">Featured projects</h2>
-    <p class="section-subheading">The tools getting the most attention right now.</p>
+  <section class="section-shell">
+    <div class="section-shell__header">
+      <div>
+        <p class="section-kicker">Curated picks</p>
+        <h2 class="section-shell__title">Tools worth opening first</h2>
+      </div>
+    </div>
     <div class="project-grid">
       {gridProjects.map((project: any) => (
-        <div class="project-card">
+        <article class="project-card">
           <div class="card-header-home">
-            <h3>
-              <a href={`/tools/${project.repo}/`}>
-                {project.name}
-              </a>
-            </h3>
-            {project.stability && (
-              <span class={`badge badge-${project.stability}`}>{project.stability}</span>
-            )}
+            <h3><a href={`/tools/${project.repo}/`}>{project.name}</a></h3>
+            <div class="card-badges">
+              {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
+              {project.kind && <span class="badge badge-kind">{project.kind}</span>}
+            </div>
           </div>
           <p>{project.tagline || project.description}</p>
-          {project.install && (
-            <code class="install-line">{project.install}</code>
-          )}
+          {project.install && <code class="install-line">{project.install}</code>}
           <div class="card-meta">
             {project.stars > 0 && <span class="meta-item">{project.stars} stars</span>}
             {project.language && <span class="meta-item">{project.language}</span>}
           </div>
-          <div class="tags">
-            {project.tags.map((tag: string) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        </div>
+        </article>
       ))}
     </div>
   </section>
 
   {(collections as any[]).map((collection: any) => {
-    const items = collection.repos
-      .map((repo: string) => projectsByRepo.get(repo))
-      .filter(Boolean);
+    const items = collection.repos.map((repo: string) => projectsByRepo.get(repo)).filter(Boolean);
     if (items.length === 0) return null;
+
     return (
-      <section class="collection-section">
-        <h2 class="section-heading">{collection.title}</h2>
+      <section class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Curated stack</p>
+            <h2 class="section-shell__title">{collection.title}</h2>
+          </div>
+        </div>
         <p class="section-subheading">{collection.description}</p>
         <div class="collection-grid">
           {items.map((project: any) => (
@@ -169,163 +156,111 @@ const releaseHeading = daysSinceRelease > 14 ? 'Recent releases' : 'Recently shi
 </Base>
 
 <style>
-  .recent-releases {
-    margin: 2rem 0 3rem;
+  .spotlight-section {
+    margin-top: 2rem;
   }
 
-  .recent-header {
+  .spotlight-card {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+    gap: 1.25rem;
+    padding: 1.1rem;
+  }
+
+  .spotlight-card__copy {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 0.65rem;
   }
 
-  .see-all {
-    font-size: 0.8125rem;
+  .spotlight-card__label {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .spotlight-card__copy h3 {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 3vw, 3rem);
+    letter-spacing: -0.05em;
+  }
+
+  .spotlight-card__copy p {
     color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
   }
 
-  .see-all:hover {
-    color: var(--color-accent);
+  .spotlight-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .spotlight-card__meta span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.8rem;
+    padding: 0.16rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .spotlight-card__media {
+    min-height: 320px;
+    overflow: hidden;
+    border-radius: calc(var(--radius) - 2px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .spotlight-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .release-strip {
-    display: flex;
-    gap: 0.75rem;
+    flex-direction: row;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
   }
 
   .release-chip {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.875rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: border-color 0.15s;
-    flex-shrink: 0;
-  }
-
-  .release-chip:hover {
-    border-color: var(--color-accent);
+    min-width: 240px;
     text-decoration: none;
   }
 
   .release-chip-name {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-
-  .release-chip-tag {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
     color: var(--color-text);
-    background: var(--color-bg);
-    padding: 0.1em 0.4em;
-    border-radius: 3px;
-  }
-
-  .release-chip-date {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    color: var(--color-text-muted);
-  }
-
-  .card-header-home {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-header-home h3 {
-    margin: 0;
-  }
-
-  .badge {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    padding: 0.125em 0.5em;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .badge-stable {
-    color: var(--color-success);
-    background: rgba(63, 185, 80, 0.1);
-  }
-
-  .badge-beta {
-    color: #d29922;
-    background: rgba(210, 153, 34, 0.1);
-  }
-
-  .badge-experimental {
-    color: #f85149;
-    background: rgba(248, 81, 73, 0.1);
+    font-weight: 600;
   }
 
   .install-line {
-    display: block;
-    margin: 0.5rem 0;
-    padding: 0.375rem 0.625rem;
-    font-size: 0.75rem;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
     overflow-x: auto;
     white-space: nowrap;
   }
 
-  .collection-section {
-    margin-top: 3rem;
-  }
-
-  .collection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 0.75rem;
-    margin-top: 1rem;
-  }
-
-  .collection-item {
+  .card-header-home,
+  .card-badges {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 0.875rem 1rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    text-decoration: none;
-    transition: border-color 0.15s;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
   }
 
-  .collection-item:hover {
-    border-color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .collection-item-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-
-  .collection-item-desc {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  @media (max-width: 900px) {
+    .spotlight-card {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

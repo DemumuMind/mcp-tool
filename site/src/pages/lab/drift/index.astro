@@ -1,10 +1,11 @@
 ---
+import InternalHero from "../../../components/InternalHero.astro";
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
 
 const title = "Decision Drift";
-const description = "Week-over-week changes in promotion decisions — drift detection and audit trail.";
+const description = "Week-over-week changes in promotion decisions вЂ” drift detection and audit trail.";
 
 // Load decision-drift.json
 let drift: any = null;
@@ -37,11 +38,14 @@ const meaningfulDeltas = scoreDeltas.filter((d: any) => d.delta !== 0);
     <meta name="robots" content="noindex, nofollow" />
   </head>
 
-  <div class="drift-page">
-    <span class="internal-badge">Internal</span>
-
-    <h1>Decision Drift</h1>
-    <p class="subtitle">Week-over-week changes in promotion decisions.</p>
+  <div class="ops-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Drift monitor"
+      title="Decision Drift"
+      lede="Week-over-week changes in promotion decisions, score movement, and action churn."
+      meta={[`${summary.totalChanged || 0} changed`, `${entrants.length} entrants`, `${exits.length} exits`, `${summary.totalStable || 0} stable`]}
+    />
 
     {!drift ? (
       <div class="empty-state">
@@ -184,7 +188,7 @@ const meaningfulDeltas = scoreDeltas.filter((d: any) => d.delta !== 0);
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -245,7 +249,7 @@ const meaningfulDeltas = scoreDeltas.filter((d: any) => d.delta !== 0);
     margin-top: 0.25rem;
   }
 
-  .entrant-color { color: #3fb950; }
+  .entrant-color { color: var(--color-success); }
   .exit-color { color: #f85149; }
 
   .empty-state {
@@ -279,7 +283,7 @@ const meaningfulDeltas = scoreDeltas.filter((d: any) => d.delta !== 0);
     color: var(--color-text, #e6edf3);
   }
 
-  .slug-list li::marker { color: #3fb950; }
+  .slug-list li::marker { color: var(--color-success); }
   .exit-list li::marker { color: #f85149; }
 
   .table-wrap { overflow-x: auto; }
@@ -318,7 +322,7 @@ const meaningfulDeltas = scoreDeltas.filter((d: any) => d.delta !== 0);
     font-size: 0.8rem;
   }
 
-  .delta-up { color: #3fb950; }
+  .delta-up { color: var(--color-success); }
   .delta-down { color: #f85149; }
 
   .action-badge {
@@ -331,9 +335,9 @@ const meaningfulDeltas = scoreDeltas.filter((d: any) => d.delta !== 0);
     letter-spacing: 0.04em;
   }
 
-  .action-promote { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
+  .action-promote { background: rgba(63, 185, 80, 0.15); color: var(--color-success); }
   .action-skip { background: rgba(139, 148, 158, 0.15); color: #8b949e; }
-  .action-defer { background: rgba(210, 153, 34, 0.15); color: #d29922; }
+  .action-defer { background: rgba(210, 153, 34, 0.15); color: var(--color-warning); }
 
   .timestamp {
     color: var(--color-text-muted, #8b949e);

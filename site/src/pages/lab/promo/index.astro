@@ -1,10 +1,11 @@
 ---
+import InternalHero from "../../../components/InternalHero.astro";
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
 
 const title = "Promotion Calendar";
-const description = "NameOps promotion calendar — freeze status, queue, channels, run history";
+const description = "NameOps promotion calendar вЂ” freeze status, queue, channels, run history";
 
 // Load calendar data
 let calendar: any = null;
@@ -44,21 +45,29 @@ function slugLabel(entry: any): string {
     <meta name="robots" content="noindex, nofollow" />
   </head>
 
-  <div class="promo-page">
-    <span class="internal-badge">Internal</span>
-
-    <h1>Promotion Calendar</h1>
-    <p class="subtitle">Freeze status, promotion queue, channel plan, and run history.</p>
+  <div class="ops-page promo-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Promotion calendar"
+      title="Promotion Calendar"
+      lede="Freeze state, queue, channel plan, last run, and promotion suggestions for the current cadence."
+      meta={[
+        calendar?.freezeStatus?.frozen ? "promo frozen" : "promo active",
+        calendar?.currentWeek?.week || "week n/a",
+        `${calendar?.currentWeek?.slugs?.length || 0} queued`,
+        formatDate(calendar?.lastRun?.date),
+      ]}
+    />
 
     {!calendar ? (
-      <div class="empty-state">
+      <div class="empty-state ops-callout">
         <p>No calendar data available.</p>
         <p>Run <code>node scripts/gen-promo-calendar.mjs</code> to generate.</p>
       </div>
     ) : (
       <>
         {/* Summary banner */}
-        <div class="summary-banner">
+        <div class="summary-banner ops-panel">
           <div class="stat">
             <span class={`stat-value ${calendar.freezeStatus?.frozen ? "freeze-frozen" : "freeze-active"}`}>
               {calendar.freezeStatus?.frozen ? "Frozen" : "Active"}
@@ -239,7 +248,7 @@ function slugLabel(entry: any): string {
           </>
         )}
 
-        <div class="provenance">
+        <div class="provenance ops-callout">
           <h3>Data Sources</h3>
           <ul>
             <li>Calendar: <code>site/src/data/promo-calendar.json</code></li>
@@ -263,7 +272,7 @@ function slugLabel(entry: any): string {
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -331,7 +340,7 @@ function slugLabel(entry: any): string {
   }
 
   .freeze-frozen { color: #f85149; }
-  .freeze-active { color: #3fb950; }
+  .freeze-active { color: var(--color-success); }
 
   /* Freeze card */
   .freeze-card {
@@ -342,7 +351,7 @@ function slugLabel(entry: any): string {
   }
 
   .freeze-card-frozen { border-left: 4px solid #f85149; }
-  .freeze-card-active { border-left: 4px solid #3fb950; }
+  .freeze-card-active { border-left: 4px solid var(--color-success); }
 
   .freeze-indicator {
     display: flex;
@@ -359,7 +368,7 @@ function slugLabel(entry: any): string {
   }
 
   .dot-frozen { background: #f85149; }
-  .dot-active { background: #3fb950; }
+  .dot-active { background: var(--color-success); }
 
   .freeze-text {
     font-size: 0.95rem;
@@ -407,7 +416,7 @@ function slugLabel(entry: any): string {
 
   .mono { font-family: monospace; font-size: 0.8rem; }
   .num { text-align: right; font-variant-numeric: tabular-nums; }
-  .status-ok { color: #3fb950; font-weight: 600; }
+  .status-ok { color: var(--color-success); font-weight: 600; }
   .status-fail { color: #f85149; font-weight: 600; }
 
   /* Channels */
@@ -420,7 +429,7 @@ function slugLabel(entry: any): string {
   .channel-badge {
     display: inline-block;
     background: rgba(56, 139, 253, 0.15);
-    color: #388bfd;
+    color: var(--color-system);
     font-size: 0.8rem;
     font-weight: 500;
     padding: 0.25rem 0.75rem;
@@ -431,7 +440,7 @@ function slugLabel(entry: any): string {
   .channel-badge-sm {
     display: inline-block;
     background: rgba(56, 139, 253, 0.1);
-    color: #388bfd;
+    color: var(--color-system);
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
     border-radius: 8px;
@@ -461,7 +470,7 @@ function slugLabel(entry: any): string {
     padding: 0.75rem 1rem;
     background: var(--color-surface, #161b22);
     border: 1px solid var(--color-border, #30363d);
-    border-left: 3px solid #3fb950;
+    border-left: 3px solid var(--color-success);
     border-radius: 6px;
   }
 
@@ -487,7 +496,7 @@ function slugLabel(entry: any): string {
   .worthy-badge {
     display: inline-block;
     background: rgba(63, 185, 80, 0.15);
-    color: #3fb950;
+    color: var(--color-success);
     font-size: 0.65rem;
     font-weight: 600;
     padding: 0.1rem 0.4rem;

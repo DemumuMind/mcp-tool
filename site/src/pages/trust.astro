@@ -1,66 +1,52 @@
 ---
-import Base from '../layouts/Base.astro';
-import GlossaryTerm from '../components/GlossaryTerm.astro';
-import ProofBadge from '../components/ProofBadge.astro';
-import ReceiptLink from '../components/ReceiptLink.astro';
-import { kit } from '../lib/kit';
-import fs from 'node:fs';
-import path from 'node:path';
+import PageHero from "../components/PageHero.astro";
+import Base from "../layouts/Base.astro";
+import GlossaryTerm from "../components/GlossaryTerm.astro";
+import ReceiptLink from "../components/ReceiptLink.astro";
+import { kit } from "../lib/kit";
+import fs from "node:fs";
+import path from "node:path";
 
-const title = `Trust Center - ${kit.site.title || 'DemumuMind'}`;
-const description = `How ${kit.site.title || 'DemumuMind'} earns trust: receipts, hashed inputs, freeze modes, drift detection, and independent verification.`;
+const title = `Trust Center - ${kit.site.title || "DemumuMind"}`;
+const description = `How ${kit.site.title || "DemumuMind"} earns trust: receipts, hashed inputs, freeze modes, drift detection, and independent verification.`;
 
-// ── Load build metadata for freshness ─────────────────────
 let buildMeta: any = {};
 const buildPath = path.join(process.cwd(), "public/_build.json");
 try {
   if (fs.existsSync(buildPath)) {
     buildMeta = JSON.parse(fs.readFileSync(buildPath, "utf8"));
   }
-} catch { /* fail soft */ }
+} catch {}
 
-const projectCount = buildMeta.projects || 0;
-
-// ── Count proven claims from MarketIR ─────────────────────
 let provenClaimCount = 0;
 const toolsDir = path.join(process.cwd(), "src/data/marketir/data/tools");
 try {
   if (fs.existsSync(toolsDir)) {
-    const files = fs.readdirSync(toolsDir).filter((f: string) => f.endsWith(".json"));
+    const files = fs.readdirSync(toolsDir).filter((file: string) => file.endsWith(".json"));
     for (const file of files) {
       const tool = JSON.parse(fs.readFileSync(path.join(toolsDir, file), "utf8"));
-      if (tool.claims) {
-        provenClaimCount += tool.claims.filter((c: any) => c.status === "proven").length;
-      }
+      if (!tool.claims) continue;
+      provenClaimCount += tool.claims.filter((claim: any) => claim.status === "proven").length;
     }
   }
-} catch { /* fail soft */ }
+} catch {}
 
-// ── Trust receipt (provenance) ─────────────────────────────
 let trustReceipt: any = {};
 const trustPath = path.join(process.cwd(), "public/trust.json");
 try {
   if (fs.existsSync(trustPath)) {
     trustReceipt = JSON.parse(fs.readFileSync(trustPath, "utf8"));
   }
-} catch { /* fail soft */ }
+} catch {}
 
-const commitSha = trustReceipt.commit || null;
-const artifactCount = trustReceipt.artifactManifest ? Object.keys(trustReceipt.artifactManifest).length : 0;
-
-// ── Governance (freeze state) ──────────────────────────────
 let governance: any = {};
-const govPath = path.join(process.cwd(), "src/data/governance.json");
+const governancePath = path.join(process.cwd(), "src/data/governance.json");
 try {
-  if (fs.existsSync(govPath)) {
-    governance = JSON.parse(fs.readFileSync(govPath, "utf8"));
+  if (fs.existsSync(governancePath)) {
+    governance = JSON.parse(fs.readFileSync(governancePath, "utf8"));
   }
-} catch { /* fail soft */ }
+} catch {}
 
-const decisionsFrozen = governance.decisionsFrozen === true;
-const experimentsFrozen = governance.experimentsFrozen === true;
-
-// ── Worthy rubric criteria ────────────────────────────────
 let worthyCriteria: string[] = [];
 let worthyMinScore = 0;
 const worthyPath = path.join(process.cwd(), "src/data/worthy.json");
@@ -70,148 +56,143 @@ try {
     worthyCriteria = worthy.rubric?.criteria || [];
     worthyMinScore = worthy.rubric?.minimumScore || 0;
   }
-} catch { /* fail soft */ }
+} catch {}
 
-// ── Find most recent promo week for "See an example" ──────
 let latestWeek: string | null = null;
 const outreachDir = path.join(process.cwd(), "public/outreach-run");
 try {
   if (fs.existsSync(outreachDir)) {
     const entries = fs.readdirSync(outreachDir, { withFileTypes: true });
     const weeks = entries
-      .filter((e: any) => e.isDirectory() && /^\d{4}-\d{2}-\d{2}$/.test(e.name))
-      .map((e: any) => e.name)
+      .filter((entry: any) => entry.isDirectory() && /^\d{4}-\d{2}-\d{2}$/.test(entry.name))
+      .map((entry: any) => entry.name)
       .sort()
       .reverse();
-    if (weeks.length > 0) latestWeek = weeks[0];
+    latestWeek = weeks[0] || null;
   }
-} catch { /* fail soft */ }
+} catch {}
+
+const projectCount = buildMeta.projects || 0;
+const artifactCount = trustReceipt.artifactManifest ? Object.keys(trustReceipt.artifactManifest).length : 0;
+const commitSha = trustReceipt.commit || null;
+const decisionsFrozen = governance.decisionsFrozen === true;
+const experimentsFrozen = governance.experimentsFrozen === true;
 ---
 
-<Base
-  title={title}
-  description={description}
-  currentPath="/trust/"
->
-  <div class="trust-page page-content">
-    <h1>Trust Center</h1>
-    <p class="subtitle">
-      Here's what we do. Here's the evidence. Here's how you can check.
-    </p>
+<Base title={title} description={description} currentPath="/trust/">
+  <div class="trust-page">
+    <PageHero
+      eyebrow="Trust center"
+      title="Evidence first. Promotion second."
+      lede="Receipts, hashes, freeze controls, and reproducible inputs make every public promotion inspectable."
+      meta={[
+        `${artifactCount || 0} hashed artifacts`,
+        `${provenClaimCount || 0} proven claims`,
+        `${projectCount || 0} tracked projects`,
+      ]}
+    >
+      <Fragment slot="actions">
+        <a href="/receipts/" class="btn btn-primary">Browse receipts</a>
+        <a href="#verify" class="btn btn-secondary">Verify a week</a>
+      </Fragment>
+    </PageHero>
 
     <nav class="trust-path" aria-label="Trust verification path">
-      <a href="/press/">Presskit</a>
-      <span class="trust-path-sep">&rarr;</span>
-      <span class="trust-path-current">Trust Center</span>
-      <span class="trust-path-sep">&rarr;</span>
+      <a href="/press/">Press</a>
+      <span>-></span>
+      <span>Trust</span>
+      <span>-></span>
       <a href="/receipts/">Receipts</a>
-      <span class="trust-path-sep">&rarr;</span>
-      {latestWeek ? (
-        <a href={`/promo/${latestWeek}/`}>Latest Promo Week</a>
-      ) : (
-        <span class="trust-path-muted">Promo Week</span>
-      )}
-      <span class="trust-path-sep">&rarr;</span>
+      <span>-></span>
+      {latestWeek ? <a href={`/promo/${latestWeek}/`}>Latest week</a> : <span>Promo week</span>}
+      <span>-></span>
       <a href="#verify">Verify</a>
     </nav>
 
-    {/* Section 1: What we mean by "trust" */}
     <section class="trust-section">
-      <h2>What we mean by "trust"</h2>
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Trust model</p>
+          <h2 class="section-shell__title">What we mean by trust</h2>
+        </div>
+      </div>
       <p>
         Every public promotion is backed by a{" "}
         <GlossaryTerm term="receipt" definition="A JSON file listing hashed inputs, the generating commit, and timestamps for a specific promotion week." />.
-        Receipts show inputs (hashed), decisions, and the commit that generated them.
-        Nothing is promoted in the dark.
+        Receipts show inputs, decision context, and the commit that generated the public surface.
       </p>
       <div class="freshness-grid">
         {artifactCount > 0 && (
           <div class="freshness-item">
-            <span class="freshness-label">Artifacts Hashed</span>
+            <span class="freshness-label">Artifacts hashed</span>
             <span class="freshness-value">{artifactCount}</span>
           </div>
         )}
         {provenClaimCount > 0 && (
           <div class="freshness-item">
-            <span class="freshness-label">Proven Claims</span>
+            <span class="freshness-label">Proven claims</span>
             <span class="freshness-value">{provenClaimCount}</span>
           </div>
         )}
         {commitSha && commitSha !== "unknown" && (
           <div class="freshness-item">
-            <span class="freshness-label">Build Commit</span>
+            <span class="freshness-label">Build commit</span>
             <span class="freshness-value mono">
-              <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}/commit/${commitSha}`} rel="noopener">{commitSha.slice(0, 8)}</a>
+              <a href={`https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}/commit/${commitSha}`} rel="noopener">{commitSha.slice(0, 8)}</a>
             </span>
           </div>
         )}
         {projectCount > 0 && (
           <div class="freshness-item">
-            <span class="freshness-label">Projects Tracked</span>
+            <span class="freshness-label">Projects tracked</span>
             <span class="freshness-value">{projectCount}</span>
           </div>
         )}
       </div>
     </section>
 
-    {/* Section 2: How promos are chosen */}
     <section class="trust-section">
-      <h2>How promos are chosen</h2>
-      <p>
-        Promotion follows four steps. Automation handles scoring and generation;
-        humans handle queuing and review.
-      </p>
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Promotion logic</p>
+          <h2 class="section-shell__title">How a promo gets published</h2>
+        </div>
+      </div>
       <ol class="pipeline-steps">
-        <li>
-          <strong>Score.</strong> The{" "}
-          <GlossaryTerm term="worthiness rubric" definition="A checklist that scores tools on documentation, tests, releases, and other quality signals." />{" "}
-          rates each tool on objective criteria.
-        </li>
-        <li>
-          <strong>Queue.</strong> A human adds qualifying slugs to the promotion queue.
-        </li>
-        <li>
-          <strong>Generate.</strong> The pipeline creates press kits, snippets, and proof pages &mdash; all hash-verified.
-        </li>
-        <li>
-          <strong>Publish.</strong> A human reviews the PR, merges, and the site deploys.
-        </li>
+        <li><strong>Score.</strong> The <GlossaryTerm term="worthiness rubric" definition="A checklist that scores tools on documentation, tests, releases, and other quality signals." /> rates each tool on evidence-backed criteria.</li>
+        <li><strong>Queue.</strong> A human adds qualifying slugs to the weekly promotion queue.</li>
+        <li><strong>Generate.</strong> The pipeline builds press surfaces, proof pages, and receipts from hashed inputs.</li>
+        <li><strong>Publish.</strong> A human reviews the PR, merges it, and the site deploys.</li>
       </ol>
-      <p>
-        See <a href="/now/">This Week's Focus</a> for currently featured tools.
-      </p>
       {worthyCriteria.length > 0 && (
         <div class="rubric-list">
-          <p class="rubric-heading">
-            Worthiness criteria (minimum score: {worthyMinScore}/{worthyCriteria.length}):
-          </p>
+          <p class="rubric-heading">Worthiness criteria (minimum score: {worthyMinScore}/{worthyCriteria.length})</p>
           <ul>
-            {worthyCriteria.map((c: string) => (
-              <li>{c}</li>
-            ))}
+            {worthyCriteria.map((criterion: string) => <li>{criterion}</li>)}
           </ul>
         </div>
       )}
     </section>
 
-    {/* Section 3: Freeze modes */}
     <section class="trust-section">
-      <h2>Freeze modes</h2>
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Governance</p>
+          <h2 class="section-shell__title">Freeze controls</h2>
+        </div>
+      </div>
       <p>
-        Two switches control automated decisions. When{" "}
-        <GlossaryTerm term="frozen" definition="A governance state where automated pipeline decisions are paused. Humans must intervene manually." />,
-        the pipeline still builds the site, syncs the catalog, and tracks releases &mdash;
-        but no new promotion or experiment decisions are made until a human unfreezes.
+        When decisions or experiments are frozen, the system still builds and audits the site, but no new automated recommendations graduate without human intervention.
       </p>
       <div class="freeze-grid">
-        <div class={`freeze-item ${decisionsFrozen ? 'frozen' : 'active'}`}>
+        <div class:list={["freeze-item", decisionsFrozen ? "frozen" : "active"]}>
           <span class="freeze-indicator"></span>
           <div>
             <span class="freeze-label">Decisions</span>
             <span class="freeze-state">{decisionsFrozen ? "Frozen" : "Active"}</span>
           </div>
         </div>
-        <div class={`freeze-item ${experimentsFrozen ? 'frozen' : 'active'}`}>
+        <div class:list={["freeze-item", experimentsFrozen ? "frozen" : "active"]}>
           <span class="freeze-indicator"></span>
           <div>
             <span class="freeze-label">Experiments</span>
@@ -219,363 +200,86 @@ try {
           </div>
         </div>
       </div>
-      <p class="section-note">
-        Operators can toggle freeze state from the{" "}
-        <a href="/lab/control/">Control Panel</a>.
-      </p>
     </section>
 
-    {/* Section 4: Decision drift */}
-    <section class="trust-section">
-      <h2>Decision drift</h2>
-      <p>
-        Each pipeline run compares current promotion decisions against the previous week's snapshot.{" "}
-        <GlossaryTerm term="Drift" definition="Week-over-week change in promotion decisions: new entrants, exits, score deltas, and action changes." />{" "}
-        detection flags new entrants, exits, score changes, and action flips
-        (e.g. "promote" to "skip").
-      </p>
-      <p>
-        Drift is expected when a human edits decisions while frozen. It is worth investigating
-        when no known intervention occurred. Details are in the{" "}
-        <a href="/lab/drift/">Drift Report</a>.
-      </p>
-    </section>
-
-    {/* Section 5: How to verify a week */}
     <section class="trust-section" id="verify">
-      <h2>How to verify a week</h2>
-      <p>
-        Anyone can independently verify a promotion week in four steps:
-      </p>
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Verification recipe</p>
+          <h2 class="section-shell__title">How to verify a promotion week</h2>
+        </div>
+      </div>
       <div class="verify-recipe">
         <ol>
-          <li>
-            Visit the <strong>promotion week page</strong> (e.g.{" "}
-            {latestWeek ? (
-              <a href={`/promo/${latestWeek}/`}><code>/promo/{latestWeek}/</code></a>
-            ) : (
-              <code>/promo/&lt;week&gt;/</code>
-            )}
-            ) and copy the verification bundle.
-          </li>
-          <li>
-            Clone the repo and <strong>checkout the commit SHA</strong> from the bundle.
-          </li>
-          <li>
-            Run <code>sha256sum</code> on each input file listed in the bundle.
-          </li>
-          <li>
-            Compare your computed hashes to the bundle hashes. If they match, the promotion
-            used exactly those inputs.
-          </li>
+          <li>Open the promotion week page and copy the verification bundle.</li>
+          <li>Check out the commit SHA listed in the bundle.</li>
+          <li>Run <code>sha256sum</code> on each input file from the bundle.</li>
+          <li>Compare the resulting hashes to the recorded hashes.</li>
         </ol>
       </div>
       {latestWeek ? (
-        <p>
-          <ReceiptLink href={`/promo/${latestWeek}/`} label="See the latest week" />
-        </p>
+        <p><ReceiptLink href={`/promo/${latestWeek}/`} label="See the latest week" /></p>
       ) : (
-        <p class="section-note">
-          No promotion weeks available yet. Check back after the next scheduled run.
-        </p>
+        <p>No promotion weeks are available yet.</p>
       )}
     </section>
-
-    {/* Provenance footer */}
-    <div class="provenance-footer">
-      <p>
-        Machine-readable trust receipt: <a href="/trust.json" rel="noopener"><code>trust.json</code></a>
-        {" "}&middot;{" "}
-        Source: <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}`} rel="noopener">GitHub</a>
-      </p>
-    </div>
   </div>
 </Base>
 
 <style>
   .trust-page {
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-  
-  /* h1, h2, .subtitle handled by global .page-content */
-
-  .trust-path {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    padding: 0.75rem 1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 6px;
-    margin-bottom: 2rem;
-    font-size: 0.85rem;
-  }
-
-  .trust-path a {
-    color: #388bfd;
-    text-decoration: none;
-  }
-
-  .trust-path a:hover {
-    text-decoration: underline;
-  }
-
-  .trust-path-current {
-    color: var(--color-text, #e6edf3);
-    font-weight: 600;
-  }
-
-  .trust-path-sep {
-    color: var(--color-text-muted, #8b949e);
-    font-size: 0.75rem;
-  }
-
-  .trust-path-muted {
-    color: var(--color-text-muted, #8b949e);
+    display: grid;
+    gap: 1.5rem;
   }
 
   .trust-section {
-    margin-bottom: 2.5rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border, #30363d);
+    display: grid;
+    gap: 1rem;
   }
 
-  .trust-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-
-  .trust-section p {
-    color: var(--color-text, #e6edf3);
-    line-height: 1.6;
-    margin: 0 0 0.75rem;
-    font-size: 0.95rem;
-  }
-
-  .trust-section a {
-    color: #388bfd;
-    text-decoration: none;
-  }
-
-  .trust-section a:hover {
-    text-decoration: underline;
-  }
-
-  /* Stat grid (reused from freshness) */
-  .freshness-grid {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .freshness-item {
-    display: flex;
-    flex-direction: column;
-    padding: 0.75rem 1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 6px;
-    min-width: 130px;
-    flex: 1;
-  }
-
-  .freshness-label {
-    font-size: 0.7rem;
-    color: var(--color-text-muted, #8b949e);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
-  }
-
-  .freshness-value {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text, #e6edf3);
-  }
-
-  .freshness-value.mono {
-    font-family: monospace;
-    font-size: 0.8rem;
-  }
-
-  .freshness-value a {
-    color: #388bfd;
-    text-decoration: none;
-  }
-
-  .freshness-value a:hover {
-    text-decoration: underline;
-  }
-
-  /* Pipeline steps */
   .pipeline-steps {
-    margin: 0.75rem 0;
-    padding-left: 1.25rem;
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--color-text-muted);
   }
 
-  .pipeline-steps li {
-    font-size: 0.9rem;
-    color: var(--color-text, #e6edf3);
-    margin: 0.5rem 0;
-    line-height: 1.5;
-  }
-
-  /* Rubric */
-  .rubric-list {
-    margin-top: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 6px;
+  .pipeline-steps li + li {
+    margin-top: 0.45rem;
   }
 
   .rubric-heading {
-    font-size: 0.8rem;
-    color: var(--color-text-muted, #8b949e);
-    margin: 0 0 0.5rem;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
   }
 
-  .rubric-list ul {
-    margin: 0;
-    padding-left: 1.25rem;
+  .freeze-item.active .freeze-indicator {
+    background: var(--color-success);
   }
 
-  .rubric-list li {
-    font-size: 0.85rem;
-    color: var(--color-text, #e6edf3);
-    margin: 0.3rem 0;
+  .freeze-item.frozen .freeze-indicator {
+    background: var(--color-warning);
   }
 
-  /* Freeze grid */
-  .freeze-grid {
-    display: flex;
-    gap: 1.5rem;
-    margin: 0.75rem 0;
-    flex-wrap: wrap;
+  .freeze-indicator {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 999px;
   }
 
   .freeze-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 6px;
-    flex: 1;
-    min-width: 160px;
-  }
-
-  .freeze-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .freeze-item.active .freeze-indicator {
-    background: #3fb950;
-    box-shadow: 0 0 6px rgba(63, 185, 80, 0.4);
-  }
-
-  .freeze-item.frozen .freeze-indicator {
-    background: var(--color-danger-fg);
-    box-shadow: 0 0 6px var(--color-danger-muted);
-  }
-
-  .freeze-label {
-    display: block;
-    font-size: 0.7rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
   .freeze-state {
     display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
     color: var(--color-text);
-  }
-
-  .section-note {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-  }
-
-  /* Verify recipe box */
-  .verify-recipe {
-    padding: 1rem 1rem 1rem 0.5rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    margin: 0.75rem 0;
-  }
-
-  .verify-recipe ol {
-    margin: 0;
-    padding-left: 1.5rem;
-  }
-
-  .verify-recipe li {
-    font-size: 0.88rem;
-    color: var(--color-text);
-    margin: 0.5rem 0;
-    line-height: 1.5;
-  }
-
-  .verify-recipe code {
-    background: var(--color-surface-hover);
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-  }
-
-  .verify-recipe a {
-    color: var(--color-accent-fg);
-    text-decoration: none;
-  }
-
-  .verify-recipe a:hover {
-    text-decoration: underline;
-  }
-
-  /* Provenance footer */
-  .provenance-footer {
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .provenance-footer p {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-  }
-
-  .provenance-footer a {
-    color: var(--color-accent-fg);
-    text-decoration: none;
-  }
-
-  .provenance-footer a:hover {
-    text-decoration: underline;
-  }
-
-  .provenance-footer code {
-    background: var(--color-surface-hover);
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-  }
-
-  @media (max-width: 600px) {
-    .freshness-grid,
-    .freeze-grid {
-      flex-direction: column;
-      gap: 0.75rem;
-    }
+    font-size: 0.95rem;
   }
 </style>

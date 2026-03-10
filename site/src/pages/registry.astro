@@ -1,51 +1,39 @@
 ---
-import Base from '../layouts/Base.astro';
-import stats from '../data/org-stats.json';
-import cleanup from '../data/registry/cleanup.json';
+import PageHero from "../components/PageHero.astro";
+import Base from "../layouts/Base.astro";
+import stats from "../data/org-stats.json";
+import cleanup from "../data/registry/cleanup.json";
 
 const health = (stats as any).registryHealth || {};
 const cleanupData = cleanup as any;
 ---
 
-<Base
-  title="Registry - DemumuMind"
-  description="The DemumuMind registry: what it is, what listing means, and how to add a tool."
-  currentPath="/registry/"
->
+<Base title="Registry - DemumuMind" description="The DemumuMind registry: what it is, what listing means, and how to add a tool." currentPath="/registry/">
   <div class="page-content">
-    <h1>Registry</h1>
-    <p>
-      The <strong>DemumuMind Registry</strong> is the canonical metadata catalog for
-      tools in the ecosystem. It provides verified names, descriptions, install contracts,
-      and capability tags for each listed tool.
-    </p>
+    <PageHero
+      eyebrow="Registry contract"
+      title="The canonical metadata layer."
+      lede="Registry entries are the reviewed install and naming contract for discoverable tools. Org-only repos exist upstream, but they have not cleared the listing workflow yet."
+      meta={[
+        `${health.registryToolCount || 0} registry tools`,
+        `${health.orgOnlyRepos || 0} org-only repos`,
+        `${cleanupData.totalIssues || 0} cleanup issues`,
+      ]}
+    />
 
-    <h2>What "Registry listed" means</h2>
-    <p>
-      When a tool shows the <span class="badge badge-registered">Registry</span> badge,
-      it means:
-    </p>
+    <h2>What registry-listed means</h2>
     <ul>
-      <li>The tool has been reviewed and added to <code>registry.json</code></li>
-      <li>Its name, description, and tags have been curated</li>
-      <li>It has a stable install contract (how to get the tool)</li>
-      <li>Clients like <a href="/tools/mcpt/">mcpt</a> can discover and install it automatically</li>
+      <li>The tool has been reviewed and added to <code>registry.json</code>.</li>
+      <li>Its name, description, tags, and install contract are curated.</li>
+      <li>Clients such as <a href="/tools/mcpt/">mcpt</a> can discover it reliably.</li>
     </ul>
-
-    <h2>Org-only repos</h2>
-    <p>
-      Tools showing <span class="badge badge-orgonly">Org-only</span> exist in the
-      <a href="https://github.com/DemumuMind" rel="noopener">DemumuMind</a>
-      organization but haven't been formally listed in the registry yet. They may be
-      experimental, in-progress, or simply awaiting review.
-    </p>
 
     <h2>How to add a tool</h2>
     <ol>
-      <li>Push your repo to <code>DemumuMind</code></li>
-      <li>Open a PR to the <a href="https://github.com/DemumuMind/mcp-tool-registry" rel="noopener">mcp-tool-registry</a> adding your tool to <code>registry.json</code></li>
-      <li>Include: <code>id</code>, <code>name</code>, <code>description</code>, <code>repo</code> URL, <code>install</code> object, and <code>tags</code></li>
-      <li>Once merged, the tool appears on this site after the next sync</li>
+      <li>Push the repo into the DemumuMind organization.</li>
+      <li>Open a PR against <a href="https://github.com/DemumuMind/mcp-tool-registry" rel="noopener">mcp-tool-registry</a>.</li>
+      <li>Include the canonical metadata: ID, name, description, repo URL, install object, and tags.</li>
+      <li>After merge, the next sync makes the listing visible here.</li>
     </ol>
 
     <h2>Registry health</h2>
@@ -64,31 +52,18 @@ const cleanupData = cleanup as any;
       </div>
       <div class="health-item">
         <span class="health-value">{health.registryArchived || health.registryNoRepo || 0}</span>
-        <span class="health-label">Archived/missing</span>
+        <span class="health-label">Archived or missing</span>
       </div>
     </div>
 
-    {cleanupData.totalIssues > 0 && (
+    {cleanupData.archived?.length > 0 && (
       <>
-        <h2>Upstream cleanup queue</h2>
-        <p>
-          These registry entries need attention in the upstream
-          <a href="https://github.com/DemumuMind/mcp-tool-registry" rel="noopener">mcp-tool-registry</a>.
-          {cleanupData.totalIssues} issue{cleanupData.totalIssues !== 1 ? 's' : ''} detected.
-        </p>
-      </>
-    )}
-
-    {cleanupData.archived.length > 0 && (
-      <>
-        <h3>Archived repos ({cleanupData.archived.length})</h3>
-        <p class="cleanup-hint">These registry tools point to repos that have been archived on GitHub.</p>
+        <h2>Archived repos</h2>
         <ul class="cleanup-list">
           {cleanupData.archived.map((item: any) => (
             <li>
               <code>{item.registryId}</code>
-              <span class="cleanup-arrow">&rarr;</span>
-              <span class="cleanup-repo">{item.repoName}</span>
+              <span>{item.repoName}</span>
               <span class="cleanup-action">{item.action}</span>
             </li>
           ))}
@@ -96,161 +71,50 @@ const cleanupData = cleanup as any;
       </>
     )}
 
-    {cleanupData.missing.length > 0 && (
+    {cleanupData.aliases?.length > 0 && (
       <>
-        <h3>Missing repos ({cleanupData.missing.length})</h3>
-        <p class="cleanup-hint">These registry tools have no matching repo in the org (not archived, just absent).</p>
-        <ul class="cleanup-list">
-          {cleanupData.missing.map((item: any) => (
-            <li>
-              <code>{item.registryId}</code>
-              <span class="cleanup-arrow">&rarr;</span>
-              <span class="cleanup-repo">{item.repoName}</span>
-              <span class="cleanup-action">{item.action}</span>
-            </li>
-          ))}
-        </ul>
-      </>
-    )}
-
-    {cleanupData.aliases.length > 0 && (
-      <>
-        <h3>Active aliases ({cleanupData.aliases.length})</h3>
-        <p class="cleanup-hint">
-          Temporary workarounds for registry ID / repo name mismatches.
-          These are band-aids &mdash; fix the upstream <code>registry.json</code> to retire them.
-          Goal: zero aliases.
-        </p>
+        <h2>Active aliases</h2>
         <ul class="cleanup-list">
           {cleanupData.aliases.map((item: any) => (
             <li>
               <code>{item.registryId}</code>
-              <span class="cleanup-arrow">&rarr;</span>
-              <span class="cleanup-repo">{item.repoName}</span>
-              <span class="cleanup-reason">{item.reason}</span>
+              <span>{item.repoName}</span>
+              <span class="cleanup-action">{item.reason}</span>
             </li>
           ))}
         </ul>
       </>
     )}
-
-    <h2>Data sources</h2>
-    <p>
-      Each tool page combines data from three sources, in merge order:
-    </p>
-    <ol>
-      <li><strong>Registry</strong> &mdash; canonical names, descriptions, tags, install contracts</li>
-      <li><strong>GitHub API</strong> &mdash; live signals (stars, language, last updated)</li>
-      <li><strong>Overrides</strong> &mdash; editorial polish (taglines, good-for/not-for, screenshots)</li>
-    </ol>
-    <p>
-      This means registry data is the foundation, GitHub keeps it fresh, and human
-      editors add the finishing touches.
-    </p>
   </div>
 </Base>
 
 <style>
-  .badge {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    padding: 0.125em 0.5em;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
-  }
-
-  .badge-registered {
-    color: var(--color-accent);
-    background: rgba(88, 166, 255, 0.1);
-  }
-
-  .badge-orgonly {
-    color: var(--color-text-muted);
-    background: rgba(139, 148, 158, 0.06);
-    border: 1px dashed rgba(139, 148, 158, 0.2);
-  }
-
-  .health-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
-
-  .health-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 1rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-  }
-
-  .health-value {
-    font-family: var(--font-mono);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  .health-label {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    text-align: center;
-  }
-
-  .cleanup-hint {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    margin-bottom: 0.75rem;
-  }
-
   .cleanup-list {
+    display: grid;
+    gap: 0.75rem;
     list-style: none;
     padding: 0;
-    margin-bottom: 1.5rem;
+    margin: 0;
   }
 
   .cleanup-list li {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8125rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    margin-bottom: 0.375rem;
     flex-wrap: wrap;
-  }
-
-  .cleanup-list code {
-    font-size: 0.75rem;
-    background: rgba(88, 166, 255, 0.08);
-    padding: 0.1em 0.4em;
-    border-radius: 3px;
-  }
-
-  .cleanup-arrow {
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
     color: var(--color-text-muted);
-    font-size: 0.75rem;
   }
 
-  .cleanup-repo {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-text);
-  }
-
-  .cleanup-action,
-  .cleanup-reason {
-    font-size: 0.6875rem;
-    color: var(--color-text-muted);
+  .cleanup-action {
+    color: var(--color-text-dim);
     margin-left: auto;
-    font-style: italic;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 </style>

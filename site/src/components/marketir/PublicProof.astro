@@ -23,6 +23,9 @@ function evidenceLabel(ev) {
   return ev.id.replace(/^ev\./, "").replace(/\./g, " ").replace(/\bv\d+$/, "").trim();
 }
 
+const isFallbackSnapshot = snapshot?.sourceRepo === "project-fallback";
+const snapshotLabel = isFallbackSnapshot ? "Project metadata snapshot" : "MarketIR snapshot";
+const lockLabel = isFallbackSnapshot ? "Project metadata lock" : "MarketIR lock";
 const lockShort = snapshot?.lockSha256?.slice(0, 12) || "unknown";
 const fetchedDate = snapshot?.fetchedAt
   ? new Date(snapshot.fetchedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -105,7 +108,7 @@ const fetchedDate = snapshot?.fetchedAt
   )}
 
   <div class="proof-source">
-    Source: MarketIR &middot; lock {lockShort}
+    Source: {snapshotLabel} &middot; {lockLabel} {lockShort}
     {fetchedDate && <span> &middot; fetched {fetchedDate}</span>}
   </div>
 </section>

@@ -1,5 +1,6 @@
 ---
-import Base from '../layouts/Base.astro';
+import PageHero from "../components/PageHero.astro";
+import Base from "../layouts/Base.astro";
 
 const stacks = [
   {
@@ -44,14 +45,14 @@ const stacks = [
 ];
 ---
 
-<Base
-  title="Get Started - DemumuMind"
-  description="Find the right tools for what you're trying to do."
-  currentPath="/start/"
->
+<Base title="Get Started - DemumuMind" description="Find the right tools for what you're trying to do." currentPath="/start/">
   <div class="start-page">
-    <h1>Get started</h1>
-    <p class="start-intro">Pick what you're trying to do. Each stack is a curated set of tools that work well together.</p>
+    <PageHero
+      eyebrow="Guided paths"
+      title="Start with a use case, not a logo wall."
+      lede="Each stack below groups tools that make sense together so you can move from curiosity to a working setup faster."
+      meta={["Curated bundles", "Registry-linked", "Local-first workflows"]}
+    />
 
     <div class="stack-list">
       {stacks.map((stack) => (
@@ -70,110 +71,22 @@ const stacks = [
     </div>
 
     <div class="start-fallback">
-      <p>Don't see what you need? <a href="/tools/">Browse all {80} tools</a> or <a href="https://github.com/orgs/DemumuMind/discussions" rel="noopener">ask in Discussions</a>.</p>
+      <p>
+        Need the full surface instead? <a href="/tools/">Browse every tool</a> or ask in{" "}
+        <a href="https://github.com/orgs/DemumuMind/discussions" rel="noopener">Discussions</a>.
+      </p>
     </div>
   </div>
 </Base>
 
 <style>
   .start-page {
-    max-width: 680px;
-  }
-
-  .start-page h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .start-intro {
-    color: var(--color-text-muted);
-    margin-bottom: 2rem;
-  }
-
-  .stack-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .stack-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .stack-card[open] {
-    border-color: var(--color-accent);
-  }
-
-  .stack-question {
-    padding: 1rem 1.25rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .stack-question::-webkit-details-marker {
-    display: none;
-  }
-
-  .stack-question::after {
-    content: '+';
-    font-family: var(--font-mono);
-    font-size: 1.125rem;
-    color: var(--color-text-muted);
-    transition: transform 0.15s;
-  }
-
-  .stack-card[open] .stack-question::after {
-    content: '-';
-  }
-
-  .stack-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0 1.25rem 1rem;
-  }
-
-  .stack-tool {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    padding: 0.625rem 0.875rem;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    text-decoration: none;
-    transition: border-color 0.15s;
-  }
-
-  .stack-tool:hover {
-    border-color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .stack-tool-name {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-
-  .stack-tool-why {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
+    display: grid;
+    gap: 1.5rem;
   }
 
   .start-fallback {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
-    font-size: 0.875rem;
+    font-size: 0.92rem;
   }
 </style>

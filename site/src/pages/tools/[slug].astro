@@ -1,15 +1,15 @@
 ---
-import Base from '../../layouts/Base.astro';
-import PublicProof from '../../components/marketir/PublicProof.astro';
-import RealityPanel from '../../components/RealityPanel.astro';
-import TryItNow from '../../components/TryItNow.astro';
-import projects from '../../data/projects.json';
-import proofs from '../../data/audit/proofs.json';
-import releases from '../../data/releases.json';
-import overrides from '../../data/overrides.json';
-import { getProofData, getPressData, loadSnapshot } from '../../lib/marketir/loader.mjs';
-import fs from 'node:fs';
-import path from 'node:path';
+import Base from "../../layouts/Base.astro";
+import PublicProof from "../../components/marketir/PublicProof.astro";
+import RealityPanel from "../../components/RealityPanel.astro";
+import TryItNow from "../../components/TryItNow.astro";
+import projects from "../../data/projects.json";
+import proofs from "../../data/audit/proofs.json";
+import releases from "../../data/releases.json";
+import overrides from "../../data/overrides.json";
+import { getProofData, getPressData, loadSnapshot } from "../../lib/marketir/loader.mjs";
+import fs from "node:fs";
+import path from "node:path";
 
 export function getStaticPaths() {
   return (projects as any[]).map((project: any) => ({
@@ -20,35 +20,31 @@ export function getStaticPaths() {
 
 const { project } = Astro.props;
 const orgUrl = `https://github.com/DemumuMind/${project.repo}`;
-const toolProof = (proofs as any[]).find((p: any) => p.repo === project.repo);
-
-// Registry status
+const toolProof = (proofs as any[]).find((proof: any) => proof.repo === project.repo);
 const isRegistered = project.registered === true;
 const isDeprecated = project.deprecated === true;
-
-// Install command resolution: override > registry-computed > none
-const installCmd = project.install || null;
-
-// Trust signals
-const hasInstall = Boolean(installCmd);
-const hasRelease = (releases as any[]).some((r: any) => r.repo === project.repo);
-const hasDescription = Boolean(project.tagline || project.description);
-const latestRelease = (releases as any[]).find((r: any) => r.repo === project.repo);
-
-// Related tools: share at least one tag, exclude self
+const hasInstall = Boolean(project.install);
+const latestRelease = (releases as any[]).find((release: any) => release.repo === project.repo);
+const hasRelease = Boolean(latestRelease);
 const projectTags = new Set(project.tags || []);
 const related = (projects as any[])
-  .filter((p: any) => p.repo !== project.repo && (p.tags || []).some((t: string) => projectTags.has(t)))
+  .filter((candidate: any) => candidate.repo !== project.repo && (candidate.tags || []).some((tag: string) => projectTags.has(tag)))
   .slice(0, 3);
 
-// Public Proof (opt-in via overrides.json)
 const toolOverride = (overrides as any)[project.repo];
 const showProof = toolOverride?.publicProof === true;
 const proofData = showProof ? getProofData(project.repo) : null;
 const snapshot = showProof && proofData ? loadSnapshot() : null;
 const pressData = showProof ? getPressData(project.repo) : null;
-const presskitDir = path.resolve('public/presskit', project.repo);
-const hasPresski = showProof && fs.existsSync(presskitDir);
+const presskitDir = path.resolve("public/presskit", project.repo);
+const hasPresskit = showProof && fs.existsSync(presskitDir);
+
+const statusSignals = [
+  { label: isRegistered ? "Registry listed" : "Org-only", positive: isRegistered },
+  { label: hasInstall ? "Install path" : "No install path", positive: hasInstall },
+  { label: hasRelease ? "Release evidence" : "No release evidence", positive: hasRelease },
+  { label: project.description ? "Documented" : "Sparse docs", positive: Boolean(project.description) },
+];
 ---
 
 <Base
@@ -56,42 +52,83 @@ const hasPresski = showProof && fs.existsSync(presskitDir);
   description={project.tagline || project.description}
   currentPath={`/tools/${project.repo}/`}
 >
-  <div class="tool-detail">
-    <a href="/tools/" class="back-link">&larr; All tools</a>
+  <div class="tool-profile">
+    <a href="/tools/" class="back-link">&larr; Back to registry</a>
 
-    <div class="tool-header">
-      <h1>{project.name}</h1>
-      <div class="tool-badges">
-        {isRegistered ? (
-          <span class="badge badge-registered" title="Listed in the DemumuMind registry — verified metadata and install contract">Registry</span>
-        ) : (
-          <span class="badge badge-orgonly" title="Available in the org but not yet listed in the registry">Org-only</span>
+    <section class="tool-profile__hero">
+      <div class="tool-profile__lead">
+        <p class="eyebrow">Tool dossier</p>
+        <h1>{project.name}</h1>
+        <p class="tool-profile__lede">{project.tagline || project.description}</p>
+        {project.description && project.tagline && project.tagline !== project.description && (
+          <p class="tool-profile__body">{project.description}</p>
         )}
-        {isDeprecated && (
-          <span class="badge badge-deprecated" title="This tool has been archived or deprecated">Deprecated</span>
-        )}
-        {project.stability && (
-          <span class={`badge badge-${project.stability}`}>{project.stability}</span>
-        )}
-        {project.kind && (
-          <span class="badge badge-kind">{project.kind}</span>
-        )}
-        {project.language && (
-          <span class="badge badge-kind">{project.language}</span>
-        )}
-        {toolProof?.verified && latestRelease && (
-          <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="badge badge-version" title={`Latest release: ${new Date(latestRelease.publishedAt).toLocaleDateString()}`}>
-             {latestRelease.tag}
-          </a>
-        )}
+
+        <div class="tool-profile__badges">
+          {isRegistered ? <span class="badge badge-registered">Registry</span> : <span class="badge badge-kind">Org-only</span>}
+          {isDeprecated && <span class="badge badge-experimental">Deprecated</span>}
+          {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
+          {project.kind && <span class="badge badge-kind">{project.kind}</span>}
+          {project.language && <span class="badge badge-kind">{project.language}</span>}
+          {latestRelease?.tag && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="release-tag">{latestRelease.tag}</a>}
+        </div>
+
+        <div class="tool-links">
+          <a href={orgUrl} class="btn btn-primary" rel="noopener">View on GitHub</a>
+          <a href={`${orgUrl}/issues`} class="btn btn-secondary" rel="noopener">Issues</a>
+          <a href={`${orgUrl}/releases`} class="btn btn-secondary" rel="noopener">Releases</a>
+          {showProof && pressData && <a href={`/press/${project.repo}/`} class="btn btn-secondary">Press page</a>}
+          {hasPresskit && <a href={`/presskit/${project.repo}/`} class="btn btn-secondary">Press kit</a>}
+        </div>
       </div>
-    </div>
+
+      <aside class="tool-profile__side">
+        <div class="tool-meta-grid">
+          {project.stars > 0 && (
+            <div class="meta-block">
+              <span class="meta-label">Stars</span>
+              <span class="meta-value">{project.stars}</span>
+            </div>
+          )}
+          {project.language && (
+            <div class="meta-block">
+              <span class="meta-label">Language</span>
+              <span class="meta-value">{project.language}</span>
+            </div>
+          )}
+          {project.updatedAt && (
+            <div class="meta-block">
+              <span class="meta-label">Last updated</span>
+              <span class="meta-value">{new Date(project.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</span>
+            </div>
+          )}
+          {latestRelease?.publishedAt && (
+            <div class="meta-block">
+              <span class="meta-label">Latest release</span>
+              <span class="meta-value">{new Date(latestRelease.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</span>
+            </div>
+          )}
+        </div>
+
+        <div class="signal-strip">
+          {statusSignals.map((signal) => (
+            <span class:list={["signal", signal.positive ? "signal-yes" : "signal-no"]}>{signal.label}</span>
+          ))}
+        </div>
+      </aside>
+    </section>
+
+    {isDeprecated && (
+      <div class="deprecated-notice">
+        This tool has been archived or deprecated. Keep it as reference material, not as an active install recommendation.
+      </div>
+    )}
 
     {toolProof && (
-      <RealityPanel 
-        verified={toolProof.verified} 
-        concept={toolProof.concept} 
-        proofs={toolProof.proofs} 
+      <RealityPanel
+        verified={toolProof.verified}
+        concept={toolProof.concept}
+        proofs={toolProof.proofs}
       />
     )}
 
@@ -104,56 +141,20 @@ const hasPresski = showProof && fs.existsSync(presskitDir);
       />
     )}
 
-    {isDeprecated && (
-      <div class="deprecated-notice">
-        This tool has been deprecated or its repository has been archived.
-        It may no longer be maintained or receive updates.
-      </div>
-    )}
-
-    <p class="tool-description">{project.tagline || project.description}</p>
-
-    {project.description && project.tagline && project.tagline !== project.description && (
-      <p class="tool-full-desc">{project.description}</p>
-    )}
-
     {project.screenshot && (
-      <div class="screenshot-block">
-        <img
-          src={project.screenshot}
-          alt={`${project.name} screenshot`}
-          loading="lazy"
-          width="720"
-        />
-        {project.screenshotType === 'placeholder' && (
-          <span class="screenshot-label">preview</span>
-        )}
-      </div>
+      <section class="tool-screenshot">
+        <img src={project.screenshot} alt={`${project.name} screenshot`} loading="lazy" width="1280" />
+        {project.screenshotType === "placeholder" && <span class="tool-screenshot__label">Preview</span>}
+      </section>
     )}
-
-    {/* Old install block removed in favor of TryItNow component */}
-
-    <div class="tool-links">
-      <a href={orgUrl} class="btn btn-primary" rel="noopener">View on GitHub</a>
-      <a href={`${orgUrl}/issues`} class="btn btn-secondary" rel="noopener">Issues</a>
-      <a href={`${orgUrl}/releases`} class="btn btn-secondary" rel="noopener">Releases</a>
-      {hasPresski && (
-        <a href={`/presskit/${project.repo}/`} class="btn btn-secondary">Press Kit</a>
-      )}
-      {showProof && pressData && (
-        <a href={`/press/${project.repo}/`} class="btn btn-secondary">Press Page</a>
-      )}
-    </div>
 
     {(project.goodFor || project.notFor) && (
-      <div class="fit-section">
+      <section class="fit-section">
         {project.goodFor && (
           <div class="fit-col">
             <h2>Good for</h2>
             <ul>
-              {project.goodFor.map((item: string) => (
-                <li>{item}</li>
-              ))}
+              {project.goodFor.map((item: string) => <li>{item}</li>)}
             </ul>
           </div>
         )}
@@ -161,497 +162,162 @@ const hasPresski = showProof && fs.existsSync(presskitDir);
           <div class="fit-col">
             <h2>Not for</h2>
             <ul>
-              {project.notFor.map((item: string) => (
-                <li>{item}</li>
-              ))}
+              {project.notFor.map((item: string) => <li>{item}</li>)}
             </ul>
           </div>
         )}
-      </div>
-    )}
-
-    <div class="tool-meta-grid">
-      {project.stars > 0 && (
-        <div class="meta-block">
-          <span class="meta-label">Stars</span>
-          <span class="meta-value">{project.stars}</span>
-        </div>
-      )}
-      {project.language && (
-        <div class="meta-block">
-          <span class="meta-label">Language</span>
-          <span class="meta-value">{project.language}</span>
-        </div>
-      )}
-      {project.updatedAt && (
-        <div class="meta-block">
-          <span class="meta-label">Last updated</span>
-          <span class="meta-value">{new Date(project.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-        </div>
-      )}
-    </div>
-
-    <div class="signal-strip">
-      <span class={`signal ${isRegistered ? 'signal-yes' : 'signal-no'}`}>
-        {isRegistered ? 'Registry listed' : 'Not in registry'}
-      </span>
-      <span class={`signal ${hasInstall ? 'signal-yes' : 'signal-no'}`}>
-        {hasInstall ? 'Install cmd' : 'No install cmd'}
-      </span>
-      <span class={`signal ${hasRelease ? 'signal-yes' : 'signal-no'}`}>
-        {hasRelease ? 'Has releases' : 'No releases'}
-      </span>
-      <span class={`signal ${hasDescription ? 'signal-yes' : 'signal-no'}`}>
-        {hasDescription ? 'Documented' : 'No description'}
-      </span>
-    </div>
-
-    {latestRelease && (
-      <div class="latest-release">
-        <span class="meta-label">Latest release</span>
-        <a href={latestRelease.url} rel="noopener">
-          {latestRelease.tag}
-          {latestRelease.name && latestRelease.name !== latestRelease.tag && (
-            <span class="release-name-inline"> — {latestRelease.name}</span>
-          )}
-        </a>
-        {latestRelease.publishedAt && (
-          <span class="release-date-inline">
-            {new Date(latestRelease.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-          </span>
-        )}
-      </div>
+      </section>
     )}
 
     {project.tags && project.tags.length > 0 && (
-      <div class="tool-tags">
-        {project.tags.map((tag: string) => (
-          <span class="tag">{tag}</span>
-        ))}
-      </div>
+      <section class="tool-tags">
+        {project.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+      </section>
     )}
 
-    {showProof && proofData && snapshot && (
-      <PublicProof proofData={proofData} snapshot={snapshot} />
-    )}
+    {showProof && proofData && snapshot && <PublicProof proofData={proofData} snapshot={snapshot} />}
 
     {related.length > 0 && (
-      <div class="related-section">
-        <h2>Related tools</h2>
+      <section class="related-section">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Related dossiers</p>
+            <h2 class="section-shell__title">Nearby tools</h2>
+          </div>
+        </div>
         <div class="related-grid">
-          {related.map((p: any) => (
-            <a href={`/tools/${p.repo}/`} class="related-item">
-              <span class="related-name">{p.name}</span>
-              <span class="related-desc">{p.tagline || p.description}</span>
+          {related.map((candidate: any) => (
+            <a href={`/tools/${candidate.repo}/`} class="related-item">
+              <span class="related-name">{candidate.name}</span>
+              <span class="related-desc">{candidate.tagline || candidate.description}</span>
             </a>
           ))}
         </div>
-      </div>
+      </section>
     )}
   </div>
 </Base>
 
 <style>
-  .tool-detail {
-    max-width: 720px;
+  .tool-profile {
+    display: grid;
+    gap: 1.5rem;
   }
 
   .back-link {
-    display: inline-block;
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .back-link:hover {
-    color: var(--color-accent);
-  }
-
-  .tool-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .tool-header h1 {
-    font-size: 2rem;
-    margin: 0;
-  }
-
-  .tool-badges {
-    display: flex;
-    gap: 0.375rem;
-    padding-top: 0.5rem;
-  }
-
-  .badge {
+    color: var(--color-text-dim);
     font-family: var(--font-mono);
-    font-size: 0.625rem;
-    padding: 0.125em 0.5em;
-    border-radius: 3px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
+    text-decoration: none;
   }
 
-  .badge-stable {
-    color: var(--color-success);
-    background: rgba(63, 185, 80, 0.1);
+  .tool-profile__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+    gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
+      var(--color-surface);
   }
 
-  .badge-beta {
-    color: #d29922;
-    background: rgba(210, 153, 34, 0.1);
+  .tool-profile__lead {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
   }
 
-  .badge-experimental {
-    color: #f85149;
-    background: rgba(248, 81, 73, 0.1);
+  .tool-profile__lead h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 4vw, 4rem);
+    letter-spacing: -0.05em;
   }
 
-  .badge-kind {
+  .tool-profile__lede {
     color: var(--color-text-muted);
-    background: rgba(139, 148, 158, 0.1);
+    font-size: 1.08rem;
+    line-height: 1.7;
   }
 
-  .badge-registered {
-    color: var(--color-accent);
-    background: rgba(88, 166, 255, 0.1);
+  .tool-profile__body {
+    color: var(--color-text-dim);
+    font-size: 0.96rem;
+    line-height: 1.7;
   }
 
-  .badge-orgonly {
-    color: var(--color-text-muted);
-    background: rgba(139, 148, 158, 0.06);
-    border: 1px dashed rgba(139, 148, 158, 0.2);
+  .tool-profile__badges,
+  .signal-strip,
+  .tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
-  .badge-deprecated {
-    color: #f85149;
-    background: rgba(248, 81, 73, 0.1);
-    border: 1px solid rgba(248, 81, 73, 0.2);
+  .tool-profile__side {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
   }
 
   .deprecated-notice {
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
-    font-size: 0.8125rem;
-    color: #f85149;
-    background: rgba(248, 81, 73, 0.06);
-    border: 1px solid rgba(248, 81, 73, 0.15);
+    padding: 0.95rem 1rem;
+    border: 1px solid rgba(217, 107, 59, 0.24);
     border-radius: var(--radius);
-    line-height: 1.5;
-  }
-
-  .tool-description {
-    font-size: 1.125rem;
+    background: rgba(217, 107, 59, 0.08);
     color: var(--color-text-muted);
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
   }
 
-  .tool-full-desc {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .screenshot-block {
+  .tool-screenshot {
     position: relative;
-    margin: 1.5rem 0;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
     overflow: hidden;
-  }
-
-  .screenshot-block img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .screenshot-label {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    color: var(--color-text-muted);
-    background: rgba(13, 17, 23, 0.8);
-    padding: 0.15em 0.5em;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .install-block {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
     border-radius: var(--radius);
-    padding: 0.625rem 1rem;
-    margin: 1.5rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
   }
 
-  .install-label {
-    font-size: 0.6875rem;
-    font-family: var(--font-mono);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-  }
-
-  .install-block code {
-    flex: 1;
-    background: none;
-    padding: 0;
-    font-size: 0.875rem;
-    color: var(--color-text);
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .copy-btn {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--color-accent);
-    background: var(--color-accent-subtle);
-    border: none;
-    border-radius: 3px;
-    padding: 0.25em 0.625em;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background 0.15s;
-  }
-
-  .copy-btn:hover {
-    background: rgba(88, 166, 255, 0.2);
-  }
-
-  .tool-links {
-    display: flex;
-    gap: 0.75rem;
-    margin: 1.5rem 0;
-    flex-wrap: wrap;
+  .tool-screenshot__label {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
   }
 
   .fit-section {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin: 2rem 0;
-    padding: 1.25rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
   }
 
-  .fit-section h2 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--color-text);
+  .fit-col {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .fit-col h2 {
+    font-size: 1rem;
   }
 
   .fit-col ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .fit-col li {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    margin-bottom: 0.5rem;
-    padding-left: 1em;
-    position: relative;
-  }
-
-  .fit-col:first-child li::before {
-    content: '+';
-    position: absolute;
-    left: 0;
-    color: var(--color-success);
-    font-weight: 700;
-  }
-
-  .fit-col:last-child li::before {
-    content: '-';
-    position: absolute;
-    left: 0;
-    color: var(--color-text-muted);
-    font-weight: 700;
-  }
-
-  .tool-meta-grid {
-    display: flex;
-    gap: 2rem;
-    margin: 2rem 0 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .meta-block {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-  }
-
-  .meta-label {
-    font-size: 0.6875rem;
-    font-family: var(--font-mono);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .meta-value {
-    font-size: 0.875rem;
-    color: var(--color-text);
-  }
-
-  .tool-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .signal-strip {
-    display: flex;
-    gap: 0.75rem;
-    margin: 1.5rem 0;
-    flex-wrap: wrap;
-  }
-
-  .signal {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    padding: 0.2em 0.625em;
-    border-radius: 3px;
-  }
-
-  .signal-yes {
-    color: var(--color-success);
-    background: rgba(63, 185, 80, 0.08);
-  }
-
-  .signal-no {
-    color: var(--color-text-muted);
-    background: rgba(139, 148, 158, 0.08);
-  }
-
-  .latest-release {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .latest-release a {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-  }
-
-  .release-name-inline {
-    font-family: var(--font-sans);
-    color: var(--color-text-muted);
-    font-size: 0.8125rem;
-  }
-
-  .release-date-inline {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    margin: 0;
+    padding-left: 1rem;
     color: var(--color-text-muted);
   }
 
-  .related-section {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
+  .fit-col li + li {
+    margin-top: 0.35rem;
   }
 
-  .related-section h2 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-  }
-
-  .related-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .related-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 0.75rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    text-decoration: none;
-    transition: border-color 0.15s;
-  }
-
-  .related-item:hover {
-    border-color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .related-name {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-
-  .related-desc {
-    font-size: 0.6875rem;
-    color: var(--color-text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 640px) {
+  @media (max-width: 900px) {
+    .tool-profile__hero,
     .fit-section {
       grid-template-columns: 1fr;
     }
-
-    .tool-header {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .tool-badges {
-      padding-top: 0;
-    }
   }
 </style>
-
-<script>
-  import { trackEvent } from '../../lib/tracker';
-
-  const copyBtn = document.getElementById('copy-install');
-  const installCmd = document.getElementById('install-cmd');
-  if (copyBtn && installCmd) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(installCmd.textContent || '');
-        const slug = window.location.pathname.split('/tools/')[1]?.replace(/\/$/, '') || '';
-        trackEvent('copy_install', { slug });
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-      } catch {
-        copyBtn.textContent = 'Failed';
-        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-      }
-    });
-  }
-</script>

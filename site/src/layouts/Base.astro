@@ -1,39 +1,99 @@
 ---
-import registryMeta from '../data/registry/meta.json';
-import { kit } from '../lib/kit';
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource/instrument-sans/400.css";
+import "@fontsource/instrument-sans/500.css";
+import "@fontsource/instrument-sans/600.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import registryMeta from "../data/registry/meta.json";
+import { kit } from "../lib/kit";
 
 interface Props {
   title: string;
   description?: string;
   currentPath?: string;
   ogImage?: string;
+  routeFamily?: "brand" | "catalog" | "trust" | "press" | "activity" | "ops" | "utility";
+  pageClass?: string;
+}
+
+function inferRouteFamily(currentPath: string): Props["routeFamily"] {
+  if (!currentPath || currentPath === "/404/") return "utility";
+  if (["/", "/about/", "/start/", "/support/"].includes(currentPath)) return "brand";
+  if (currentPath.startsWith("/tools/") || currentPath === "/registry/") return "catalog";
+  if (
+    currentPath.startsWith("/trust/") ||
+    currentPath.startsWith("/proof/") ||
+    currentPath.startsWith("/promo/") ||
+    currentPath.startsWith("/receipts/") ||
+    currentPath.startsWith("/review/") ||
+    currentPath.startsWith("/experiments/") ||
+    currentPath.startsWith("/clearance/")
+  ) {
+    return "trust";
+  }
+  if (
+    currentPath.startsWith("/press/") ||
+    currentPath.startsWith("/submit/") ||
+    currentPath.startsWith("/now/")
+  ) {
+    return "press";
+  }
+  if (
+    currentPath.startsWith("/releases/") ||
+    currentPath.startsWith("/pulse/") ||
+    currentPath.startsWith("/newsletter/")
+  ) {
+    return "activity";
+  }
+  if (currentPath.startsWith("/lab/")) return "ops";
+  return "brand";
+}
+
+function isActivePath(currentPath: string, href: string) {
+  if (href === "/") return currentPath === "/";
+  return currentPath === href || currentPath.startsWith(href);
 }
 
 const {
   title,
-  description = kit.site.description || 'Building the tools that AI agents use to get real work done.',
-  currentPath = '',
+  description = kit.site.description || "Building the tools that AI agents use to get real work done.",
+  currentPath = "",
   ogImage,
+  routeFamily: routeFamilyProp,
+  pageClass = "",
 } = Astro.props;
 
-const siteUrl = kit.site.url || 'http://localhost:4321/';
-const canonicalUrl = new URL(currentPath || '/', siteUrl).href;
+const siteUrl = kit.site.url || "http://localhost:4321/";
+const canonicalUrl = new URL(currentPath || "/", siteUrl).href;
 const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).href : undefined;
+const routeFamily = routeFamilyProp || inferRouteFamily(currentPath);
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/tools/', label: 'Tools' },
-  { href: '/releases/', label: 'Releases' },
-  { href: '/newsletter/', label: 'Newsletter' },
-  { href: '/about/', label: 'About' },
-  { href: '/support/', label: 'Support' },
+const primaryNavLinks = [
+  { href: "/", label: "Home" },
+  { href: "/start/", label: "Start" },
+  { href: "/tools/", label: "Tools" },
+  { href: "/trust/", label: "Trust" },
+  { href: "/proof/", label: "Proof" },
+  { href: "/press/", label: "Press" },
+  { href: "/releases/", label: "Releases" },
 ];
 
-// Registry meta for footer
+const secondaryNavLinks = [
+  { href: "/about/", label: "About" },
+  { href: "/registry/", label: "Registry" },
+  { href: "/submit/", label: "Submit" },
+  { href: "/support/", label: "Support" },
+  { href: "/newsletter/", label: "Newsletter" },
+];
+
 const meta = registryMeta as any;
-const schemaLabel = meta.schemaVersion ? `v${meta.schemaVersion}` : null;
+const schemaLabel = meta.schemaVersion ? `Schema v${meta.schemaVersion}` : null;
 const refLabel = meta.registryTag || meta.registryRef || null;
-const syncDate = meta.lastSyncAt ? new Date(meta.lastSyncAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
+const syncDate = meta.lastSyncAt
+  ? new Date(meta.lastSyncAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+  : null;
 const cleanupUrl = meta.cleanupIssueUrl || null;
 ---
 
@@ -49,104 +109,126 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
-    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
   </head>
-  <body>
-    <nav class="site-nav">
-      <div class="container relative"> {/* Added relative for positioning */}
-        <a href="/" class="logo">{kit.site.title || 'DemumuMind'}</a>
-        <ul class="nav-links">
-          {navLinks.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                aria-current={currentPath === link.href ? 'page' : undefined}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-          {/* Admin Nav Injection Point */}
-          <li id="admin-nav-item" style="display: none;">
-            <a href="/lab/" style="color: #a78bfa; font-weight: 600;">Lab ⚡</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+  <body class:list={["site-shell", pageClass]} data-route-family={routeFamily}>
+    <header class="site-nav">
+      <div class="site-nav__inner">
+        <a href="/" class="site-brand">
+          <span class="site-brand__kicker">{kit.site.title || "DemumuMind"}</span>
+          <span class="site-brand__title">Protocol Tool Index</span>
+        </a>
 
-    <main>
-      <div class="container">
+        <nav class="site-nav__primary" aria-label="Primary">
+          <ul class="nav-links">
+            {primaryNavLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="nav-link"
+                  aria-current={isActivePath(currentPath, link.href) ? "page" : undefined}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+            <li id="admin-nav-item" hidden>
+              <a href="/lab/" class="nav-link nav-link--lab">Lab</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="site-nav__meta">
+          <span>local-first</span>
+          <span>inspectable</span>
+          <span>receipt-backed</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <div class="page-frame">
         <slot />
       </div>
     </main>
-    
-    <script is:inline>
-      (function() {
-        const KEY = "demumumind_admin_nav";
-        
-        // Check for enable command
-        if (typeof window !== "undefined") {
-            const url = new URL(window.location.href);
-            if (url.searchParams.get("admin") === "1") {
-                localStorage.setItem(KEY, "1");
-                url.searchParams.delete("admin");
-                window.history.replaceState({}, "", url.toString());
-            }
-            
-            // Toggle key chord
-            window.addEventListener("keydown", (e) => {
-                if (e.ctrlKey && e.shiftKey && (e.key === "L" || e.key === "l")) {
-                    const current = localStorage.getItem(KEY);
-                    if (current === "1") {
-                        localStorage.removeItem(KEY);
-                        alert("Lab mode disabled");
-                    } else {
-                        localStorage.setItem(KEY, "1");
-                        alert("Lab mode enabled");
-                    }
-                    window.location.reload();
-                }
-            });
-            
-            // Render if enabled
-            if (localStorage.getItem(KEY) === "1") {
-                const el = document.getElementById("admin-nav-item");
-                if (el) el.style.display = "block";
-            }
-        }
-      })();
-    </script>
 
     <footer class="site-footer">
-      <div class="container">
-        <div class="footer-top">
-          <span>&copy; {new Date().getFullYear()} {kit.site.title || 'DemumuMind'}</span>
-          <ul class="footer-links">
-            <li><a href={kit.org.url || 'https://github.com/DemumuMind'}>Org on GitHub</a></li>
-            <li><a href={`https://github.com/${kit.org.account || 'DemumuMind'}`}>Profile</a></li>
-            <li><a href="/trust/">Trust Center</a></li>
-          </ul>
+      <div class="site-footer__inner">
+        <div class="site-footer__intro">
+          <span class="footer-kicker">{kit.site.title || "DemumuMind"}</span>
+          <p>
+            Curated agent tools, trust dossiers, press surfaces, and release receipts for serious local-first workflows.
+          </p>
         </div>
-        <div class="footer-meta">
-          {schemaLabel && <span>Registry schema {schemaLabel}</span>}
-          {refLabel && <span>ref: {refLabel}</span>}
-          {syncDate && <span>Last sync: {syncDate}</span>}
-          {cleanupUrl && <a href={cleanupUrl} rel="noopener">Cleanup issue</a>}
+
+        <div class="site-footer__nav">
+          <div>
+            <h2>Explore</h2>
+            <ul>
+              {primaryNavLinks.map((link) => (
+                <li><a href={link.href}>{link.label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2>Reference</h2>
+            <ul>
+              {secondaryNavLinks.map((link) => (
+                <li><a href={link.href}>{link.label}</a></li>
+              ))}
+              <li><a href={kit.org.url || "https://github.com/DemumuMind"} rel="noopener">GitHub Org</a></li>
+            </ul>
+          </div>
         </div>
-        <div class="footer-powered">
-          Powered by <a href="https://www.npmjs.com/package/@demumumind/promo-kit" rel="noopener">promo-kit</a>
-          &mdash; receipt-backed promotions, open source
+
+        <div class="site-footer__meta">
+          {schemaLabel && <span>{schemaLabel}</span>}
+          {refLabel && <span>Ref {refLabel}</span>}
+          {syncDate && <span>Synced {syncDate}</span>}
+          {cleanupUrl && <a href={cleanupUrl} rel="noopener">Cleanup queue</a>}
         </div>
       </div>
     </footer>
+
+    <script is:inline>
+      (function () {
+        const key = "demumumind_admin_nav";
+        if (typeof window === "undefined") return;
+
+        const url = new URL(window.location.href);
+        if (url.searchParams.get("admin") === "1") {
+          localStorage.setItem(key, "1");
+          url.searchParams.delete("admin");
+          window.history.replaceState({}, "", url.toString());
+        }
+
+        window.addEventListener("keydown", (event) => {
+          if (!event.ctrlKey || !event.shiftKey || !["L", "l"].includes(event.key)) return;
+          const enabled = localStorage.getItem(key) === "1";
+          if (enabled) {
+            localStorage.removeItem(key);
+            alert("Lab mode disabled");
+          } else {
+            localStorage.setItem(key, "1");
+            alert("Lab mode enabled");
+          }
+          window.location.reload();
+        });
+
+        if (localStorage.getItem(key) === "1") {
+          const adminLink = document.getElementById("admin-nav-item");
+          if (adminLink) adminLink.hidden = false;
+        }
+      })();
+    </script>
   </body>
 </html>
 
 <style is:global>
-  @import '../styles/global.css';
+  @import "../styles/global.css";
 </style>

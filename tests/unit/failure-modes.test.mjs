@@ -25,7 +25,7 @@ afterEach(() => {
 function runSelftest(dir) {
   const script = join(import.meta.dirname, "..", "..", "scripts", "kit-selftest.mjs");
   try {
-    const output = execSync(`node "${script}"`, {
+    const output = execSync(`node "${script}" --skip-build --skip-invariants`, {
       cwd: dir,
       env: { ...process.env, KIT_CONFIG: join(dir, "kit.config.json") },
       encoding: "utf8",

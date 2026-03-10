@@ -1,10 +1,11 @@
 ---
+import InternalHero from "../../../components/InternalHero.astro";
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
 
 const title = "Ops Dashboard";
-const description = "NameOps pipeline run history — duration, cache hit rates, error codes";
+const description = "NameOps pipeline run history вЂ” duration, cache hit rates, error codes";
 
 // Load ops history
 let history: any[] = [];
@@ -112,13 +113,21 @@ function statusIcon(run: any) {
   </head>
 
   <div class="ops-page">
-    <span class="internal-badge">Internal</span>
-
-    <h1>Ops Dashboard</h1>
-    <p class="subtitle">NameOps pipeline run history &mdash; automated name clearance batch metrics.</p>
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Pipeline monitoring"
+      title="Ops Dashboard"
+      lede="NameOps pipeline run history, adapter breakdown, error codes, CI minutes, and safety-cap recommendations."
+      meta={[
+        `${totalRuns} total runs`,
+        `${avgDuration}s avg duration`,
+        `${avgCacheRate}% avg cache hit`,
+        `${recentRuns.length} recent runs`,
+      ]}
+    />
 
     {/* Summary banner */}
-    <div class="summary-banner">
+    <div class="summary-banner ops-panel">
       <div class="stat">
         <span class="stat-value">{totalRuns}</span>
         <span class="stat-label">Total Runs</span>
@@ -134,7 +143,7 @@ function statusIcon(run: any) {
     </div>
 
     {history.length === 0 ? (
-      <div class="empty-state">
+      <div class="empty-state ops-callout">
         <p>No ops history available.</p>
         <p>Pipeline runs will appear here after the first NameOps scheduled run.</p>
       </div>
@@ -290,7 +299,7 @@ function statusIcon(run: any) {
       </>
     )}
 
-    <div class="provenance">
+    <div class="provenance ops-callout">
       <h3>Data Sources</h3>
       <ul>
         <li>History: <code>site/src/data/ops-history.json</code></li>
@@ -312,7 +321,7 @@ function statusIcon(run: any) {
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -494,11 +503,11 @@ function statusIcon(run: any) {
   }
 
   .action-card.action-warning {
-    border-left-color: #d29922;
+    border-left-color: var(--color-warning);
   }
 
   .action-card.action-info {
-    border-left-color: #388bfd;
+    border-left-color: var(--color-system);
   }
 
   .action-header {
@@ -521,11 +530,11 @@ function statusIcon(run: any) {
     border-radius: 3px;
   }
 
-  .badge-cache { background: rgba(56, 139, 253, 0.15); color: #388bfd; }
+  .badge-cache { background: rgba(56, 139, 253, 0.15); color: var(--color-system); }
   .badge-errors { background: rgba(248, 81, 73, 0.15); color: #f85149; }
   .badge-promotion { background: rgba(163, 113, 247, 0.15); color: #a371f7; }
-  .badge-duration { background: rgba(210, 153, 34, 0.15); color: #d29922; }
-  .badge-worthy { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
+  .badge-duration { background: rgba(210, 153, 34, 0.15); color: var(--color-warning); }
+  .badge-worthy { background: rgba(63, 185, 80, 0.15); color: var(--color-success); }
   .badge-default { background: rgba(139, 148, 158, 0.15); color: #8b949e; }
 
   .action-message {

@@ -1,4 +1,5 @@
 ---
+import InternalHero from "../../../components/InternalHero.astro";
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
@@ -60,14 +61,22 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
     <meta name="robots" content="noindex, nofollow" />
   </head>
 
-  <div class="control-page">
-    <span class="internal-badge">Internal</span>
-
-    <h1>Control Panel</h1>
-    <p class="subtitle">Governance rules, promotion config, and queue management.</p>
+  <div class="ops-page control-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Governance console"
+      title="Control Panel"
+      lede="Governance rules, promotion config, freeze state, queue management, and recommendation intake in one operator console."
+      meta={[
+        promo.enabled ? "promo live" : "promo off",
+        `${governance.maxPromosPerWeek || 0} max/week`,
+        governance.decisionsFrozen ? "decisions frozen" : "decisions live",
+        governance.experimentsFrozen ? "experiments frozen" : "experiments live",
+      ]}
+    />
 
     {/* Summary banner */}
-    <div class="summary-banner">
+    <div class="summary-banner ops-panel">
       <div class="stat">
         <span class={`stat-value ${promo.enabled ? 'green' : 'red'}`}>
           {promo.enabled ? "ON" : "OFF"}
@@ -190,7 +199,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
     {/* Current queue */}
     <h2>Current Queue</h2>
     {queueSlugs.length === 0 ? (
-      <div class="empty-state">
+      <div class="empty-state ops-callout">
         <p>Queue is empty. Add slugs to <code>promo-queue.json</code> to schedule promotions.</p>
       </div>
     ) : (
@@ -209,7 +218,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
     {/* Recommendations (Advisory) */}
     <h2>Recommendations (Advisory)</h2>
     {recs.length === 0 ? (
-      <div class="empty-state">
+      <div class="empty-state ops-callout">
         <p>No recommendations available. Run <code>node scripts/gen-recommendations.mjs</code> to generate.</p>
       </div>
     ) : (
@@ -273,7 +282,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
 
     {/* JSON Patch Generator */}
     <h2>JSON Patch Generator</h2>
-    <p class="section-desc">Change settings below and generate a JSON patch to open as a PR.</p>
+    <p class="section-desc ops-section-note">Change settings below and generate a JSON patch to open as a PR.</p>
 
     <div class="patch-form" id="patch-form">
       <div class="form-group">
@@ -331,7 +340,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
     </div>
 
     {/* Provenance */}
-    <div class="provenance">
+    <div class="provenance ops-callout">
       <h3>Data Sources</h3>
       <ul>
         <li>Governance: <code>site/src/data/governance.json</code></li>
@@ -414,7 +423,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -493,9 +502,9 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
     margin-top: 0.25rem;
   }
 
-  .green { color: #3fb950; }
+  .green { color: var(--color-success); }
   .red { color: #f85149; }
-  .freeze-active { color: #3fb950; }
+  .freeze-active { color: var(--color-success); }
   .freeze-frozen { color: #f85149; }
 
   .hard-rules {
@@ -511,7 +520,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
 
   .hard-rules li::marker {
     content: "\2713\00a0";
-    color: #3fb950;
+    color: var(--color-success);
   }
 
   .table-wrap { overflow-x: auto; }
@@ -734,7 +743,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
   }
 
   .rec-card.high { border-left-color: #f85149; }
-  .rec-card.medium { border-left-color: #d29922; }
+  .rec-card.medium { border-left-color: var(--color-warning); }
   .rec-card.low { border-left-color: #8b949e; }
 
   .rec-header {
@@ -779,7 +788,7 @@ const lowPriorityRecs = recs.filter((r: any) => r.priority === "low");
   }
 
   .rec-action strong {
-    color: #3fb950;
+    color: var(--color-success);
   }
 
   @media (max-width: 600px) {

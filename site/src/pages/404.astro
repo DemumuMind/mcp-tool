@@ -1,29 +1,33 @@
 ---
-import Base from '../layouts/Base.astro';
-import projects from '../data/projects.json';
+import PageHero from "../components/PageHero.astro";
+import Base from "../layouts/Base.astro";
+import projects from "../data/projects.json";
 
-const popular = (projects as any[])
-  .filter((p: any) => p.featured)
-  .slice(0, 5);
+const popular = (projects as any[]).filter((project: any) => project.featured).slice(0, 5);
 ---
 
-<Base title="Page not found - DemumuMind" currentPath="">
+<Base title="Page not found - DemumuMind" currentPath="/404/" routeFamily="utility">
   <div class="not-found">
-    <h1>404</h1>
-    <p>This page doesn't exist. It may have been moved or removed.</p>
-    <div class="not-found-actions">
-      <a href="/" class="btn btn-primary">Go home</a>
-      <a href="/tools/" class="btn btn-secondary">Browse tools</a>
-    </div>
+    <PageHero
+      eyebrow="Fallback"
+      title="The route is missing, not the system."
+      lede="This page may have moved, been removed, or never existed in the published route map."
+      align="center"
+    >
+      <Fragment slot="actions">
+        <a href="/" class="btn btn-primary">Go home</a>
+        <a href="/tools/" class="btn btn-secondary">Browse tools</a>
+      </Fragment>
+    </PageHero>
 
     {popular.length > 0 && (
       <div class="popular-tools">
         <h2>Popular tools</h2>
         <ul>
-          {popular.map((p: any) => (
+          {popular.map((project: any) => (
             <li>
-              <a href={`/tools/${p.repo}/`}>{p.name}</a>
-              <span class="popular-desc">{p.tagline || p.description}</span>
+              <a href={`/tools/${project.repo}/`}>{project.name}</a>
+              <span class="popular-desc">{project.tagline || project.description}</span>
             </li>
           ))}
         </ul>
@@ -34,64 +38,32 @@ const popular = (projects as any[])
 
 <style>
   .not-found {
-    text-align: center;
-    padding: 4rem 0 2rem;
-  }
-
-  .not-found h1 {
-    font-family: var(--font-mono);
-    font-size: 4rem;
-    font-weight: 700;
-    color: var(--color-text-muted);
-    margin-bottom: 0.5rem;
-  }
-
-  .not-found > p {
-    color: var(--color-text-muted);
-    margin-bottom: 2rem;
-  }
-
-  .not-found-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 3rem;
+    display: grid;
+    gap: 1.5rem;
   }
 
   .popular-tools {
-    text-align: left;
-    max-width: 500px;
+    max-width: 36rem;
     margin: 0 auto;
+    text-align: left;
   }
 
   .popular-tools h2 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--color-text-muted);
+    margin-bottom: 0.85rem;
   }
 
   .popular-tools ul {
     list-style: none;
     padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
   }
 
   .popular-tools li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .popular-tools a {
-    font-weight: 500;
-  }
-
-  .popular-desc {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    margin-top: 0.125rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
   }
 </style>

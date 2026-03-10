@@ -1,4 +1,5 @@
 ---
+import PageHero from "../components/PageHero.astro";
 import Base from '../layouts/Base.astro';
 import overrides from '../data/overrides.json';
 import projects from '../data/projects.json';
@@ -45,12 +46,16 @@ function isTaglineOk(t: string) { return t && t.length <= 90; }
   currentPath="/review/"
 >
   <div class="review-page">
-    <h1>Override Review</h1>
-    <p class="review-subtitle">
-      {needsReview.length > 0
-        ? `${needsReview.length} entries awaiting review · ${graduated.length} graduated`
-        : `All ${graduated.length} overrides are graduated. Nothing to review.`}
-    </p>
+    <PageHero
+      eyebrow="Editorial QA"
+      title="Review what graduates."
+      lede="Draft overrides stay here until a human confirms the metadata, copy, and completeness are ready to stop being machine-edited."
+      meta={[
+        `${needsReview.length} awaiting review`,
+        `${graduated.length} graduated`,
+        "Override audit console",
+      ]}
+    />
 
     {needsReview.length > 0 && (
       <section class="review-section">

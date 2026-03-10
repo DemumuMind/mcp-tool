@@ -1,4 +1,5 @@
 ---
+import InternalHero from '../../../components/InternalHero.astro';
 import Base from '../../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,7 +18,7 @@ const recoData: any = loadJson(path.join(process.cwd(), 'src/data/recommendation
 
 const hasData = rollup && rollup.totalEvents > 0;
 
-// Verification funnel by week — pre-compute rows
+// Verification funnel by week вЂ” pre-compute rows
 const weekKeys: string[] = hasData ? Object.keys(rollup.byWeek).sort().reverse() : [];
 const weekRows = weekKeys.map((week: string) => {
   const w = rollup.byWeek[week] || {};
@@ -25,7 +26,7 @@ const weekRows = weekKeys.map((week: string) => {
   const bundle = w.copy_bundle || 0;
   const verifyCmd = w.copy_verify_cmd || 0;
   const total = proofLink + bundle + verifyCmd;
-  const rate = total > 0 ? ((bundle / total) * 100).toFixed(1) : '—';
+  const rate = total > 0 ? ((bundle / total) * 100).toFixed(1) : 'вЂ”';
   return { week, proofLink, bundle, verifyCmd, rate };
 });
 
@@ -44,7 +45,7 @@ const proofEngagement = hasData
       .slice(0, 10)
   : [];
 
-// Submission funnel — queue status entries
+// Submission funnel вЂ” queue status entries
 const statusEntries: Array<{status: string; count: number}> = queueHealth
   ? Object.entries(queueHealth.byStatus).map(([status, count]: [string, any]) => ({ status, count }))
   : [];
@@ -53,7 +54,7 @@ const statusEntries: Array<{status: string; count: number}> = queueHealth
 const stuckSlugs: Array<{slug: string; status: string; daysPending: number}> = queueHealth?.stuckSlugs || [];
 const topLintFailures: Array<{reason: string; count: number}> = queueHealth?.topLintFailures || [];
 
-// Trust Interaction Score by week — pre-sort
+// Trust Interaction Score by week вЂ” pre-sort
 const tisByWeek: Record<string, number> = hasData
   ? rollup.metrics?.trustInteractionScoreByWeek || {}
   : {};
@@ -82,10 +83,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
   </head>
 
   <div class="metrics-page">
-    <div class="internal-badge">Internal Preview</div>
-
-    <h1>Metrics Dashboard</h1>
-    <p class="subtitle">Privacy-respecting telemetry aggregates and queue health.</p>
+    <InternalHero badge="Operator Surface" eyebrow="Internal systems" title="Metrics Dashboard" lede="Privacy-respecting telemetry aggregates and queue health." />
 
     {hasData ? (
       <>
@@ -105,12 +103,12 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
               <span class="label">Submission Clicks</span>
             </div>
             <div class="summary-item">
-              <span class="value">{queueHealth?.stuckCount ?? '—'}</span>
+              <span class="value">{queueHealth?.stuckCount ?? 'вЂ”'}</span>
               <span class="label">Stuck Submissions</span>
             </div>
           </div>
           <div class="snapshot-meta">
-            Telemetry: {rollup.totalEvents} events | Generated: {rollup.generatedAt ? new Date(rollup.generatedAt).toLocaleDateString('en-US', { dateStyle: 'medium' }) : '—'}
+            Telemetry: {rollup.totalEvents} events | Generated: {rollup.generatedAt ? new Date(rollup.generatedAt).toLocaleDateString('en-US', { dateStyle: 'medium' }) : 'вЂ”'}
           </div>
         </div>
 
@@ -135,7 +133,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
                       <td class="num">{r.proofLink}</td>
                       <td class="num">{r.bundle}</td>
                       <td class="num">{r.verifyCmd}</td>
-                      <td class="num">{r.rate}{r.rate !== '—' ? '%' : ''}</td>
+                      <td class="num">{r.rate}{r.rate !== 'вЂ”' ? '%' : ''}</td>
                     </tr>
                 ))}
               </tbody>
@@ -190,7 +188,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
             ))}
             <div class="kv-item">
               <span class="kv-label">Throughput (30d)</span>
-              <span class="kv-value">{queueHealth?.throughput ?? '—'}</span>
+              <span class="kv-value">{queueHealth?.throughput ?? 'вЂ”'}</span>
             </div>
           </div>
         </section>
@@ -202,7 +200,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
             <div class="kv-grid">
               <div class="kv-item">
                 <span class="kv-label">Median days pending</span>
-                <span class="kv-value">{queueHealth.medianDaysPending ?? '—'}</span>
+                <span class="kv-value">{queueHealth.medianDaysPending ?? 'вЂ”'}</span>
               </div>
               <div class="kv-item">
                 <span class="kv-label">Stuck submissions</span>
@@ -214,7 +212,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
                 <h3>Stuck Items</h3>
                 <ul>
                   {stuckSlugs.map((s) => (
-                    <li><code>{s.slug}</code> — {s.status}, {s.daysPending} days</li>
+                    <li><code>{s.slug}</code> вЂ” {s.status}, {s.daysPending} days</li>
                   ))}
                 </ul>
               </div>
@@ -323,7 +321,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
       <ul>
         <li>Telemetry rollup: <code>telemetry/rollup.json</code> (generated by <code>gen-telemetry-aggregate.mjs</code>)</li>
         <li>Queue health: <code>queue-health.json</code> (generated by <code>gen-queue-health.mjs</code>)</li>
-        <li>Events: localStorage buffer → manual JSONL export → <code>telemetry/events/</code></li>
+        <li>Events: localStorage buffer в†’ manual JSONL export в†’ <code>telemetry/events/</code></li>
         <li>Privacy: no cookies, no user IDs, no IP storage, no external services</li>
       </ul>
     </section>
@@ -336,8 +334,8 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
   }
   .internal-badge {
     display: inline-block;
-    background: #d2992233;
-    color: #d29922;
+    background: rgba(217, 107, 59, 0.12);
+    color: var(--color-warning);
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius);
     font-size: 0.75rem;
@@ -371,7 +369,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
     margin: 0.25rem 0;
   }
   .summary-banner.empty a {
-    color: #388bfd;
+    color: var(--color-system);
     text-decoration: none;
   }
   .summary-banner.empty a:hover {

@@ -1,4 +1,5 @@
 ---
+import InternalHero from "../../../components/InternalHero.astro";
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
@@ -41,11 +42,14 @@ const notWorthyRepos = repoEntries.filter(([, e]) => !e.worthy).sort(([, a], [, 
     <meta name="robots" content="noindex, nofollow" />
   </head>
 
-  <div class="worthy-page">
-    <span class="internal-badge">Internal</span>
-
-    <h1>Worthy Scorecards</h1>
-    <p class="subtitle">Worthiness rubric results &mdash; quality gate for ecosystem promotion.</p>
+  <div class="ops-page">
+    <InternalHero
+      badge="Operator Surface"
+      eyebrow="Promotion gate"
+      title="Worthy Scorecards"
+      lede="Worthiness rubric results and promotion-readiness scoring across the current repo set."
+      meta={[`${totalRepos} repos`, `${worthyCount} worthy`, `${notWorthyCount} not worthy`, `avg ${avgScore}`]}
+    />
 
     {/* Summary banner */}
     <div class="summary-banner">
@@ -165,7 +169,7 @@ const notWorthyRepos = repoEntries.filter(([, e]) => !e.worthy).sort(([, a], [, 
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -232,7 +236,7 @@ const notWorthyRepos = repoEntries.filter(([, e]) => !e.worthy).sort(([, a], [, 
     margin-top: 0.25rem;
   }
 
-  .worthy-color { color: #3fb950; }
+  .worthy-color { color: var(--color-success); }
   .not-worthy-color { color: #f85149; }
 
   .criteria-list {
@@ -298,7 +302,7 @@ const notWorthyRepos = repoEntries.filter(([, e]) => !e.worthy).sort(([, a], [, 
   }
 
   td a {
-    color: #388bfd;
+    color: var(--color-system);
     text-decoration: none;
     font-size: 0.8rem;
   }

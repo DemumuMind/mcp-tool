@@ -9,118 +9,185 @@ const { verified, concept, proofs = [] } = Astro.props;
 
 const status = verified ? "verified" : concept ? "concept" : "unknown";
 const statusLabels = {
-  verified: "Verified Tool",
-  concept: "Concept / Experimental",
-  unknown: "Unverified Status"
-};
-const statusColors = {
-  verified: "var(--sl-color-green-400)",
-  concept: "var(--sl-color-orange-400)",
-  unknown: "var(--sl-color-gray-400)"
+  verified: "Verified tool",
+  concept: "Concept / experimental",
+  unknown: "Unverified status",
 };
 
 const proofLabels: Record<string, string> = {
-  ci: "CI Workflow Detected",
-  npm: "Node.js (package.json)",
-  cargo: "Rust (Cargo.toml)",
-  maven: "Java (pom.xml)",
-  dotnet: "C# (.NET Solution)",
-  python: "Python (pyproject.toml)",
-  docker: "Container (Dockerfile)"
+  ci: "CI workflow detected",
+  npm: "Node.js package",
+  cargo: "Cargo manifest",
+  maven: "Maven build",
+  dotnet: ".NET solution",
+  python: "Python package",
+  docker: "Container build",
 };
 
-const displayProofs = proofs.map(p => ({
-  id: p,
-  label: proofLabels[p] || `Build Asset: ${p}`,
-  icon: p === 'ci' ? '✅' : '📦'
+const displayProofs = proofs.map((proof) => ({
+  id: proof,
+  label: proofLabels[proof] || `Build signal: ${proof}`,
+  icon: proof === "ci" ? "CI" : "PKG",
 }));
 ---
 
-<div class={`reality-panel status-${status}`}>
-  <div class="panel-header">
-    <div class="status-badge">
-      <span class="status-icon">
-        {status === 'verified' ? '✅' : status === 'concept' ? '🚧' : '❓'}
-      </span>
-      <span class="status-label">{statusLabels[status]}</span>
+<section class:list={["reality-panel", `reality-panel--${status}`]}>
+  <div class="reality-panel__header">
+    <div class="reality-panel__status">
+      <span class="reality-panel__icon">{status === "verified" ? "OK" : status === "concept" ? "RND" : "UNK"}</span>
+      <div>
+        <span class="reality-panel__eyebrow">Reality status</span>
+        <strong>{statusLabels[status]}</strong>
+      </div>
     </div>
-    {status === 'concept' && (
-      <p class="concept-note">This tool is in early development. APIs may change.</p>
-    )}
+    {concept && <p class="reality-panel__note">This surface is early and may shift before it earns a stable install contract.</p>}
   </div>
-  
+
   {displayProofs.length > 0 && (
-    <div class="proofs-list">
-      <h4>Detected Signals</h4>
+    <div class="reality-panel__signals">
+      <h3>Detected signals</h3>
       <ul>
-        {displayProofs.map(proof => (
-          <li class="proof-item">
-            <span class="proof-icon">{proof.icon}</span>
-            <span class="proof-label">{proof.label}</span>
+        {displayProofs.map((proof) => (
+          <li>
+            <span class="reality-panel__signal-icon">{proof.icon}</span>
+            <span>{proof.label}</span>
           </li>
         ))}
       </ul>
     </div>
   )}
-</div>
+</section>
 
 <style>
   .reality-panel {
-    background: var(--sl-color-gray-6);
-    border: 1px solid var(--sl-color-gray-5);
-    border-radius: 8px;
-    padding: 1rem;
+    display: grid;
+    gap: 1rem;
     margin: 1.5rem 0;
+    padding: 1.25rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+      var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
-  .status-badge {
+  .reality-panel--verified {
+    border-color: rgba(120, 197, 140, 0.28);
+  }
+
+  .reality-panel--concept {
+    border-color: rgba(217, 107, 59, 0.26);
+  }
+
+  .reality-panel__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .reality-panel__status {
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+  }
+
+  .reality-panel__icon,
+  .reality-panel__signal-icon {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .status-verified { border-color: var(--sl-color-green-800); background: rgba(0, 255, 0, 0.05); }
-  .status-concept { border-color: var(--sl-color-orange-800); background: rgba(255, 165, 0, 0.05); }
-
-  .concept-note {
-    font-size: 0.9rem;
-    color: var(--sl-color-orange-300);
-    margin: 0;
-  }
-
-  .proofs-list {
-    margin-top: 1rem;
-    border-top: 1px solid var(--sl-color-gray-5);
-    padding-top: 0.5rem;
-  }
-
-  .proofs-list h4 {
-    font-size: 0.9rem;
+    justify-content: center;
+    min-width: 2.3rem;
+    min-height: 2.3rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--sl-color-gray-3);
-    margin-bottom: 0.5rem;
   }
 
-  .proofs-list ul {
+  .reality-panel__eyebrow {
+    display: block;
+    margin-bottom: 0.15rem;
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .reality-panel strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--color-text);
+  }
+
+  .reality-panel__note {
+    max-width: 22rem;
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: 0.85rem;
+  }
+
+  .reality-panel__signals {
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .reality-panel__signals h3 {
+    margin: 0;
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .reality-panel__signals ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
   }
 
-  .proof-item {
-    display: flex;
+  .reality-panel__signals li {
+    display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.95rem;
-    background: var(--sl-color-black);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid var(--sl-color-gray-5);
+    gap: 0.6rem;
+    min-height: 2.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: var(--color-text-muted);
+    font-size: 0.83rem;
+  }
+
+  .reality-panel--verified .reality-panel__icon {
+    color: var(--color-success);
+    border-color: rgba(120, 197, 140, 0.28);
+  }
+
+  .reality-panel--concept .reality-panel__icon {
+    color: var(--color-warning);
+    border-color: rgba(217, 107, 59, 0.28);
+  }
+
+  @media (max-width: 720px) {
+    .reality-panel__header {
+      flex-direction: column;
+    }
+
+    .reality-panel__signals ul {
+      flex-direction: column;
+    }
   }
 </style>

@@ -1,4 +1,4 @@
----
+﻿---
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
@@ -185,7 +185,7 @@ function formatDate(dateStr: string | null) {
 
   .internal-badge {
     display: inline-block;
-    background: #d29922;
+    background: var(--color-warning);
     color: #000;
     font-size: 0.75rem;
     font-weight: 600;
@@ -198,7 +198,7 @@ function formatDate(dateStr: string | null) {
 
   .back-link {
     display: inline-block;
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
     font-size: 0.9rem;
     margin-bottom: 1.25rem;
@@ -302,7 +302,7 @@ function formatDate(dateStr: string | null) {
 
   .action-link {
     font-size: 0.85rem;
-    color: var(--color-link, #58a6ff);
+    color: var(--color-link, var(--color-system));
     text-decoration: none;
     padding: 0.4rem 0.75rem;
     border: 1px solid var(--color-border, #30363d);
