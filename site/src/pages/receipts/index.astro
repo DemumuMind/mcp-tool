@@ -6,6 +6,7 @@ import ReceiptLink from "../../components/ReceiptLink.astro";
 import { kit } from "../../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../../lib/site-paths";
 
 interface WeekEntry {
   week: string;
@@ -74,7 +75,7 @@ weeks.sort((a, b) => b.week.localeCompare(a.week));
         {weeks.map((week) => (
           <article class="week-card">
             <div class="week-header">
-              <a href={`/promo/${week.week}/`} class="week-date">{week.week}</a>
+              <a href={withBase(`/promo/${week.week}/`)} class="week-date">{week.week}</a>
               <span class="week-count">{week.itemCount} {week.itemCount === 1 ? "tool" : "tools"}</span>
             </div>
             <div class="week-badges">
@@ -82,7 +83,7 @@ weeks.sort((a, b) => b.week.localeCompare(a.week));
               {week.hasInputHashes && <ProofBadge type="hashed" />}
             </div>
             <div class="week-links">
-              <a href={`/promo/${week.week}/`} class="btn btn-secondary">Promo week</a>
+              <a href={withBase(`/promo/${week.week}/`)} class="btn btn-secondary">Promo week</a>
               {week.hasReceipt && <ReceiptLink href={`/outreach-run/${week.week}/promo-week-receipt.json`} />}
             </div>
           </article>

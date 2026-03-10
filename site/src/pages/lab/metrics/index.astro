@@ -3,6 +3,7 @@ import InternalHero from '../../../components/InternalHero.astro';
 import Base from '../../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
+import { withBase } from '../../../lib/site-paths';
 
 function loadJson(filePath: string): any {
   try {
@@ -310,7 +311,7 @@ const frictionEntries: Array<{slug: string; score: number}> = Object.entries(rec
     ) : (
       <div class="summary-banner empty">
         <p>No telemetry data yet.</p>
-        <p>Events are buffered in visitors' browsers. Use the <a href="/lab/telemetry-export/">export page</a> to download and commit event data.</p>
+        <p>Events are buffered in visitors' browsers. Use the <a href={withBase("/lab/telemetry-export/")}>export page</a> to download and commit event data.</p>
         <p>Then run: <code>node scripts/gen-telemetry-aggregate.mjs</code></p>
       </div>
     )}

@@ -10,6 +10,7 @@ import overrides from "../../data/overrides.json";
 import { getProofData, getPressData, loadSnapshot } from "../../lib/marketir/loader.mjs";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
   return (projects as any[]).map((project: any) => ({
@@ -53,7 +54,7 @@ const statusSignals = [
   currentPath={`/tools/${project.repo}/`}
 >
   <div class="tool-profile">
-    <a href="/tools/" class="back-link">&larr; Back to registry</a>
+    <a href={withBase("/tools/")} class="back-link">&larr; Back to registry</a>
 
     <section class="tool-profile__hero">
       <div class="tool-profile__lead">
@@ -77,8 +78,8 @@ const statusSignals = [
           <a href={orgUrl} class="btn btn-primary" rel="noopener">View on GitHub</a>
           <a href={`${orgUrl}/issues`} class="btn btn-secondary" rel="noopener">Issues</a>
           <a href={`${orgUrl}/releases`} class="btn btn-secondary" rel="noopener">Releases</a>
-          {showProof && pressData && <a href={`/press/${project.repo}/`} class="btn btn-secondary">Press page</a>}
-          {hasPresskit && <a href={`/presskit/${project.repo}/`} class="btn btn-secondary">Press kit</a>}
+          {showProof && pressData && <a href={withBase(`/press/${project.repo}/`)} class="btn btn-secondary">Press page</a>}
+          {hasPresskit && <a href={withBase(`/presskit/${project.repo}/`)} class="btn btn-secondary">Press kit</a>}
         </div>
       </div>
 
@@ -143,7 +144,7 @@ const statusSignals = [
 
     {project.screenshot && (
       <section class="tool-screenshot">
-        <img src={project.screenshot} alt={`${project.name} screenshot`} loading="lazy" width="1280" />
+        <img src={withBase(project.screenshot)} alt={`${project.name} screenshot`} loading="lazy" width="1280" />
         {project.screenshotType === "placeholder" && <span class="tool-screenshot__label">Preview</span>}
       </section>
     )}
@@ -187,7 +188,7 @@ const statusSignals = [
         </div>
         <div class="related-grid">
           {related.map((candidate: any) => (
-            <a href={`/tools/${candidate.repo}/`} class="related-item">
+            <a href={withBase(`/tools/${candidate.repo}/`)} class="related-item">
               <span class="related-name">{candidate.name}</span>
               <span class="related-desc">{candidate.tagline || candidate.description}</span>
             </a>

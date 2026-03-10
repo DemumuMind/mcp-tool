@@ -3,6 +3,7 @@ import InternalHero from '../../components/InternalHero.astro';
 import Base from '../../layouts/Base.astro';
 import fs from 'node:fs';
 import path from 'node:path';
+import { withBase } from '../../lib/site-paths';
 
 function loadJson(filePath: string) {
   try {
@@ -161,7 +162,7 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
                           <p>Pushed: {c.pushedAt?.slice(0, 10) || 'вЂ”'}</p>
                           <p>Topics: {(c.topics || []).join(', ') || 'вЂ”'}</p>
                           {i < 25 && (
-                            <p><a href={`/targets/${slug}/drafts/${c.owner}--${c.repo}.md`}>Draft outreach</a></p>
+                            <p><a href={withBase(`/targets/${slug}/drafts/${c.owner}--${c.repo}.md`)}>Draft outreach</a></p>
                           )}
                         </div>
                       </div>
@@ -173,9 +174,9 @@ const generatedAt = allTargets[0]?.data.generatedAt || null;
           </div>
 
           <div class="export-links">
-            <a href={`/targets/${slug}/targets.json`}>JSON</a>
-            <a href={`/targets/${slug}/targets.csv`}>CSV</a>
-            <a href={`/targets/${slug}/README.md`}>README</a>
+            <a href={withBase(`/targets/${slug}/targets.json`)}>JSON</a>
+            <a href={withBase(`/targets/${slug}/targets.csv`)}>CSV</a>
+            <a href={withBase(`/targets/${slug}/README.md`)}>README</a>
           </div>
         </section>
       );

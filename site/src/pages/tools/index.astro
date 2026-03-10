@@ -4,6 +4,7 @@ import Base from "../../layouts/Base.astro";
 import projects from "../../data/projects.json";
 import RealityPills from "../../components/RealityPills.astro";
 import proofs from "../../data/audit/proofs.json";
+import { withBase } from "../../lib/site-paths";
 
 const languages = [...new Set((projects as any[]).map((project: any) => project.language).filter(Boolean))].sort();
 const stabilities = ["stable", "beta", "experimental"];
@@ -103,7 +104,7 @@ const registeredCount = (projects as any[]).filter((project: any) => project.reg
       >
         <div class="card-header">
           <div>
-            <h3><a href={`/tools/${project.repo}/`}>{project.name}</a></h3>
+            <h3><a href={withBase(`/tools/${project.repo}/`)}>{project.name}</a></h3>
             <p class="project-card__repo">{project.repo}</p>
           </div>
           <div class="card-badges">

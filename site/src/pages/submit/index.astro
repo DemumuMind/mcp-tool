@@ -5,6 +5,7 @@ import GlossaryTerm from "../../components/GlossaryTerm.astro";
 import { kit } from "../../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../../lib/site-paths";
 
 let worthyCriteria: string[] = [];
 let worthyMinScore = 0;
@@ -77,7 +78,7 @@ const exampleJson = JSON.stringify(
         <li>No install path or unclear runtime requirements.</li>
         <li>"Coming soon" repos with no working code.</li>
         <li>No license or claims with no evidence.</li>
-        <li>Tools already present in the <a href="/tools/">catalog</a>.</li>
+        <li>Tools already present in the <a href={withBase("/tools/")}>catalog</a>.</li>
       </ul>
     </section>
 

@@ -4,6 +4,8 @@ interface Props {
   label?: string;
 }
 
+import { withBase } from "../lib/site-paths";
+
 const { href, label = "View receipt" } = Astro.props;
 
 // Extract week from href if it contains a promo week pattern
@@ -11,7 +13,7 @@ const weekMatch = href.match(/(\d{4}-W\d{2})/);
 const week = weekMatch ? weekMatch[1] : "";
 ---
 
-<a class="receipt-link" href={href} data-receipt-week={week}>{label} &rarr;</a>
+<a class="receipt-link" href={withBase(href)} data-receipt-week={week}>{label} &rarr;</a>
 
 <script>
   import { trackEvent } from '../lib/tracker';

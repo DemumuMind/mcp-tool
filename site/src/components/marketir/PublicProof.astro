@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../../lib/site-paths";
+
 /**
  * PublicProof — renders verified claims, aspirational claims, and anti-claims
  * from a MarketIR tool snapshot. Designed to slot into tool detail pages.
@@ -49,8 +51,8 @@ const fetchedDate = snapshot?.fetchedAt
                     const label = evidenceLabel(ev);
                     if (ev.type === "image" && localPath) {
                       return (
-                        <a href={localPath} class="evidence-link evidence-image" data-evidence-type="image" target="_blank" rel="noopener">
-                          <img src={localPath} alt={label} loading="lazy" width="120" height="60" />
+                          <a href={withBase(localPath)} class="evidence-link evidence-image" data-evidence-type="image" target="_blank" rel="noopener">
+                          <img src={withBase(localPath)} alt={label} loading="lazy" width="120" height="60" />
                         </a>
                       );
                     }

@@ -1,6 +1,7 @@
 ---
 import InternalHero from "../../components/InternalHero.astro";
 import Layout from "../../layouts/Base.astro";
+import { withBase } from "../../lib/site-paths";
 
 const LAB_SECTIONS = [
   {
@@ -74,7 +75,7 @@ const LAB_SECTIONS = [
 
         <div class="ops-card-grid">
           {section.items.map((item) => (
-            <a class="ops-card ops-link-card" href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+            <a class="ops-card ops-link-card" href={item.external ? item.href : withBase(item.href)} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
               <div class="ops-link-card__header">
                 <div class="ops-link-card__title">
                   <span class="ops-link-card__code">{item.code}</span>

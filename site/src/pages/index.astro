@@ -6,6 +6,7 @@ import collections from "../data/collections.json";
 import releases from "../data/releases.json";
 import stats from "../data/org-stats.json";
 import todaysPicks from "../data/todays-picks.json";
+import { withBase } from "../lib/site-paths";
 
 const projectsByRepo = new Map((projects as any[]).map((project: any) => [project.repo, project]));
 const featuredProjects = (projects as any[]).filter((project: any) => project.featured);
@@ -42,8 +43,8 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
     ]}
   >
     <Fragment slot="actions">
-      <a href="/tools/" class="btn btn-primary">Browse tools</a>
-      <a href="/trust/" class="btn btn-secondary">See trust model</a>
+      <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+      <a href={withBase("/trust/")} class="btn btn-secondary">See trust model</a>
     </Fragment>
   </PageHero>
 
@@ -54,13 +55,13 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
           <p class="section-kicker">Featured surface</p>
           <h2 class="section-shell__title">Today&apos;s operator focus</h2>
         </div>
-        <a href={`/tools/${spotlight.repo}/`} class="see-all">Open dossier</a>
+        <a href={withBase(`/tools/${spotlight.repo}/`)} class="see-all">Open dossier</a>
       </div>
 
       <article class="spotlight-card">
         <div class="spotlight-card__copy">
           <span class="spotlight-card__label">Registry spotlight</span>
-          <h3><a href={`/tools/${spotlight.repo}/`}>{spotlight.name}</a></h3>
+          <h3><a href={withBase(`/tools/${spotlight.repo}/`)}>{spotlight.name}</a></h3>
           <p>{spotlight.description || spotlight.tagline}</p>
           <div class="spotlight-card__meta">
             {spotlight.language && <span>{spotlight.language}</span>}
@@ -70,7 +71,7 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
         </div>
         <div class="spotlight-card__media">
           <img
-            src={`/screenshots/${spotlight.repo}.png`}
+            src={withBase(`/screenshots/${spotlight.repo}.png`)}
             alt={`Screenshot of ${spotlight.name}`}
             width="880"
             height="540"
@@ -88,11 +89,11 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
         <p class="section-kicker">Release cadence</p>
         <h2 class="section-shell__title">{releaseHeading}</h2>
       </div>
-      <a href="/releases/" class="see-all">All releases</a>
+      <a href={withBase("/releases/")} class="see-all">All releases</a>
     </div>
     <div class="release-strip">
       {recentReleases.map((release: any) => (
-        <a href={`/tools/${release.repo}/`} class="release-chip">
+        <a href={withBase(`/tools/${release.repo}/`)} class="release-chip">
           <span class="release-chip-name">{release.toolName}</span>
           <span class="release-chip-tag">{release.tag}</span>
           <span class="release-chip-date">{relativeDate(release.publishedAt)}</span>
@@ -112,7 +113,7 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
       {gridProjects.map((project: any) => (
         <article class="project-card">
           <div class="card-header-home">
-            <h3><a href={`/tools/${project.repo}/`}>{project.name}</a></h3>
+            <h3><a href={withBase(`/tools/${project.repo}/`)}>{project.name}</a></h3>
             <div class="card-badges">
               {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
               {project.kind && <span class="badge badge-kind">{project.kind}</span>}
@@ -144,7 +145,7 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
         <p class="section-subheading">{collection.description}</p>
         <div class="collection-grid">
           {items.map((project: any) => (
-            <a href={`/tools/${project.repo}/`} class="collection-item">
+            <a href={withBase(`/tools/${project.repo}/`)} class="collection-item">
               <span class="collection-item-name">{project.name}</span>
               <span class="collection-item-desc">{project.tagline || project.description}</span>
             </a>

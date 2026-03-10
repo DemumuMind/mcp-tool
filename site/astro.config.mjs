@@ -11,9 +11,15 @@ try {
   if (!process.env.PUBLIC_SITE_URL && kitConfig.site?.url) kitSiteUrl = kitConfig.site.url;
 } catch { /* fail soft — use default */ }
 
+const basePath = (() => {
+  const pathname = new URL(kitSiteUrl).pathname.replace(/\/$/, '');
+  return pathname && pathname !== '' ? pathname : undefined;
+})();
+
 // https://astro.build/config
 export default defineConfig({
   site: kitSiteUrl,
+  base: basePath,
   trailingSlash: 'always',
   integrations: [sitemap({
     filter: (page) => !page.includes('/lab/'),

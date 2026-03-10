@@ -4,6 +4,7 @@ import overrides from "../../data/overrides.json";
 import fs from "node:fs";
 import path from "node:path";
 import { getProofData, getSnapshotMeta, getToolBySlug, loadSnapshot } from "../../lib/marketir/loader.mjs";
+import { withBase } from "../../lib/site-paths";
 
 const overrideMap = overrides as Record<string, any>;
 
@@ -64,7 +65,7 @@ function getTierLabel(score: number): string {
 
 <Base title={`${tool.name} - Proof`} description={`Verified claims, evidence chains, and transparency data for ${tool.name}.`} currentPath={`/proof/${slug}/`}>
   <div class="proof-page">
-    <a href="/proof/" class="back-link">&larr; All proof pages</a>
+    <a href={withBase("/proof/")} class="back-link">&larr; All proof pages</a>
 
     <section class="proof-hero">
       <div>
@@ -121,7 +122,7 @@ function getTierLabel(score: number): string {
                       {evidence.url ? (
                         <a href={evidence.url} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
                       ) : evidence.path ? (
-                        <a href={`/marketir/evidence/${evidence.path.split("/").pop()}`} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
+                        <a href={withBase(`/marketir/evidence/${evidence.path.split("/").pop()}`)} target="_blank" rel="noopener">{evidence.type}: {evidence.id.split(".").pop()}</a>
                       ) : (
                         <span>{evidence.type}: {evidence.id.split(".").pop()}</span>
                       )}
@@ -266,8 +267,8 @@ function getTierLabel(score: number): string {
         </div>
       </div>
       <div class="related-links">
-        {tool.press && <a href={`/press/${slug}/`} class="btn btn-secondary">Press page</a>}
-        <a href={`/tools/${slug}/`} class="btn btn-secondary">Tool page</a>
+        {tool.press && <a href={withBase(`/press/${slug}/`)} class="btn btn-secondary">Press page</a>}
+        <a href={withBase(`/tools/${slug}/`)} class="btn btn-secondary">Tool page</a>
         <a href={orgUrl} class="btn btn-secondary" target="_blank" rel="noopener">GitHub</a>
       </div>
     </section>
