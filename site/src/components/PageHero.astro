@@ -4,7 +4,11 @@ interface Props {
   title: string;
   lede?: string;
   meta?: string[];
+  proofItems?: string[];
+  asideTitle?: string;
+  asideBody?: string;
   align?: "left" | "center";
+  layout?: "stack" | "split";
 }
 
 const {
@@ -12,20 +16,45 @@ const {
   title,
   lede,
   meta = [],
+  proofItems = [],
+  asideTitle,
+  asideBody,
   align = "left",
+  layout = "stack",
 } = Astro.props;
 ---
 
-<section class:list={["page-hero", align === "center" && "page-hero--center"]}>
-  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-  <h1 class="page-hero__title">{title}</h1>
-  {lede && <p class="page-hero__lede">{lede}</p>}
-  {meta.length > 0 && (
-    <div class="page-hero__meta">
-      {meta.map((item) => <span>{item}</span>)}
+<section
+  class:list={[
+    "page-hero",
+    align === "center" && "page-hero--center",
+    layout === "split" && "page-hero--split",
+  ]}
+>
+  <div class="page-hero__main">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="page-hero__title">{title}</h1>
+    {lede && <p class="page-hero__lede">{lede}</p>}
+    {meta.length > 0 && (
+      <div class="page-hero__meta">
+        {meta.map((item) => <span>{item}</span>)}
+      </div>
+    )}
+    {proofItems.length > 0 && (
+      <div class="page-hero__proof">
+        {proofItems.map((item) => <span>{item}</span>)}
+      </div>
+    )}
+    <div class="page-hero__actions">
+      <slot name="actions" />
     </div>
-  )}
-  <div class="page-hero__actions">
-    <slot name="actions" />
   </div>
+
+  {(asideTitle || asideBody) && (
+    <aside class="page-hero__aside">
+      {asideTitle && <p class="page-hero__aside-title">{asideTitle}</p>}
+      {asideBody && <p class="page-hero__aside-body">{asideBody}</p>}
+      <slot name="aside" />
+    </aside>
+  )}
 </section>

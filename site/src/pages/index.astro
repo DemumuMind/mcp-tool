@@ -6,15 +6,47 @@ import collections from "../data/collections.json";
 import releases from "../data/releases.json";
 import stats from "../data/org-stats.json";
 import todaysPicks from "../data/todays-picks.json";
+import proofs from "../data/audit/proofs.json";
 import { withBase } from "../lib/site-paths";
 
-const projectsByRepo = new Map((projects as any[]).map((project: any) => [project.repo, project]));
-const featuredProjects = (projects as any[]).filter((project: any) => project.featured);
+const projectList = projects as any[];
+const proofList = proofs as any[];
+const projectsByRepo = new Map(projectList.map((project: any) => [project.repo, project]));
+const featuredProjects = projectList.filter((project: any) => project.featured);
 const recentReleases = (releases as any[]).slice(0, 5);
 const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
 const spotlightIndex = featuredProjects.length > 0 ? dayOfYear % featuredProjects.length : 0;
 const spotlight = featuredProjects[spotlightIndex];
 const gridProjects = todaysPicks.picks.map((pick) => projectsByRepo.get(pick.slug)).filter(Boolean);
+
+const verifiedCount = proofList.filter((proof: any) => proof.verified).length;
+const conceptCount = proofList.filter((proof: any) => proof.concept).length;
+const receiptBackedCount = proofList.filter((proof: any) => Array.isArray(proof.proofs) && proof.proofs.length > 0).length;
+const topVerified = projectList
+  .filter((project: any) => proofList.find((proof: any) => proof.repo === project.repo)?.verified)
+  .sort((a: any, b: any) => (b.stars || 0) - (a.stars || 0))
+  .slice(0, 3);
+
+const operatorPaths = [
+  {
+    title: "Find tools fast",
+    description: "Go straight to curated MCP servers, desktop apps, and libraries with proof and install posture visible up front.",
+    href: "/tools/",
+    action: "Browse tools",
+  },
+  {
+    title: "Verify the claims",
+    description: "Inspect receipts, hashes, freeze controls, and reproducible promotion evidence before you trust the editorial layer.",
+    href: "/trust/",
+    action: "Open trust center",
+  },
+  {
+    title: "Reuse the story",
+    description: "Press pages and proof dossiers package approved narrative, assets, and partner-ready evidence without hype inflation.",
+    href: "/press/",
+    action: "View press surfaces",
+  },
+];
 
 function relativeDate(iso: string) {
   if (!iso) return "";
@@ -31,139 +63,329 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
 ---
 
 <Base title="DemumuMind" currentPath="/">
-  <PageHero
-    eyebrow="Protocol Editorial / Dark Trust Infrastructure"
-    title="A trust-first index for serious agent tools."
-    lede="Curated MCP servers, desktop apps, proofs, receipts, and release evidence for local-first operator workflows."
-    align="center"
-    meta={[
-      `${stats.repoCount} public repos`,
-      "100% local-first posture",
-      "MCP-native surfaces",
-    ]}
-  >
-    <Fragment slot="actions">
-      <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
-      <a href={withBase("/trust/")} class="btn btn-secondary">See trust model</a>
-    </Fragment>
-  </PageHero>
+  <div class="home-flow">
+    <PageHero
+      eyebrow="Protocol editorial / trust-first infrastructure"
+      title="A serious index for agent tools that show their work."
+      lede="DemumuMind curates MCP servers, desktop apps, proofs, and press surfaces for local-first operators who want evidence before adoption."
+      layout="split"
+      proofItems={[
+        `${verifiedCount} verified proof trails`,
+        `${receiptBackedCount} repos with build receipts`,
+        `${stats.registryHealth.registryToolCount} registry tools tracked`,
+      ]}
+      meta={[
+        "What is this? A trust-first tool index.",
+        "Why trust it? Receipts, hashes, and freeze controls.",
+        "Where next? Tools, Trust, or Press.",
+      ]}
+      asideTitle="Why this front page exists"
+      asideBody="The homepage now leads with verification posture first, discovery second, so operators can assess evidence before they browse the catalog."
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/trust/")} class="btn btn-secondary">Verify the model</a>
+      </Fragment>
+      <Fragment slot="aside">
+        <div class="hero-aside-stack">
+          <div>
+            <span class="hero-aside-label">Registry posture</span>
+            <strong>{stats.registeredCount} listed / {stats.repoCount} public repos</strong>
+          </div>
+          <div>
+            <span class="hero-aside-label">Editorial stance</span>
+            <strong>No cloud gating. No hype-only promotion.</strong>
+          </div>
+        </div>
+      </Fragment>
+    </PageHero>
 
-  {spotlight && (
-    <section class="spotlight-section">
+    <section class="trust-proof-band">
+      <div class="trust-proof-band__lead">
+        <p class="section-kicker">Verification posture</p>
+        <h2 class="section-shell__title">Trust is explicit, not implied.</h2>
+        <p class="section-subheading">
+          Every public surface points back to auditable inputs: registry state, proof receipts, release activity, and human-controlled freeze modes.
+        </p>
+      </div>
+      <div class="trust-proof-band__grid">
+        <article class="proof-stat-card">
+          <span class="proof-stat-card__label">Verified repos</span>
+          <strong class="proof-stat-card__value">{verifiedCount}</strong>
+          <p>Tools with concrete build or CI proof signals already attached to the catalog.</p>
+        </article>
+        <article class="proof-stat-card">
+          <span class="proof-stat-card__label">Concept surfaces</span>
+          <strong class="proof-stat-card__value">{conceptCount}</strong>
+          <p>Exploratory repos still appear, but their proof posture is clearly called out instead of being blurred together.</p>
+        </article>
+        <article class="proof-stat-card">
+          <span class="proof-stat-card__label">Tracked release events</span>
+          <strong class="proof-stat-card__value">{stats.recentReleases}</strong>
+          <p>Release cadence is part of the story, not buried behind marketing copy.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell">
       <div class="section-shell__header">
         <div>
-          <p class="section-kicker">Featured surface</p>
-          <h2 class="section-shell__title">Today&apos;s operator focus</h2>
+          <p class="section-kicker">Operator routes</p>
+          <h2 class="section-shell__title">Pick the surface that matches your job.</h2>
         </div>
-        <a href={withBase(`/tools/${spotlight.repo}/`)} class="see-all">Open dossier</a>
       </div>
-
-      <article class="spotlight-card">
-        <div class="spotlight-card__copy">
-          <span class="spotlight-card__label">Registry spotlight</span>
-          <h3><a href={withBase(`/tools/${spotlight.repo}/`)}>{spotlight.name}</a></h3>
-          <p>{spotlight.description || spotlight.tagline}</p>
-          <div class="spotlight-card__meta">
-            {spotlight.language && <span>{spotlight.language}</span>}
-            {spotlight.stars > 0 && <span>{spotlight.stars} stars</span>}
-            {spotlight.kind && <span>{spotlight.kind}</span>}
-          </div>
-        </div>
-        <div class="spotlight-card__media">
-          <img
-            src={withBase(`/screenshots/${spotlight.repo}.png`)}
-            alt={`Screenshot of ${spotlight.name}`}
-            width="880"
-            height="540"
-            loading="eager"
-            onerror="this.closest('.spotlight-card__media').style.display='none'"
-          />
-        </div>
-      </article>
+      <div class="operator-path-grid">
+        {operatorPaths.map((path) => (
+          <a href={withBase(path.href)} class="operator-path-card">
+            <span class="operator-path-card__eyebrow">{path.title}</span>
+            <p>{path.description}</p>
+            <span class="operator-path-card__action">{path.action}</span>
+          </a>
+        ))}
+      </div>
     </section>
-  )}
 
-  <section class="section-shell">
-    <div class="section-shell__header">
-      <div>
-        <p class="section-kicker">Release cadence</p>
-        <h2 class="section-shell__title">{releaseHeading}</h2>
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Curated discovery</p>
+          <h2 class="section-shell__title">Open these tools first.</h2>
+        </div>
+        <a href={withBase("/tools/")} class="see-all">Full catalog</a>
       </div>
-      <a href={withBase("/releases/")} class="see-all">All releases</a>
-    </div>
-    <div class="release-strip">
-      {recentReleases.map((release: any) => (
-        <a href={withBase(`/tools/${release.repo}/`)} class="release-chip">
-          <span class="release-chip-name">{release.toolName}</span>
-          <span class="release-chip-tag">{release.tag}</span>
-          <span class="release-chip-date">{relativeDate(release.publishedAt)}</span>
-        </a>
-      ))}
-    </div>
-  </section>
+      <div class="project-grid">
+        {gridProjects.map((project: any) => {
+          const proof = proofList.find((entry: any) => entry.repo === project.repo);
+          return (
+            <article class="project-card project-card--home">
+              <div class="card-header-home">
+                <h3><a href={withBase(`/tools/${project.repo}/`)}>{project.name}</a></h3>
+                <div class="card-badges">
+                  {proof?.verified && <span class="badge badge-stable">Verified</span>}
+                  {!proof?.verified && proof?.concept && <span class="badge badge-beta">Concept</span>}
+                  {project.kind && <span class="badge badge-kind">{project.kind}</span>}
+                </div>
+              </div>
+              <p>{project.tagline || project.description}</p>
+              {project.install && <code class="install-line">{project.install}</code>}
+              <div class="card-meta">
+                {project.language && <span class="meta-item">{project.language}</span>}
+                {project.stars > 0 && <span class="meta-item">{project.stars} stars</span>}
+                {proof?.proofs?.length > 0 && <span class="meta-item">{proof.proofs.join(" + ")}</span>}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
 
-  <section class="section-shell">
-    <div class="section-shell__header">
-      <div>
-        <p class="section-kicker">Curated picks</p>
-        <h2 class="section-shell__title">Tools worth opening first</h2>
-      </div>
-    </div>
-    <div class="project-grid">
-      {gridProjects.map((project: any) => (
-        <article class="project-card">
-          <div class="card-header-home">
-            <h3><a href={withBase(`/tools/${project.repo}/`)}>{project.name}</a></h3>
-            <div class="card-badges">
-              {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
-              {project.kind && <span class="badge badge-kind">{project.kind}</span>}
+    {spotlight && (
+      <section class="spotlight-section">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Editorial spotlight</p>
+            <h2 class="section-shell__title">Today&apos;s operator focus</h2>
+          </div>
+          <a href={withBase(`/tools/${spotlight.repo}/`)} class="see-all">Open dossier</a>
+        </div>
+
+        <article class="spotlight-card">
+          <div class="spotlight-card__copy">
+            <span class="spotlight-card__label">Registry spotlight</span>
+            <h3><a href={withBase(`/tools/${spotlight.repo}/`)}>{spotlight.name}</a></h3>
+            <p>{spotlight.description || spotlight.tagline}</p>
+            <div class="spotlight-card__meta">
+              {spotlight.language && <span>{spotlight.language}</span>}
+              {spotlight.stars > 0 && <span>{spotlight.stars} stars</span>}
+              {spotlight.kind && <span>{spotlight.kind}</span>}
             </div>
           </div>
-          <p>{project.tagline || project.description}</p>
-          {project.install && <code class="install-line">{project.install}</code>}
-          <div class="card-meta">
-            {project.stars > 0 && <span class="meta-item">{project.stars} stars</span>}
-            {project.language && <span class="meta-item">{project.language}</span>}
+          <div class="spotlight-card__media">
+            <img
+              src={withBase(`/screenshots/${spotlight.repo}.png`)}
+              alt={`Screenshot of ${spotlight.name}`}
+              width="880"
+              height="540"
+              loading="eager"
+              onerror="this.closest('.spotlight-card__media').style.display='none'"
+            />
           </div>
         </article>
-      ))}
-    </div>
-  </section>
+      </section>
+    )}
 
-  {(collections as any[]).map((collection: any) => {
-    const items = collection.repos.map((repo: string) => projectsByRepo.get(repo)).filter(Boolean);
-    if (items.length === 0) return null;
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Collections</p>
+          <h2 class="section-shell__title">Curated stacks and verified entry points.</h2>
+        </div>
+      </div>
+      <div class="collection-grid">
+        {(collections as any[]).map((collection: any) => (
+          <article class="collection-item collection-item--home">
+            <span class="collection-item-name">{collection.title}</span>
+            <span class="collection-item-desc">{collection.description}</span>
+            <span class="collection-item-count">{collection.repos.length} repos</span>
+          </article>
+        ))}
+      </div>
+    </section>
 
-    return (
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Release cadence</p>
+          <h2 class="section-shell__title">{releaseHeading}</h2>
+        </div>
+        <a href={withBase("/releases/")} class="see-all">All releases</a>
+      </div>
+      <div class="release-strip release-strip--horizontal">
+        {recentReleases.map((release: any) => (
+          <a href={withBase(`/tools/${release.repo}/`)} class="release-chip">
+            <span class="release-chip-name">{release.toolName}</span>
+            <span class="release-chip-tag">{release.tag}</span>
+            <span class="release-chip-date">{relativeDate(release.publishedAt)}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {topVerified.length > 0 && (
       <section class="section-shell">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Curated stack</p>
-            <h2 class="section-shell__title">{collection.title}</h2>
+            <p class="section-kicker">Proof-linked picks</p>
+            <h2 class="section-shell__title">Three verified places to start.</h2>
           </div>
+          <a href={withBase("/proof/")} class="see-all">Browse proof pages</a>
         </div>
-        <p class="section-subheading">{collection.description}</p>
-        <div class="collection-grid">
-          {items.map((project: any) => (
-            <a href={withBase(`/tools/${project.repo}/`)} class="collection-item">
-              <span class="collection-item-name">{project.name}</span>
-              <span class="collection-item-desc">{project.tagline || project.description}</span>
+        <div class="proof-linked-grid">
+          {topVerified.map((project: any) => (
+            <a href={withBase(`/tools/${project.repo}/`)} class="proof-linked-card">
+              <span class="proof-linked-card__title">{project.name}</span>
+              <span class="proof-linked-card__desc">{project.tagline || project.description}</span>
             </a>
           ))}
         </div>
       </section>
-    );
-  })}
+    )}
+  </div>
 </Base>
 
 <style>
+  .home-flow {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .hero-aside-stack {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .hero-aside-label {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .trust-proof-band__lead,
+  .proof-stat-card,
+  .operator-path-card,
+  .collection-item--home,
+  .proof-linked-card {
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .trust-proof-band__lead {
+    padding: 1.3rem;
+  }
+
+  .trust-proof-band__grid,
+  .proof-linked-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .proof-stat-card {
+    padding: 1.15rem;
+  }
+
+  .proof-stat-card__label {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .proof-stat-card__value {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 3rem);
+    line-height: 1;
+  }
+
+  .operator-path-card,
+  .collection-item--home,
+  .proof-linked-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.15rem;
+    text-decoration: none;
+  }
+
+  .operator-path-card__eyebrow,
+  .operator-path-card__action,
+  .collection-item-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .operator-path-card__eyebrow {
+    color: var(--color-text);
+  }
+
+  .operator-path-card__action,
+  .collection-item-count {
+    color: var(--color-signal);
+  }
+
+  .project-card--home {
+    min-height: 100%;
+  }
+
+  .card-header-home,
+  .card-badges {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
   .spotlight-section {
-    margin-top: 2rem;
+    margin-top: 0;
   }
 
   .spotlight-card {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+    grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr);
     gap: 1.25rem;
     padding: 1.1rem;
   }
@@ -229,7 +451,7 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
     object-fit: cover;
   }
 
-  .release-strip {
+  .release-strip--horizontal {
     flex-direction: row;
     overflow-x: auto;
     padding-bottom: 0.25rem;
@@ -250,16 +472,21 @@ const releaseHeading = recentReleases.length > 0 ? "Recent release chronicle" : 
     white-space: nowrap;
   }
 
-  .card-header-home,
-  .card-badges {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
+  .proof-linked-card__title {
+    color: var(--color-text);
+    font-weight: 600;
   }
 
-  @media (max-width: 900px) {
+  .proof-linked-card__desc {
+    color: var(--color-text-dim);
+  }
+
+  @media (max-width: 960px) {
+    .trust-proof-band__grid,
+    .proof-linked-grid {
+      grid-template-columns: 1fr;
+    }
+
     .spotlight-card {
       grid-template-columns: 1fr;
     }
