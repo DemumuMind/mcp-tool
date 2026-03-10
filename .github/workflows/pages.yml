@@ -36,6 +36,7 @@ jobs:
       - name: Install root dependencies
         run: npm ci
       - name: Fetch MarketIR snapshot
+        continue-on-error: true
         run: node scripts/fetch-marketir.mjs
       - name: Fetch GitHub facts
         run: node scripts/fetch-github-facts.mjs

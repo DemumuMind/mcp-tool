@@ -147,4 +147,16 @@ describe("workflow hardening", () => {
       "nameops-scheduled.yml: generator cache key must include the generator fingerprint"
     );
   });
+
+  it("treats MarketIR fetch as best-effort in the Pages workflow", () => {
+    const pages = readWorkflow("pages.yml");
+    const marketirSection = /- name: Fetch MarketIR snapshot[\s\S]*?(?=\n\s*- name:|\n\s*$)/.exec(pages);
+
+    assert.ok(marketirSection, "pages.yml: missing Fetch MarketIR snapshot section");
+    assert.match(
+      marketirSection[0],
+      /continue-on-error:\s*true/,
+      "pages.yml: MarketIR fetch should not block a Pages deploy when upstream is unavailable"
+    );
+  });
 });
