@@ -86,11 +86,19 @@ const experimentsFrozen = governance.experimentsFrozen === true;
       eyebrow="Trust center"
       title="Evidence first. Promotion second."
       lede="Receipts, hashes, freeze controls, and reproducible inputs make every public promotion inspectable."
+      layout="split"
       meta={[
         `${artifactCount || 0} hashed artifacts`,
         `${provenClaimCount || 0} proven claims`,
         `${projectCount || 0} tracked projects`,
       ]}
+      proofItems={[
+        decisionsFrozen ? "Decisions frozen" : "Decisions active",
+        experimentsFrozen ? "Experiments frozen" : "Experiments active",
+        commitSha && commitSha !== "unknown" ? `Build ${commitSha.slice(0, 8)}` : "Build ref pending",
+      ]}
+      asideTitle="Verification rule"
+      asideBody="Every promotional claim should resolve back to a receipt, a build input, or a human-controlled governance state."
     >
       <Fragment slot="actions">
         <a href={withBase("/receipts/")} class="btn btn-primary">Browse receipts</a>
