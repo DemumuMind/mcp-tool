@@ -1239,20 +1239,12 @@
     "tagline": "Multi-registry download stats for npm, PyPI, NuGet, VS Code Marketplace, and Docker Hub.",
     "needsHumanReview": true,
     "tags": [
-      "astro",
-      "cli",
-      "dashboard",
-      "desktop",
       "docker",
       "download-stats",
-      "github-pages",
-      "monorepo",
       "npm",
       "nuget",
-      "ollama",
       "pypi",
-      "registry",
-      "typescript"
+      "registry"
     ]
   },
   "registry-stats-vscode": {
@@ -1361,7 +1353,6 @@
       "developer-tools",
       "error-contract",
       "mcp",
-      "model-context-protocol",
       "quality"
     ],
     "category": "ml",

@@ -7,6 +7,10 @@ on:
         description: 'Status patch (e.g., {"slug":"my-tool","status":"needs-info","reviewNotes":"Please add a demo link"})'
         required: true
         type: string
+      patch_json_b64:
+        description: 'Optional base64-encoded status patch JSON for CLI/API callers that need stable transport'
+        required: false
+        type: string
       reason:
         description: 'Reason for this status change'
         required: true
@@ -37,7 +41,8 @@ jobs:
       - name: Validate and apply status
         env:
           PATCH_JSON: ${{ inputs.patch_json }}
-        run: node scripts/apply-submission-status.mjs "$PATCH_JSON"
+          PATCH_JSON_B64: ${{ inputs.patch_json_b64 }}
+        run: node scripts/apply-submission-status.mjs "$PATCH_JSON" "$PATCH_JSON_B64"
 
       - name: Run invariant tests
         run: node --test tests/invariants/*.test.mjs
@@ -56,6 +61,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PATCH_JSON: ${{ inputs.patch_json }}
+          PATCH_JSON_B64: ${{ inputs.patch_json_b64 }}
           REASON: ${{ inputs.reason }}
         run: |
           BRANCH="submission-status/$(date +%Y%m%d-%H%M%S)"

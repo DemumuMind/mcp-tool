@@ -12,6 +12,13 @@ function writeMarkdown(outputPath, sections) {
   writeFileSync(outputPath, body, "utf8");
 }
 
+export function resolveWorkflowPatchBody({ patchJson = "", patchJsonB64 = "" } = {}) {
+  if (patchJsonB64) {
+    return Buffer.from(patchJsonB64, "base64").toString("utf8");
+  }
+  return patchJson;
+}
+
 export function writeControlPatchPrBody({
   outputPath,
   reason,
@@ -73,7 +80,10 @@ function main() {
     writeControlPatchPrBody({
       outputPath,
       reason: process.env.REASON,
-      patchJson: process.env.PATCH_JSON,
+      patchJson: resolveWorkflowPatchBody({
+        patchJson: process.env.PATCH_JSON,
+        patchJsonB64: process.env.PATCH_JSON_B64,
+      }),
       diffSummary: process.env.DIFF_SUMMARY,
       riskNotes: process.env.RISK_NOTES,
     });
@@ -84,7 +94,10 @@ function main() {
     writeSubmissionStatusPrBody({
       outputPath,
       reason: process.env.REASON,
-      patchJson: process.env.PATCH_JSON,
+      patchJson: resolveWorkflowPatchBody({
+        patchJson: process.env.PATCH_JSON,
+        patchJsonB64: process.env.PATCH_JSON_B64,
+      }),
       riskNotes: process.env.RISK_NOTES,
     });
     return;

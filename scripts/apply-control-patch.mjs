@@ -146,6 +146,13 @@ export function applyPatch(patch, opts = {}) {
   return { applied, riskNotes };
 }
 
+export function resolvePatchInput({ patchJson = "", patchJsonB64 = "" } = {}) {
+  if (patchJsonB64) {
+    return Buffer.from(patchJsonB64, "base64").toString("utf8");
+  }
+  return patchJson;
+}
+
 /**
  * Full pipeline: parse, validate, apply.
  * @param {string} patchJson - JSON string from CLI arg
@@ -194,7 +201,10 @@ export function applyControlPatch(patchJson, opts = {}) {
 
 const isMain = process.argv[1] && resolve(process.argv[1]).endsWith("apply-control-patch.mjs");
 if (isMain) {
-  const patchJson = process.argv[2];
+  const patchJson = resolvePatchInput({
+    patchJson: process.argv[2],
+    patchJsonB64: process.argv[3] || process.env.PATCH_JSON_B64 || "",
+  });
   if (!patchJson) {
     console.error("Usage: node scripts/apply-control-patch.mjs '<patch-json>'");
     process.exitCode = 1;

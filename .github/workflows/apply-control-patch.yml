@@ -7,6 +7,10 @@ on:
         description: 'Patch JSON (e.g., {"governance.json":{"decisionsFrozen":true}})'
         required: true
         type: string
+      patch_json_b64:
+        description: 'Optional base64-encoded patch JSON for CLI/API callers that need stable transport'
+        required: false
+        type: string
       reason:
         description: 'Reason for this change'
         required: true
@@ -37,7 +41,8 @@ jobs:
       - name: Validate and apply patch
         env:
           PATCH_JSON: ${{ inputs.patch_json }}
-        run: node scripts/apply-control-patch.mjs "$PATCH_JSON"
+          PATCH_JSON_B64: ${{ inputs.patch_json_b64 }}
+        run: node scripts/apply-control-patch.mjs "$PATCH_JSON" "$PATCH_JSON_B64"
 
       - name: Run invariant tests
         run: node --test tests/invariants/*.test.mjs
@@ -56,6 +61,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PATCH_JSON: ${{ inputs.patch_json }}
+          PATCH_JSON_B64: ${{ inputs.patch_json_b64 }}
           REASON: ${{ inputs.reason }}
         run: |
           BRANCH="control-patch/$(date +%Y%m%d-%H%M%S)"

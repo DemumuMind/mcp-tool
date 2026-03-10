@@ -71,6 +71,13 @@ const RISK_NOTES = {
   reason: () => "Rejection/status reason updated",
 };
 
+export function resolvePatchInput({ patchJson = "", patchJsonB64 = "" } = {}) {
+  if (patchJsonB64) {
+    return Buffer.from(patchJsonB64, "base64").toString("utf8");
+  }
+  return patchJson;
+}
+
 // ── Core functions (exported for testing) ────────────────────
 
 /**
@@ -214,7 +221,10 @@ export function applySubmissionStatus(patchJson, opts = {}) {
 
 const isMain = process.argv[1] && resolve(process.argv[1]).endsWith("apply-submission-status.mjs");
 if (isMain) {
-  const patchJson = process.argv[2];
+  const patchJson = resolvePatchInput({
+    patchJson: process.argv[2],
+    patchJsonB64: process.argv[3] || process.env.PATCH_JSON_B64 || "",
+  });
   if (!patchJson) {
     console.error("Usage: node scripts/apply-submission-status.mjs '<patch-json>'");
     process.exitCode = 1;
