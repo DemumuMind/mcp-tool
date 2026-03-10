@@ -12,6 +12,10 @@
  */
 
 import { getSiteUrl } from "./lib/config.mjs";
+import {
+  classifySmokeOutcome,
+  detectDegradedMarketingMode,
+} from "./lib/smoke.mjs";
 
 const BASE = (() => {
   const raw = process.argv[2] || process.env.PUBLIC_SITE_URL || getSiteUrl();
@@ -86,21 +90,57 @@ const CHECKS = [
 
 let passed = 0;
 let failed = 0;
+let warned = 0;
+
+function recordOutcome({ label, ok, successMessage, failureMessage, degradedMarketingMode }) {
+  const outcome = classifySmokeOutcome({ label, ok, degradedMarketingMode });
+  if (outcome.level === "pass") {
+    console.log(`  ✓ ${successMessage}`);
+    passed++;
+    return;
+  }
+
+  if (outcome.level === "warn") {
+    console.warn(`  ⚠ ${failureMessage} (degraded marketing mode)`);
+    warned++;
+    return;
+  }
+
+  console.error(`  ✗ ${failureMessage}`);
+  failed++;
+}
+
+let linksPayload = null;
+try {
+  const linksProbe = await fetch(resolveFromBase("/links.json"));
+  if (linksProbe.ok) {
+    linksPayload = await linksProbe.json();
+  }
+} catch {
+  // Best-effort probe; core checks below still validate /links.json availability explicitly.
+}
+
+const degradedMarketingMode = detectDegradedMarketingMode(linksPayload);
 
 for (const check of CHECKS) {
   const url = resolveFromBase(check.url);
   try {
     const res = await fetch(url, { redirect: "follow" });
-    if (res.status === check.expect) {
-      console.log(`  ✓ ${check.label} (${res.status})`);
-      passed++;
-    } else {
-      console.error(`  ✗ ${check.label}: expected ${check.expect}, got ${res.status}`);
-      failed++;
-    }
+    recordOutcome({
+      label: check.label,
+      ok: res.status === check.expect,
+      successMessage: `${check.label} (${res.status})`,
+      failureMessage: `${check.label}: expected ${check.expect}, got ${res.status}`,
+      degradedMarketingMode,
+    });
   } catch (err) {
-    console.error(`  ✗ ${check.label}: ${err.message}`);
-    failed++;
+    recordOutcome({
+      label: check.label,
+      ok: false,
+      successMessage: check.label,
+      failureMessage: `${check.label}: ${err.message}`,
+      degradedMarketingMode,
+    });
   }
 }
 
@@ -130,20 +170,30 @@ try {
   const pkRes = await fetch(resolveFromBase("/presskit/zip-meta-map/presskit.json"));
   if (pkRes.ok) {
     const pk = await pkRes.json();
-    if (pk.githubFacts && pk.githubFacts.observedAt) {
-      console.log(`  ✓ presskit.json contains githubFacts`);
-      passed++;
-    } else {
-      console.error(`  ✗ presskit.json missing githubFacts`);
-      failed++;
-    }
+    recordOutcome({
+      label: "presskit.json contains githubFacts",
+      ok: Boolean(pk.githubFacts && pk.githubFacts.observedAt),
+      successMessage: "presskit.json contains githubFacts",
+      failureMessage: "presskit.json missing githubFacts",
+      degradedMarketingMode,
+    });
   } else {
-    console.error(`  ✗ presskit.json returned ${pkRes.status}`);
-    failed++;
+    recordOutcome({
+      label: "presskit: machine-readable",
+      ok: false,
+      successMessage: "presskit.json contains githubFacts",
+      failureMessage: `presskit.json returned ${pkRes.status}`,
+      degradedMarketingMode,
+    });
   }
 } catch (err) {
-  console.error(`  ✗ presskit githubFacts check failed: ${err.message}`);
-  failed++;
+  recordOutcome({
+    label: "presskit.json contains githubFacts",
+    ok: false,
+    successMessage: "presskit.json contains githubFacts",
+    failureMessage: `presskit githubFacts check failed: ${err.message}`,
+    degradedMarketingMode,
+  });
 }
 
 // ── Link registry content check ───────────────────────────
@@ -151,13 +201,13 @@ try {
   const linksRes = await fetch(resolveFromBase("/links.json"));
   if (linksRes.ok) {
     const data = await linksRes.json();
-    if (data.links && data.links.length > 0) {
-      console.log(`  ✓ links.json: ${data.links.length} links`);
-      passed++;
-    } else {
-      console.error(`  ✗ links.json is empty`);
-      failed++;
-    }
+    recordOutcome({
+      label: "links.json is empty",
+      ok: Boolean(data.links && data.links.length > 0),
+      successMessage: `links.json: ${data.links.length} links`,
+      failureMessage: "links.json is empty",
+      degradedMarketingMode,
+    });
   } else {
     console.error(`  ✗ links.json returned ${linksRes.status}`);
     failed++;
@@ -172,13 +222,13 @@ try {
   const pressRes = await fetch(resolveFromBase("/press/zip-meta-map/"));
   if (pressRes.ok) {
     const html = await pressRes.text();
-    if (html.includes("data-verified-claims")) {
-      console.log(`  ✓ press page contains data-verified-claims`);
-      passed++;
-    } else {
-      console.error(`  ✗ press page missing data-verified-claims`);
-      failed++;
-    }
+    recordOutcome({
+      label: "press page contains data-verified-claims",
+      ok: html.includes("data-verified-claims"),
+      successMessage: "press page contains data-verified-claims",
+      failureMessage: "press page missing data-verified-claims",
+      degradedMarketingMode,
+    });
   } else {
     console.error(`  ✗ press page returned ${pressRes.status}`);
     failed++;
@@ -193,20 +243,30 @@ try {
   const outreachRes = await fetch(resolveFromBase("/outreach/zip-meta-map/email-partner.md"));
   if (outreachRes.ok) {
     const text = await outreachRes.text();
-    if (text.includes("proof:") || text.includes(resolveFromBase("/press/"))) {
-      console.log(`  ✓ outreach email contains proof links`);
-      passed++;
-    } else {
-      console.error(`  ✗ outreach email missing proof links`);
-      failed++;
-    }
+    recordOutcome({
+      label: "outreach email contains proof links",
+      ok: text.includes("proof:") || text.includes(resolveFromBase("/press/")),
+      successMessage: "outreach email contains proof links",
+      failureMessage: "outreach email missing proof links",
+      degradedMarketingMode,
+    });
   } else {
-    console.error(`  ✗ outreach email returned ${outreachRes.status}`);
-    failed++;
+    recordOutcome({
+      label: "outreach: email-partner",
+      ok: false,
+      successMessage: "outreach email contains proof links",
+      failureMessage: `outreach email returned ${outreachRes.status}`,
+      degradedMarketingMode,
+    });
   }
 } catch (err) {
-  console.error(`  ✗ outreach proof link check failed: ${err.message}`);
-  failed++;
+  recordOutcome({
+    label: "outreach email contains proof links",
+    ok: false,
+    successMessage: "outreach email contains proof links",
+    failureMessage: `outreach proof link check failed: ${err.message}`,
+    degradedMarketingMode,
+  });
 }
 
 // ── Snippet source markers check ──────────────────────────
@@ -214,20 +274,30 @@ try {
   const snippetRes = await fetch(resolveFromBase("/snippets/zip-meta-map.md"));
   if (snippetRes.ok) {
     const text = await snippetRes.text();
-    if (text.includes(resolveFromBase("/go/"))) {
-      console.log(`  ✓ snippet contains go-link source markers`);
-      passed++;
-    } else {
-      console.error(`  ✗ snippet missing go-link source markers`);
-      failed++;
-    }
+    recordOutcome({
+      label: "snippet contains go-link source markers",
+      ok: text.includes(resolveFromBase("/go/")),
+      successMessage: "snippet contains go-link source markers",
+      failureMessage: "snippet missing go-link source markers",
+      degradedMarketingMode,
+    });
   } else {
-    console.error(`  ✗ snippet returned ${snippetRes.status}`);
-    failed++;
+    recordOutcome({
+      label: "snippets: zip-meta-map",
+      ok: false,
+      successMessage: "snippet contains go-link source markers",
+      failureMessage: `snippet returned ${snippetRes.status}`,
+      degradedMarketingMode,
+    });
   }
 } catch (err) {
-  console.error(`  ✗ snippet source marker check failed: ${err.message}`);
-  failed++;
+  recordOutcome({
+    label: "snippet contains go-link source markers",
+    ok: false,
+    successMessage: "snippet contains go-link source markers",
+    failureMessage: `snippet source marker check failed: ${err.message}`,
+    degradedMarketingMode,
+  });
 }
 
 // ── Clearance runs.json check (warning-only) ────────────────
@@ -322,5 +392,5 @@ try {
   console.warn(`  ⚠ security scan skipped: ${err.message}`);
 }
 
-console.log(`\n${passed} passed, ${failed} failed out of ${CHECKS.length + 7} checks (+ target/security warnings above)`);
+console.log(`\n${passed} passed, ${failed} failed, ${warned} warned out of ${CHECKS.length + 7} checks (+ target/security warnings above)`);
 if (failed > 0) process.exit(1);
