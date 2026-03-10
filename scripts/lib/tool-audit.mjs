@@ -36,19 +36,24 @@ function auditFromProofEntry(entry) {
 }
 
 export function resolveToolAuditPaths(scriptDir) {
-  const shopRoot = path.resolve(scriptDir, "..");
-  const workspaceRoot = path.resolve(scriptDir, "../..");
-  const dataDir = path.join(shopRoot, "site", "src", "data");
+  const pathApi = resolveAuditPathModule(scriptDir);
+  const shopRoot = pathApi.resolve(scriptDir, "..");
+  const workspaceRoot = pathApi.resolve(scriptDir, "../..");
+  const dataDir = pathApi.join(shopRoot, "site", "src", "data");
 
   return {
     workspaceRoot,
     shopRoot,
     dataDir,
-    auditDir: path.join(dataDir, "audit"),
-    projectsPath: path.join(dataDir, "projects.json"),
-    truthMatrixPath: path.join(shopRoot, "audit", "truth-matrix.json"),
-    proofsPath: path.join(dataDir, "audit", "proofs.json"),
+    auditDir: pathApi.join(dataDir, "audit"),
+    projectsPath: pathApi.join(dataDir, "projects.json"),
+    truthMatrixPath: pathApi.join(shopRoot, "audit", "truth-matrix.json"),
+    proofsPath: pathApi.join(dataDir, "audit", "proofs.json"),
   };
+}
+
+export function resolveAuditPathModule(inputPath) {
+  return /^[A-Za-z]:[\\/]/.test(inputPath) ? path.win32 : path;
 }
 
 export function buildMatrixProjects({

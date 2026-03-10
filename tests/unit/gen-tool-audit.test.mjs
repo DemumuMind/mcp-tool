@@ -4,8 +4,21 @@ import path from "node:path";
 import {
   buildMatrixProjects,
   buildProofData,
+  resolveAuditPathModule,
   resolveToolAuditPaths,
 } from "../../scripts/lib/tool-audit.mjs";
+
+describe("resolveAuditPathModule", () => {
+  it("selects win32 semantics for Windows-style script paths", () => {
+    const pathApi = resolveAuditPathModule("C:/workspace/repo/mcp-tool/scripts");
+    assert.equal(pathApi, path.win32);
+  });
+
+  it("selects default host semantics for non-Windows-looking paths", () => {
+    const pathApi = resolveAuditPathModule("/workspace/repo/mcp-tool/scripts");
+    assert.equal(pathApi, path);
+  });
+});
 
 describe("resolveToolAuditPaths", () => {
   it("writes truth-matrix inside the marketing repo audit directory", () => {
@@ -18,6 +31,15 @@ describe("resolveToolAuditPaths", () => {
       paths.truthMatrixPath,
       path.join("C:", "workspace", "repo", "mcp-tool", "audit", "truth-matrix.json")
     );
+  });
+
+  it("keeps Windows-style paths stable even when executed on non-Windows runners", () => {
+    const scriptDir = "C:/workspace/repo/mcp-tool/scripts";
+    const paths = resolveToolAuditPaths(scriptDir);
+
+    assert.equal(paths.shopRoot, "C:\\workspace\\repo\\mcp-tool");
+    assert.equal(paths.workspaceRoot, "C:\\workspace\\repo");
+    assert.equal(paths.truthMatrixPath, "C:\\workspace\\repo\\mcp-tool\\audit\\truth-matrix.json");
   });
 });
 
