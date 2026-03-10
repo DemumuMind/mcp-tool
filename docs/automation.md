@@ -59,6 +59,7 @@ Values follow this schema:
 | `notFor` | `string[]` | max **3** items, each <= 120 chars | no |
 | `screenshot` | `string` | path: `/screenshots/<slug>.png` | no |
 | `screenshotType` | `string` | `real` \| `placeholder` | no |
+| `unlisted` | `boolean` | `false` force-shows an org-only repo in the public catalog | no |
 | `needsHumanReview` | `boolean` | `true` on auto-generated entries | auto-only |
 
 ### Kind enum

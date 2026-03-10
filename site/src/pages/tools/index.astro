@@ -6,12 +6,15 @@ import RealityPills from "../../components/RealityPills.astro";
 import proofs from "../../data/audit/proofs.json";
 import { withBase } from "../../lib/site-paths";
 
-const languages = [...new Set((projects as any[]).map((project: any) => project.language).filter(Boolean))].sort();
+const publicProjects = (projects as any[]).filter((project: any) => !project.unlisted);
+const hiddenProjects = (projects as any[]).filter((project: any) => project.unlisted);
+const proofByRepo = new Map((proofs as any[]).map((proof: any) => [proof.repo, proof]));
+const languages = [...new Set(publicProjects.map((project: any) => project.language).filter(Boolean))].sort();
 const stabilities = ["stable", "beta", "experimental"];
-const kinds = [...new Set((projects as any[]).map((project: any) => project.kind).filter(Boolean))].sort();
-const registeredCount = (projects as any[]).filter((project: any) => project.registered).length;
-const verifiedCount = (proofs as any[]).filter((proof: any) => proof.verified).length;
-const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs || []).length > 0).length;
+const kinds = [...new Set(publicProjects.map((project: any) => project.kind).filter(Boolean))].sort();
+const curatedOrgOnlyCount = publicProjects.filter((project: any) => !project.registered).length;
+const verifiedCount = publicProjects.filter((project: any) => proofByRepo.get(project.repo)?.verified).length;
+const proofBackedCount = publicProjects.filter((project: any) => (proofByRepo.get(project.repo)?.proofs || []).length > 0).length;
 ---
 
 <Base
@@ -20,22 +23,22 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
   currentPath="/tools/"
 >
   <PageHero
-    eyebrow="Curated registry"
+    eyebrow="Curated catalog"
     title="Browse operator-grade tools."
-    lede="Compare install paths, proof signals, release posture, and editorial readiness across the DemumuMind catalog."
+    lede="Compare install paths, proof signals, release posture, and editorial readiness across the public DemumuMind catalog."
     layout="split"
     meta={[
-      `${registeredCount} registry-listed tools`,
-      `${(projects as any[]).length - registeredCount} org-only repos`,
-      "Filter by build, kind, proof, and stability",
+      `${publicProjects.length} tools in the public catalog`,
+      `${curatedOrgOnlyCount} curated org-only tools`,
+      `${hiddenProjects.length} backlog repos hidden by default`,
     ]}
     proofItems={[
-      `${verifiedCount} verified entries`,
-      `${proofBackedCount} proof-backed repos`,
+      `${verifiedCount} verified public entries`,
+      `${proofBackedCount} proof-backed public repos`,
       `${languages.length} languages represented`,
     ]}
     asideTitle="How to read the catalog"
-    asideBody="Treat this page as a decision surface: filter by proof posture, build path, and stability before you open a repo."
+    asideBody="Treat this page as a decision surface: start with the public catalog, then open the hidden backlog only when you want rougher org inventory too."
   />
 
   <div class="toolbar">
@@ -82,9 +85,9 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
         <option value="stars">Most stars</option>
         <option value="name">Name A-Z</option>
       </select>
-      <label class="toggle-label" title="Show tools that are not yet listed in the registry">
-        <input type="checkbox" id="show-orgonly" />
-        <span>Show org-only</span>
+      <label class="toggle-label" title="Show repos that are still in the hidden backlog">
+        <input type="checkbox" id="show-hidden" />
+        <span>Show hidden backlog</span>
       </label>
     </div>
   </div>
@@ -106,10 +109,11 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
         data-updated={project.updatedAt || ""}
         data-tags={(project.tags || []).join(" ").toLowerCase()}
         data-registered={project.registered ? "1" : "0"}
+        data-unlisted={project.unlisted ? "1" : "0"}
         data-deprecated={project.deprecated ? "1" : "0"}
-        data-verified={proofs.find((proof: any) => proof.repo === project.repo)?.verified ? "1" : "0"}
-        data-concept={proofs.find((proof: any) => proof.repo === project.repo)?.concept ? "1" : "0"}
-        data-build={(proofs.find((proof: any) => proof.repo === project.repo)?.proofs || []).join(" ")}
+        data-verified={proofByRepo.get(project.repo)?.verified ? "1" : "0"}
+        data-concept={proofByRepo.get(project.repo)?.concept ? "1" : "0"}
+        data-build={(proofByRepo.get(project.repo)?.proofs || []).join(" ")}
         data-needs-copy={(project.tags || []).includes("needs-copy") ? "1" : "0"}
       >
         <div class="card-header">
@@ -120,15 +124,16 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
           <div class="card-badges">
             {project.deprecated && <span class="badge badge-experimental">Deprecated</span>}
             {project.registered && !project.deprecated && <span class="badge badge-registered">Registry</span>}
+            {!project.registered && !project.unlisted && !project.deprecated && <span class="badge badge-kind">Org-only</span>}
             {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
             {project.kind && <span class="badge badge-kind">{project.kind}</span>}
           </div>
         </div>
 
         <RealityPills
-          verified={proofs.find((proof: any) => proof.repo === project.repo)?.verified || false}
-          concept={proofs.find((proof: any) => proof.repo === project.repo)?.concept || false}
-          proofs={proofs.find((proof: any) => proof.repo === project.repo)?.proofs || []}
+          verified={proofByRepo.get(project.repo)?.verified || false}
+          concept={proofByRepo.get(project.repo)?.concept || false}
+          proofs={proofByRepo.get(project.repo)?.proofs || []}
         />
 
         <p>{project.tagline || project.description}</p>
@@ -204,7 +209,7 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
   const statusFilter = document.getElementById("filter-status");
   const buildFilter = document.getElementById("filter-build");
   const sortBy = document.getElementById("sort-by");
-  const showOrgOnly = document.getElementById("show-orgonly");
+  const showHidden = document.getElementById("show-hidden");
   const resultsCount = document.getElementById("results-count");
 
   function applyFilters() {
@@ -214,7 +219,7 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
     const stability = stabilityFilter.value;
     const status = statusFilter.value;
     const build = buildFilter.value;
-    const includeOrgOnly = showOrgOnly.checked;
+    const includeHidden = showHidden.checked;
 
     clearButton.hidden = !query;
 
@@ -237,9 +242,9 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
         (status === "concept" && card.dataset.concept === "1") ||
         (status === "needs-copy" && card.dataset.needsCopy === "1");
       const matchesBuild = !build || (card.dataset.build || "").includes(build);
-      const matchesRegistered = includeOrgOnly || card.dataset.registered === "1";
+      const matchesVisibility = includeHidden || card.dataset.unlisted !== "1";
       const isDeprecated = card.dataset.deprecated === "1";
-      const matchesDeprecated = !isDeprecated || includeOrgOnly || Boolean(query);
+      const matchesDeprecated = !isDeprecated || includeHidden || Boolean(query);
 
       const show =
         matchesSearch &&
@@ -248,7 +253,7 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
         matchesStability &&
         matchesStatus &&
         matchesBuild &&
-        matchesRegistered &&
+        matchesVisibility &&
         matchesDeprecated;
 
       card.hidden = !show;
@@ -259,8 +264,8 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
     }
 
     let countText = `${visible} of ${cards.length} tools`;
-    if (hiddenDeprecated > 0 && !includeOrgOnly) {
-      countText += ` · ${hiddenDeprecated} deprecated hidden`;
+    if (hiddenDeprecated > 0 && !includeHidden) {
+      countText += ` | ${hiddenDeprecated} deprecated hidden`;
     }
     resultsCount.textContent = countText;
     applySort();
@@ -306,7 +311,7 @@ const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs 
   statusFilter.addEventListener("change", applyFilters);
   buildFilter.addEventListener("change", applyFilters);
   sortBy.addEventListener("change", applyFilters);
-  showOrgOnly.addEventListener("change", applyFilters);
+  showHidden.addEventListener("change", applyFilters);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "/" && document.activeElement !== search) {
