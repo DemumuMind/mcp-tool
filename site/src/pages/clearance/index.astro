@@ -1,5 +1,6 @@
 ---
-import Base from '../../layouts/Base.astro';
+import PageHero from "../../components/PageHero.astro";
+import Base from "../../layouts/Base.astro";
 ---
 
 <Base
@@ -7,167 +8,131 @@ import Base from '../../layouts/Base.astro';
   description="Check namespace availability across npm, PyPI, GitHub, crates.io, Docker Hub, and domain registries before committing to a name."
   currentPath="/clearance/"
 >
-  <div class="page-content clearance-page">
-    <h1>Name Clearance Engine</h1>
-    <p class="subtitle">
-      Check namespace availability across package registries, code hosts, and domain registries
-      before committing to a name. Get a deterministic GREEN / YELLOW / RED opinion in seconds.
-    </p>
+  <div class="clearance-page">
+    <PageHero
+      eyebrow="Signal scan"
+      title="Check a name before you ship it."
+      lede="Deterministic namespace clearance across package registries, code hosts, and domains before a brand becomes a migration problem."
+      meta={["GREEN / YELLOW / RED output", "Local-first", "Reservation links included"]}
+    >
+      <Fragment slot="actions">
+        <a href="https://github.com/DemumuMind/clearance-opinion-engine" class="btn btn-primary" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/@demumumind/clearance-opinion-engine" class="btn btn-secondary" rel="noopener">npm package</a>
+      </Fragment>
+    </PageHero>
 
-    <div class="two-col">
-      <section>
-        <h2>What it does</h2>
-        <ul>
-          <li>Checks namespace availability across npm, PyPI, GitHub, crates.io, Docker Hub, Hugging Face, and domains</li>
-          <li>Generates phonetic, homoglyph, and fuzzy variants to detect near-conflicts</li>
-          <li>Produces a deterministic GREEN / YELLOW / RED tier opinion with explainable scoring</li>
-          <li>Builds reservation links so you can claim handles immediately</li>
-          <li>Runs entirely locally &mdash; no API keys needed for core checks</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>What it does NOT do</h2>
-        <ul>
-          <li>Search trademark databases (USPTO, EUIPO, WIPO)</li>
-          <li>Provide legal advice or a legal opinion</li>
-          <li>Auto-register or auto-claim any namespaces</li>
-          <li>Replace professional trademark counsel</li>
-        </ul>
-      </section>
-    </div>
-
-    <h2>Quickstart</h2>
-    <p>Run a one-off check without installing anything:</p>
-    <pre><code>npx @demumumind/clearance-opinion-engine check my-tool-name</code></pre>
-    <p>Or install globally for repeated use:</p>
-    <pre><code>npm install -g @demumumind/clearance-opinion-engine</code></pre>
-    <pre><code>coe check my-tool-name --radar --suggest</code></pre>
-
-    <h2>How Tiers Work</h2>
-    <div class="tiers">
-      <div class="tier tier-green">
-        <span class="tier-badge green">GREEN</span>
-        <p>All namespaces available. No conflicts detected. Safe to claim.</p>
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Scope</p>
+          <h2 class="section-shell__title">What it checks</h2>
+        </div>
       </div>
-      <div class="tier tier-yellow">
-        <span class="tier-badge yellow">YELLOW</span>
-        <p>Some concerns found. Review near-conflicts before proceeding.</p>
+      <div class="clearance-grid">
+        <div class="clearance-card">
+          <h3>Included</h3>
+          <ul>
+            <li>Namespace availability across npm, PyPI, GitHub, crates.io, Docker Hub, Hugging Face, and domains.</li>
+            <li>Phonetic, homoglyph, and fuzzy variants to surface near-conflicts.</li>
+            <li>Deterministic GREEN / YELLOW / RED scoring with explainable reasoning.</li>
+            <li>Reservation links so you can claim handles immediately.</li>
+            <li>Local execution with no API keys required for the core scan.</li>
+          </ul>
+        </div>
+        <div class="clearance-card">
+          <h3>Not included</h3>
+          <ul>
+            <li>Trademark database search across USPTO, EUIPO, or WIPO.</li>
+            <li>Legal advice or legal opinion.</li>
+            <li>Automatic namespace registration or claims.</li>
+            <li>Replacement for trademark counsel.</li>
+          </ul>
+        </div>
       </div>
-      <div class="tier tier-red">
-        <span class="tier-badge red">RED</span>
-        <p>Direct conflicts detected. Name change recommended.</p>
-      </div>
-    </div>
+    </section>
 
-    <h2>Links</h2>
-    <ul>
-      <li>
-        <a href="https://github.com/DemumuMind/clearance-opinion-engine" rel="noopener">GitHub repository</a>
-      </li>
-      <li>
-        <a href="https://www.npmjs.com/package/@demumumind/clearance-opinion-engine" rel="noopener">npm package</a>
-      </li>
-    </ul>
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Quickstart</p>
+          <h2 class="section-shell__title">Run a scan in seconds</h2>
+        </div>
+      </div>
+      <div class="steps-box">
+        <p>One-off execution:</p>
+        <pre><code>npx @demumumind/clearance-opinion-engine check my-tool-name</code></pre>
+        <p>Install for repeated use:</p>
+        <pre><code>npm install -g @demumumind/clearance-opinion-engine
+coe check my-tool-name --radar --suggest</code></pre>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Decision model</p>
+          <h2 class="section-shell__title">How the tiers work</h2>
+        </div>
+      </div>
+      <div class="clearance-grid">
+        <div class="clearance-card">
+          <span class="badge badge-stable">Green</span>
+          <p>All namespaces available. No direct conflicts detected. Safe to reserve now.</p>
+        </div>
+        <div class="clearance-card">
+          <span class="badge badge-beta">Yellow</span>
+          <p>Some concerns surfaced. Review near-conflicts before committing the brand.</p>
+        </div>
+        <div class="clearance-card">
+          <span class="badge badge-experimental">Red</span>
+          <p>Direct conflicts detected. Rename before the cost compounds.</p>
+        </div>
+      </div>
+    </section>
   </div>
 </Base>
 
 <style>
   .clearance-page {
-    max-width: 800px;
-  }
-
-  .subtitle {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: var(--color-text-muted, #8b949e);
-    margin-bottom: 2rem;
-  }
-
-  /* Two-column grid for does / does-not */
-  .two-col {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 1rem;
+    gap: 1.5rem;
   }
 
-  @media (max-width: 640px) {
-    .two-col {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-  }
-
-  .two-col h2 {
-    margin-top: 0;
-  }
-
-  /* Code blocks */
-  pre {
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 6px;
-    padding: 0.875rem 1rem;
-    overflow-x: auto;
-    margin-bottom: 1rem;
-  }
-
-  code {
-    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
-    font-size: 0.875rem;
-    color: var(--color-text, #e6edf3);
-  }
-
-  /* Tier cards */
-  .tiers {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .tier {
-    display: flex;
-    align-items: center;
+  .clearance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
-    padding: 1rem 1.25rem;
-    border-radius: 6px;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
   }
 
-  .tier p {
+  .clearance-card {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+
+  .clearance-card h3 {
+    font-size: 1rem;
+  }
+
+  .clearance-card ul {
     margin: 0;
-    color: var(--color-text-muted, #8b949e);
+    padding-left: 1rem;
+    color: var(--color-text-muted);
   }
 
-  .tier-badge {
-    flex-shrink: 0;
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .clearance-card li + li {
+    margin-top: 0.4rem;
   }
 
-  .tier-badge.green {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+  .steps-box {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
   }
 
-  .tier-badge.yellow {
-    background: rgba(234, 179, 8, 0.15);
-    color: #eab308;
-    border: 1px solid rgba(234, 179, 8, 0.3);
-  }
-
-  .tier-badge.red {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+  @media (max-width: 720px) {
+    .clearance-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

@@ -1,13 +1,14 @@
 ---
+import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
 import ProofBadge from "../../components/ProofBadge.astro";
-import { kit } from '../../lib/kit';
+import { kit } from "../../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
 
 export function getStaticPaths() {
   const outreachDir = path.join(process.cwd(), "public/outreach-run");
-  const paths: { params: { week: string }; props: { outreachRun: any } }[] = [];
+  const paths = [];
 
   try {
     if (!fs.existsSync(outreachDir)) return paths;
@@ -15,8 +16,6 @@ export function getStaticPaths() {
     const entries = fs.readdirSync(outreachDir, { withFileTypes: true });
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
-
-      // Validate date format (YYYY-MM-DD)
       if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.name)) continue;
 
       const runPath = path.join(outreachDir, entry.name, "outreach-run.json");
@@ -28,9 +27,9 @@ export function getStaticPaths() {
             props: { outreachRun: data },
           });
         }
-      } catch { /* skip invalid */ }
+      } catch {}
     }
-  } catch { /* fail soft */ }
+  } catch {}
 
   return paths;
 }
@@ -38,14 +37,13 @@ export function getStaticPaths() {
 const { week } = Astro.params;
 const { outreachRun } = Astro.props;
 
-// Load overrides for tool metadata
-let overrides: any = {};
+let overrides = {};
 try {
-  const p = path.join(process.cwd(), "src/data/overrides.json");
-  if (fs.existsSync(p)) {
-    overrides = JSON.parse(fs.readFileSync(p, "utf8"));
+  const overridesPath = path.join(process.cwd(), "src/data/overrides.json");
+  if (fs.existsSync(overridesPath)) {
+    overrides = JSON.parse(fs.readFileSync(overridesPath, "utf8"));
   }
-} catch { /* fail soft */ }
+} catch {}
 
 const items = outreachRun?.items || [];
 const promotionType = outreachRun?.promotionType || "own";
@@ -53,29 +51,26 @@ const generatedAt = outreachRun?.generatedAt
   ? new Date(outreachRun.generatedAt).toISOString().slice(0, 10)
   : null;
 
-// Load per-week receipt if available
-let receipt: any = null;
+let receipt = null;
 try {
-  const receiptPath = path.join(process.cwd(), "public/outreach-run", week!, "promo-week-receipt.json");
+  const receiptPath = path.join(process.cwd(), "public/outreach-run", week, "promo-week-receipt.json");
   if (fs.existsSync(receiptPath)) {
     receipt = JSON.parse(fs.readFileSync(receiptPath, "utf8"));
   }
-} catch { /* fail soft */ }
+} catch {}
 
-// Load trust.json for commit SHA
-let trust: any = null;
+let trust = null;
 try {
-  const p = path.join(process.cwd(), "public/trust.json");
-  if (fs.existsSync(p)) {
-    trust = JSON.parse(fs.readFileSync(p, "utf8"));
+  const trustPath = path.join(process.cwd(), "public/trust.json");
+  if (fs.existsSync(trustPath)) {
+    trust = JSON.parse(fs.readFileSync(trustPath, "utf8"));
   }
-} catch { /* fail soft */ }
+} catch {}
 
 const commitSha = trust?.commit || null;
 const hasVerifyData = receipt && (receipt.inputs || receipt.trustReceiptHash);
 
-// Build verification inputs list
-const verifyInputs: { path: string; sha256: string }[] = [];
+const verifyInputs = [];
 if (receipt?.inputs) {
   if (receipt.inputs.promoDecisionsSha) {
     verifyInputs.push({ path: "site/src/data/promo-decisions.json", sha256: receipt.inputs.promoDecisionsSha });
@@ -92,181 +87,204 @@ const title = `Promotion Week: ${week}`;
 const description = `Tools promoted during the week of ${week}.`;
 ---
 
-<Base
-  title={title}
-  description={description}
-  currentPath={`/promo/${week}/`}
->
-  <div class="promo-week-page" data-telemetry-week={week} data-repo-marketing={kit.repo.marketing || 'DemumuMind/mcp-tool'}>
-    <a href="/now/" class="back-link">&larr; Back to This Week's Focus</a>
+<Base title={title} description={description} currentPath={`/promo/${week}/`}>
+  <div class="promo-week-page" data-telemetry-week={week} data-repo-marketing={kit.repo.marketing || "DemumuMind/mcp-tool"}>
+    <div class="breadcrumbs">
+      <a href="/receipts/">Receipts</a>
+      <span>/</span>
+      <span>{week}</span>
+    </div>
 
-    <h1>
-      Promotion Week: {week}
-      <span class={`type-badge type-${promotionType}`}>{promotionType}</span>
-      {receipt && <ProofBadge type="receipt" />}
-    </h1>
+    <PageHero
+      eyebrow="Promotion ledger"
+      title={`Promotion Week: ${week}`}
+      lede="Promotion outputs, proof links, and verification inputs for this public push."
+      meta={[
+        `${items.length} ${items.length === 1 ? "tool" : "tools"}`,
+        `${promotionType} run`,
+        generatedAt ? `Generated ${generatedAt}` : "Generated on demand",
+      ]}
+    >
+      <Fragment slot="actions">
+        <a href="/receipts/" class="btn btn-secondary">All receipts</a>
+        {hasVerifyData && <a href="#verify" class="btn btn-primary">Verify this week</a>}
+      </Fragment>
+    </PageHero>
 
-    {items.length === 0 ? (
-      <div class="empty-state">
-        <p>No tools in this promotion run.</p>
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Run contents</p>
+          <h2 class="section-shell__title">Promoted tools</h2>
+        </div>
       </div>
-    ) : (
-      <div class="tools-list">
-        {items.map((item: any, i: number) => {
-          const ov = overrides[item.slug] || {};
-          const links = item.links || {};
-          return (
-            <div class="tool-item">
-              <div class="tool-num">{i + 1}</div>
-              <div class="tool-body">
-                <h2>{item.slug}</h2>
-                {ov.tagline && <p class="tagline">{ov.tagline}</p>}
-                <div class="tool-actions">
-                  {links.proof && (
-                    <a href={links.proof}>Proof page</a>
-                  )}
-                  {links.presskit && (
-                    <a href={links.presskit}>Presskit</a>
-                  )}
-                  {links.snippets && (
-                    <a href={links.snippets}>Snippets</a>
-                  )}
+      {items.length === 0 ? (
+        <div class="empty-state">
+          <p>No tools in this promotion run.</p>
+        </div>
+      ) : (
+        <div class="weeks-list">
+          {items.map((item, index) => {
+            const override = overrides[item.slug] || {};
+            const links = item.links || {};
+
+            return (
+              <article class="week-card">
+                <div class="week-header">
+                  <span class="week-date">{String(index + 1).padStart(2, "0")}</span>
+                  <div class="week-header__copy">
+                    <h3>{item.slug}</h3>
+                    {override.tagline && <p class="section-subheading">{override.tagline}</p>}
+                  </div>
+                  <div class="week-badges">
+                    <span class={`badge badge-${promotionType === "own" ? "registered" : promotionType === "partner" ? "beta" : "experimental"}`}>{promotionType}</span>
+                    {receipt && <ProofBadge type="receipt" />}
+                  </div>
+                </div>
+                <div class="button-row">
+                  {links.proof && <a href={links.proof} class="btn btn-secondary">Proof page</a>}
+                  {links.presskit && <a href={links.presskit} class="btn btn-secondary">Press kit</a>}
+                  {links.snippets && <a href={links.snippets} class="btn btn-secondary">Snippets</a>}
                   <button
-                    class="copy-btn"
+                    class="btn btn-secondary copy-btn"
                     data-url={`${Astro.site || ""}proof/${item.slug}/`}
                     title="Copy proof link"
                   >
                     Copy proof link
                   </button>
                 </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    )}
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
 
-    {/* Verify this week box */}
     {hasVerifyData && (
-      <div class="verify-box">
-        <h3>Verify this week</h3>
-        <div class="verify-meta">
-          <span><strong>Week:</strong> {week}</span>
-          {commitSha && commitSha !== "unknown" && (
-            <span>
-              <strong>Commit:</strong>{" "}
-              <a href={`https://github.com/${kit.repo.marketing || 'DemumuMind/mcp-tool'}/commit/${commitSha}`} rel="noopener">
-                <code>{commitSha.slice(0, 8)}</code>
-              </a>
-            </span>
-          )}
-        </div>
-
-        {verifyInputs.length > 0 && (
-          <div class="verify-inputs-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Input file</th>
-                  <th>SHA-256</th>
-                </tr>
-              </thead>
-              <tbody>
-                {verifyInputs.map((input) => (
-                  <tr>
-                    <td class="mono">{input.path}</td>
-                    <td class="mono hash">{input.sha256.replace(/^sha256:/, "").slice(0, 16)}...</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <section class="section-shell" id="verify">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Verification</p>
+            <h2 class="section-shell__title">Verify this week</h2>
           </div>
-        )}
-
-        <div class="verify-actions">
-          <button
-            class="verify-copy-btn"
-            id="copy-bundle-btn"
-            data-week={week}
-            data-generated={receipt?.generatedAt || ""}
-            data-commit={commitSha || ""}
-            data-inputs={JSON.stringify(verifyInputs)}
-            data-receipt-hash={receipt?.trustReceiptHash || ""}
-          >
-            Copy Verification Bundle
-          </button>
-          <button
-            class="verify-copy-btn"
-            id="copy-verify-cmd-btn"
-            data-commit={commitSha || ""}
-            data-files={verifyInputs.map(i => i.path).join(" ")}
-          >
-            Copy Verify Command
-          </button>
         </div>
-      </div>
+        <div class="verify-recipe">
+          <div class="week-links">
+            <span><strong>Week:</strong> {week}</span>
+            {commitSha && commitSha !== "unknown" && (
+              <span>
+                <strong>Commit:</strong>{" "}
+                <a href={`https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}/commit/${commitSha}`} rel="noopener">
+                  <code>{commitSha.slice(0, 8)}</code>
+                </a>
+              </span>
+            )}
+          </div>
+
+          {verifyInputs.length > 0 && (
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Input file</th>
+                    <th>SHA-256</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {verifyInputs.map((input) => (
+                    <tr>
+                      <td class="mono">{input.path}</td>
+                      <td class="mono">{input.sha256.replace(/^sha256:/, "").slice(0, 16)}...</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div class="button-row">
+            <button
+              class="btn btn-primary"
+              id="copy-bundle-btn"
+              data-week={week}
+              data-generated={receipt?.generatedAt || ""}
+              data-commit={commitSha || ""}
+              data-inputs={JSON.stringify(verifyInputs)}
+              data-receipt-hash={receipt?.trustReceiptHash || ""}
+            >
+              Copy verification bundle
+            </button>
+            <button
+              class="btn btn-secondary"
+              id="copy-verify-cmd-btn"
+              data-commit={commitSha || ""}
+              data-files={verifyInputs.map((input) => input.path).join(" ")}
+            >
+              Copy verify command
+            </button>
+          </div>
+        </div>
+      </section>
     )}
 
     {receipt && (
-      <div class="receipt-block">
-        <h3>Verified Inputs</h3>
-        <ul>
-          {receipt.inputs?.promoDecisionsSha && (
-            <li>Promo decisions: <code>{receipt.inputs.promoDecisionsSha.slice(0, 20)}...</code></li>
-          )}
-          {receipt.inputs?.governanceSha && (
-            <li>Governance: <code>{receipt.inputs.governanceSha.slice(0, 20)}...</code></li>
-          )}
-          {receipt.trustReceiptHash && (
-            <li>Trust receipt: <code>{receipt.trustReceiptHash.slice(0, 20)}...</code></li>
-          )}
-        </ul>
-      </div>
-    )}
-
-    {generatedAt && (
-      <p class="timestamp">Generated: {generatedAt}</p>
+      <section class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Receipt notes</p>
+            <h2 class="section-shell__title">Verified inputs</h2>
+          </div>
+        </div>
+        <div class="steps-box">
+          <ul>
+            {receipt.inputs?.promoDecisionsSha && <li>Promo decisions: <code>{receipt.inputs.promoDecisionsSha.slice(0, 20)}...</code></li>}
+            {receipt.inputs?.governanceSha && <li>Governance: <code>{receipt.inputs.governanceSha.slice(0, 20)}...</code></li>}
+            {receipt.trustReceiptHash && <li>Trust receipt: <code>{receipt.trustReceiptHash.slice(0, 20)}...</code></li>}
+          </ul>
+        </div>
+      </section>
     )}
   </div>
 </Base>
 
 <script>
-  import { trackEvent } from '../../lib/tracker';
+  import { trackEvent } from "../../lib/tracker";
 
   document.addEventListener("DOMContentLoaded", () => {
-    const week = document.querySelector('[data-telemetry-week]')?.getAttribute('data-telemetry-week') || '';
+    const week = document.querySelector("[data-telemetry-week]")?.getAttribute("data-telemetry-week") || "";
 
-    // Proof link copy buttons
-    document.querySelectorAll(".copy-btn").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const url = (btn as HTMLButtonElement).dataset.url;
+    document.querySelectorAll(".copy-btn").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const url = button.dataset.url;
         if (!url) return;
+
         try {
           await navigator.clipboard.writeText(url);
-          const slug = url.split('/proof/')[1]?.replace(/\/$/, '') || '';
-          trackEvent('copy_proof_link', { week, slug });
-          const original = btn.textContent;
-          btn.textContent = "Copied!";
-          setTimeout(() => { btn.textContent = original; }, 2000);
-        } catch { /* fail soft */ }
+          const slug = url.split("/proof/")[1]?.replace(/\/$/, "") || "";
+          trackEvent("copy_proof_link", { week, slug });
+          const original = button.textContent;
+          button.textContent = "Copied!";
+          setTimeout(() => { button.textContent = original; }, 2000);
+        } catch {}
       });
     });
 
-    // Copy Verification Bundle
-    const bundleBtn = document.getElementById("copy-bundle-btn");
-    if (bundleBtn) {
-      bundleBtn.addEventListener("click", async () => {
-        const ds = (bundleBtn as HTMLButtonElement).dataset;
-        let inputs: { path: string; sha256: string }[] = [];
-        try { inputs = JSON.parse(ds.inputs || "[]"); } catch { /* */ }
+    const bundleButton = document.getElementById("copy-bundle-btn");
+    if (bundleButton) {
+      bundleButton.addEventListener("click", async () => {
+        const dataset = bundleButton.dataset;
+        let inputs = [];
+        try {
+          inputs = JSON.parse(dataset.inputs || "[]");
+        } catch {}
 
         const bundle = {
-          week: ds.week,
-          generatedAt: ds.generated,
-          commit: ds.commit,
+          week: dataset.week,
+          generatedAt: dataset.generated,
+          commit: dataset.commit,
           hashAlg: "sha256",
-          inputs: inputs,
-          trustReceiptHash: ds.receiptHash || null,
+          inputs,
+          trustReceiptHash: dataset.receiptHash || null,
           notes: [
             "Inputs hashed exactly as read by gen-promo-week-receipt.mjs",
             "If decisionsFrozen=true, promos unchanged from prior frozen state",
@@ -275,36 +293,36 @@ const description = `Tools promoted during the week of ${week}.`;
 
         try {
           await navigator.clipboard.writeText(JSON.stringify(bundle, null, 2));
-          trackEvent('copy_bundle', { week });
-          const original = bundleBtn.textContent;
-          bundleBtn.textContent = "Copied!";
-          setTimeout(() => { bundleBtn.textContent = original; }, 2000);
-        } catch { /* fail soft */ }
+          trackEvent("copy_bundle", { week });
+          const original = bundleButton.textContent;
+          bundleButton.textContent = "Copied!";
+          setTimeout(() => { bundleButton.textContent = original; }, 2000);
+        } catch {}
       });
     }
 
-    // Copy Verify Command
-    const cmdBtn = document.getElementById("copy-verify-cmd-btn");
-    if (cmdBtn) {
-      cmdBtn.addEventListener("click", async () => {
-        const ds = (cmdBtn as HTMLButtonElement).dataset;
-        const commit = ds.commit || "<COMMIT_SHA>";
-        const files = ds.files || "";
-
-        const cmd = [
-          `git clone https://github.com/${document.querySelector('[data-repo-marketing]')?.getAttribute('data-repo-marketing') || 'DemumuMind/mcp-tool'}.git && cd ${(document.querySelector('[data-repo-marketing]')?.getAttribute('data-repo-marketing') || 'DemumuMind/mcp-tool').split('/').pop()}`,
+    const verifyCommandButton = document.getElementById("copy-verify-cmd-btn");
+    if (verifyCommandButton) {
+      verifyCommandButton.addEventListener("click", async () => {
+        const dataset = verifyCommandButton.dataset;
+        const commit = dataset.commit || "<COMMIT_SHA>";
+        const files = dataset.files || "";
+        const marketingRepo = document.querySelector("[data-repo-marketing]")?.getAttribute("data-repo-marketing") || "DemumuMind/mcp-tool";
+        const repositoryName = marketingRepo.split("/").pop();
+        const command = [
+          `git clone https://github.com/${marketingRepo}.git && cd ${repositoryName}`,
           `git checkout ${commit}`,
           `sha256sum ${files}`,
           "# Compare output to bundle hashes",
         ].join("\n");
 
         try {
-          await navigator.clipboard.writeText(cmd);
-          trackEvent('copy_verify_cmd', { week });
-          const original = cmdBtn.textContent;
-          cmdBtn.textContent = "Copied!";
-          setTimeout(() => { cmdBtn.textContent = original; }, 2000);
-        } catch { /* fail soft */ }
+          await navigator.clipboard.writeText(command);
+          trackEvent("copy_verify_cmd", { week });
+          const original = verifyCommandButton.textContent;
+          verifyCommandButton.textContent = "Copied!";
+          setTimeout(() => { verifyCommandButton.textContent = original; }, 2000);
+        } catch {}
       });
     }
   });
@@ -312,256 +330,32 @@ const description = `Tools promoted during the week of ${week}.`;
 
 <style>
   .promo-week-page {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-
-  .back-link {
-    display: inline-block;
-    font-size: 0.8rem;
-    color: #388bfd;
-    text-decoration: none;
-    margin-bottom: 1rem;
-  }
-
-  .back-link:hover { text-decoration: underline; }
-
-  h1 {
-    margin: 0 0 1.5rem;
-    font-size: 1.8rem;
-    color: var(--color-text, #e6edf3);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--color-text, #e6edf3);
-  }
-
-  .type-badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .type-own { background: rgba(56, 139, 253, 0.15); color: #388bfd; }
-  .type-partner { background: rgba(210, 153, 34, 0.15); color: #d29922; }
-  .type-cross { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
-
-  .empty-state {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--color-text-muted, #8b949e);
-    font-size: 1.1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 8px;
-  }
-
-  .tools-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .tool-item {
-    display: flex;
-    gap: 1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 8px;
-    padding: 1rem;
-  }
-
-  .tool-num {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-text-muted, #8b949e);
-    min-width: 2rem;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .tool-body {
-    flex: 1;
-  }
-
-  .tagline {
-    color: var(--color-text-muted, #8b949e);
-    font-size: 0.85rem;
-    margin: 0.25rem 0 0.75rem;
-  }
-
-  .tool-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .tool-actions a {
-    font-size: 0.8rem;
-    color: #388bfd;
-    text-decoration: none;
-  }
-
-  .tool-actions a:hover { text-decoration: underline; }
-
-  .copy-btn {
-    padding: 0.25rem 0.6rem;
-    background: rgba(110, 118, 129, 0.2);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 4px;
-    color: var(--color-text-muted, #8b949e);
-    font-size: 0.75rem;
-    cursor: pointer;
-  }
-
-  .copy-btn:hover {
-    background: rgba(110, 118, 129, 0.3);
-    color: var(--color-text, #e6edf3);
-  }
-
-  /* Verify box */
-  .verify-box {
-    margin-top: 2rem;
-    padding: 1.25rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid rgba(56, 139, 253, 0.3);
-    border-radius: 8px;
-  }
-
-  .verify-box h3 {
-    margin: 0 0 0.75rem;
-    font-size: 1rem;
-    color: var(--color-text, #e6edf3);
-  }
-
-  .verify-meta {
-    display: flex;
+    display: grid;
     gap: 1.5rem;
-    flex-wrap: wrap;
-    font-size: 0.85rem;
-    color: var(--color-text, #e6edf3);
-    margin-bottom: 0.75rem;
   }
 
-  .verify-meta a {
-    color: #388bfd;
-    text-decoration: none;
-  }
-
-  .verify-meta a:hover { text-decoration: underline; }
-
-  .verify-inputs-table {
-    overflow-x: auto;
-    margin-bottom: 0.75rem;
-  }
-
-  .verify-inputs-table table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-  }
-
-  .verify-inputs-table th {
-    text-align: left;
-    padding: 0.4rem 0.5rem;
-    border-bottom: 1px solid var(--color-border, #30363d);
-    color: var(--color-text-muted, #8b949e);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .verify-inputs-table td {
-    padding: 0.4rem 0.5rem;
-    border-bottom: 1px solid var(--color-border, #30363d);
-    color: var(--color-text, #e6edf3);
-  }
-
-  .verify-inputs-table .mono {
-    font-family: monospace;
-    font-size: 0.75rem;
-  }
-
-  .verify-inputs-table .hash {
-    color: var(--color-text-muted, #8b949e);
-  }
-
-  .verify-actions {
+  .week-header {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.8rem;
+    align-items: flex-start;
+    justify-content: space-between;
     flex-wrap: wrap;
   }
 
-  .verify-copy-btn {
-    padding: 0.4rem 0.8rem;
-    background: rgba(56, 139, 253, 0.1);
-    border: 1px solid rgba(56, 139, 253, 0.3);
-    border-radius: 4px;
-    color: #388bfd;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
+  .week-header__copy {
+    display: grid;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 0;
   }
 
-  .verify-copy-btn:hover {
-    background: rgba(56, 139, 253, 0.2);
+  .week-header__copy h3 {
+    font-size: 1rem;
   }
 
-  .receipt-block {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: var(--color-surface, #161b22);
-    border: 1px solid var(--color-border, #30363d);
-    border-radius: 8px;
-    font-size: 0.8rem;
-  }
-
-  .receipt-block h3 {
-    margin: 0 0 0.5rem;
-    font-size: 0.85rem;
-    color: var(--color-text-muted, #8b949e);
-  }
-
-  .receipt-block ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .receipt-block li {
-    margin: 0.25rem 0;
-    color: var(--color-text-muted, #8b949e);
-  }
-
-  .receipt-block code {
-    background: rgba(110, 118, 129, 0.2);
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-size: 0.75rem;
-  }
-
-  .timestamp {
-    color: var(--color-text-muted, #8b949e);
-    font-size: 0.8rem;
-    margin-top: 2rem;
-  }
-
-  @media (max-width: 600px) {
-    h1 { font-size: 1.4rem; }
-    .tool-item { flex-direction: column; gap: 0.5rem; }
-    .tool-num { text-align: left; }
-    .verify-meta { flex-direction: column; gap: 0.5rem; }
+  .week-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 </style>
