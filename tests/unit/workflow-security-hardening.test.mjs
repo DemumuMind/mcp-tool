@@ -108,4 +108,43 @@ describe("workflow hardening", () => {
       );
     }
   });
+
+  it("generates links before fetching distribution signals in the targets workflow", () => {
+    const targets = readWorkflow("targets-weekly.yml");
+    const genLinksIdx = targets.indexOf("run: node scripts/gen-links.mjs");
+    const fetchSignalsIdx = targets.indexOf("run: node scripts/fetch-distribution-signals.mjs");
+
+    assert.notEqual(genLinksIdx, -1, "targets-weekly.yml: missing gen-links step");
+    assert.notEqual(fetchSignalsIdx, -1, "targets-weekly.yml: missing fetch-distribution-signals step");
+    assert.ok(
+      genLinksIdx < fetchSignalsIdx,
+      "targets-weekly.yml: gen-links must run before fetch-distribution-signals"
+    );
+  });
+
+  it("treats distribution signal fetch as a required step in the targets workflow", () => {
+    const targets = readWorkflow("targets-weekly.yml");
+    const signalSection = /- name: Fetch distribution signals[\s\S]*?(?=\n\s*- name:|\n\s*$)/.exec(targets);
+
+    assert.ok(signalSection, "targets-weekly.yml: missing Fetch distribution signals section");
+    assert.ok(
+      !/continue-on-error:\s*true/.test(signalSection[0]),
+      "targets-weekly.yml: distribution signal fetch must not silently continue on error"
+    );
+  });
+
+  it("includes generator code identity in the nameops generator cache key", () => {
+    const nameops = readWorkflow("nameops-scheduled.yml");
+
+    assert.match(
+      nameops,
+      /generator_fingerprint/,
+      "nameops-scheduled.yml: missing generator fingerprint step"
+    );
+    assert.match(
+      nameops,
+      /key:\s*gen-outputs-\$\{\{\s*steps\.input_hash\.outputs\.hash\s*\}\}-\$\{\{\s*steps\.generator_fingerprint\.outputs\.hash\s*\}\}/,
+      "nameops-scheduled.yml: generator cache key must include the generator fingerprint"
+    );
+  });
 });

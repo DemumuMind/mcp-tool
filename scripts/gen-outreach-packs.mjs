@@ -23,6 +23,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveSiteUrl } from "./lib/config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -104,9 +105,9 @@ for (const slug of enabledSlugs) {
   const oneLiner = tool.positioning?.oneLiner || "";
   const installCmd = override.install || null;
   const repoUrl = `https://github.com/DemumuMind/${slug}`;
-  const toolPageUrl = `https://localhost:4321/tools/${slug}/`;
-  const pressPageUrl = `https://localhost:4321/press/${slug}/`;
-  const presskitUrl = `https://localhost:4321/presskit/${slug}/`;
+  const toolPageUrl = resolveSiteUrl(`/tools/${slug}/`);
+  const pressPageUrl = resolveSiteUrl(`/press/${slug}/`);
+  const presskitUrl = resolveSiteUrl(`/presskit/${slug}/`);
   const generatedAt = new Date().toISOString();
 
   // Find HN message if exists

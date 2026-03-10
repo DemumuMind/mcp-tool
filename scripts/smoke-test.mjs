@@ -1,17 +1,27 @@
 #!/usr/bin/env node
 
 /**
- * Smoke test for localhost:4321
+ * Smoke test for the configured public site URL.
  *
  * Checks that key pages and legacy redirects respond correctly.
  * Run manually or from CI after deploy.
  *
  * Usage:
  *   node scripts/smoke-test.mjs                    # test live site
- *   node scripts/smoke-test.mjs http://localhost:4321  # test local dev
+ *   node scripts/smoke-test.mjs http://127.0.0.1:4321  # test local dev
  */
 
-const BASE = process.argv[2] || "https://localhost:4321";
+import { getSiteUrl } from "./lib/config.mjs";
+
+const BASE = (() => {
+  const raw = process.argv[2] || process.env.PUBLIC_SITE_URL || getSiteUrl();
+  return raw.endsWith("/") ? raw : `${raw}/`;
+})();
+
+function resolveFromBase(pathname = "/") {
+  const relativePath = pathname.startsWith("/") ? pathname.slice(1) : pathname;
+  return new URL(relativePath, BASE).toString();
+}
 
 const CHECKS = [
   // Key pages — expect 200
@@ -78,7 +88,7 @@ let passed = 0;
 let failed = 0;
 
 for (const check of CHECKS) {
-  const url = `${BASE}${check.url}`;
+  const url = resolveFromBase(check.url);
   try {
     const res = await fetch(url, { redirect: "follow" });
     if (res.status === check.expect) {
@@ -96,7 +106,7 @@ for (const check of CHECKS) {
 
 // ── Public Proof content check ────────────────────────────
 try {
-  const proofRes = await fetch(`${BASE}/tools/zip-meta-map/`);
+  const proofRes = await fetch(resolveFromBase("/tools/zip-meta-map/"));
   if (proofRes.ok) {
     const html = await proofRes.text();
     if (html.includes("data-proof-section")) {
@@ -117,7 +127,7 @@ try {
 
 // ── Press kit GitHub Facts content check ──────────────────
 try {
-  const pkRes = await fetch(`${BASE}/presskit/zip-meta-map/presskit.json`);
+  const pkRes = await fetch(resolveFromBase("/presskit/zip-meta-map/presskit.json"));
   if (pkRes.ok) {
     const pk = await pkRes.json();
     if (pk.githubFacts && pk.githubFacts.observedAt) {
@@ -138,7 +148,7 @@ try {
 
 // ── Link registry content check ───────────────────────────
 try {
-  const linksRes = await fetch(`${BASE}/links.json`);
+  const linksRes = await fetch(resolveFromBase("/links.json"));
   if (linksRes.ok) {
     const data = await linksRes.json();
     if (data.links && data.links.length > 0) {
@@ -159,7 +169,7 @@ try {
 
 // ── Press page verified claims check ──────────────────────
 try {
-  const pressRes = await fetch(`${BASE}/press/zip-meta-map/`);
+  const pressRes = await fetch(resolveFromBase("/press/zip-meta-map/"));
   if (pressRes.ok) {
     const html = await pressRes.text();
     if (html.includes("data-verified-claims")) {
@@ -180,10 +190,10 @@ try {
 
 // ── Outreach email proof links check ──────────────────────
 try {
-  const outreachRes = await fetch(`${BASE}/outreach/zip-meta-map/email-partner.md`);
+  const outreachRes = await fetch(resolveFromBase("/outreach/zip-meta-map/email-partner.md"));
   if (outreachRes.ok) {
     const text = await outreachRes.text();
-    if (text.includes("proof:") || text.includes("localhost:4321/press/")) {
+    if (text.includes("proof:") || text.includes(resolveFromBase("/press/"))) {
       console.log(`  ✓ outreach email contains proof links`);
       passed++;
     } else {
@@ -201,10 +211,10 @@ try {
 
 // ── Snippet source markers check ──────────────────────────
 try {
-  const snippetRes = await fetch(`${BASE}/snippets/zip-meta-map.md`);
+  const snippetRes = await fetch(resolveFromBase("/snippets/zip-meta-map.md"));
   if (snippetRes.ok) {
     const text = await snippetRes.text();
-    if (text.includes("localhost:4321/go/")) {
+    if (text.includes(resolveFromBase("/go/"))) {
       console.log(`  ✓ snippet contains go-link source markers`);
       passed++;
     } else {
@@ -222,7 +232,7 @@ try {
 
 // ── Clearance runs.json check (warning-only) ────────────────
 try {
-  const clearanceRes = await fetch(`${BASE}/lab/clearance/runs.json`);
+  const clearanceRes = await fetch(resolveFromBase("/lab/clearance/runs.json"));
   if (clearanceRes.ok) {
     const data = await clearanceRes.json();
     if (Array.isArray(data)) {
@@ -242,7 +252,7 @@ try {
 
 // ── Target list checks (warning-only, never fail build) ─────
 try {
-  const targetsRes = await fetch(`${BASE}/targets/zip-meta-map/targets.json`);
+  const targetsRes = await fetch(resolveFromBase("/targets/zip-meta-map/targets.json"));
   if (targetsRes.ok) {
     const data = await targetsRes.json();
     if (data.candidates && data.candidates.length > 0) {
@@ -261,7 +271,7 @@ try {
 
 // ── Build metadata check ───────────────────────────────────
 try {
-  const buildRes = await fetch(`${BASE}/_build.json`);
+  const buildRes = await fetch(resolveFromBase("/_build.json"));
   if (buildRes.ok) {
     const build = await buildRes.json();
     console.log(`\n  Build metadata:`);
@@ -293,7 +303,7 @@ try {
   let secIssues = 0;
   for (const page of securityPages) {
     try {
-      const res = await fetch(`${BASE}${page}`);
+      const res = await fetch(resolveFromBase(page));
       if (res.ok) {
         const html = await res.text();
         DANGEROUS.lastIndex = 0;

@@ -22,9 +22,11 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { execFileSync } from "node:child_process";
+import { getSiteBaseUrl } from "./lib/config.mjs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const DATA_DIR = join(ROOT, "site", "src", "data");
+const DEFAULT_CHANNELS = ["presskit", "snippets", "campaigns"];
 
 // ── Helpers ─────────────────────────────────────────────────
 
@@ -58,6 +60,30 @@ export function loadPromoQueue(queuePath) {
   const p = queuePath || join(DATA_DIR, "promo-queue.json");
   const queue = safeParseJson(p, { week: "", slugs: [], promotionType: "own", notes: "" });
   return queue;
+}
+
+function getRequiredChannels(entry) {
+  return typeof entry === "string" ? DEFAULT_CHANNELS : (entry.channels || DEFAULT_CHANNELS);
+}
+
+export function getFeatureableSlugs(queue, results) {
+  const featureable = [];
+
+  for (const entry of queue.slugs || []) {
+    const slug = typeof entry === "string" ? entry : entry.slug;
+    const requiredChannels = getRequiredChannels(entry);
+    const slugResults = results.filter((result) => result.slug === slug);
+
+    const allRequiredSucceeded = requiredChannels.every((channel) =>
+      slugResults.some((result) => result.channel === channel && result.ok === true)
+    );
+
+    if (allRequiredSucceeded) {
+      featureable.push(slug);
+    }
+  }
+
+  return featureable;
 }
 
 /**
@@ -109,7 +135,7 @@ export function generateCampaignBundle(queue, results, opts = {}) {
     return { generated: false };
   }
 
-  const siteBase = opts.siteBase || "https://localhost:4321";
+  const siteBase = opts.siteBase || getSiteBaseUrl();
   const outDir = opts.outDir || join(ROOT, "site", "public", "promo-bundles", campaign.id);
   const dryRun = opts.dryRun || false;
 
@@ -221,7 +247,7 @@ function runPromotion(opts = {}) {
 
   for (const entry of queue.slugs) {
     const slug = typeof entry === "string" ? entry : entry.slug;
-    const channels = typeof entry === "string" ? ["presskit", "snippets", "campaigns"] : (entry.channels || ["presskit", "snippets", "campaigns"]);
+    const channels = getRequiredChannels(entry);
 
     // Ecosystem gate: skip non-worthy slugs when promotionType is "ecosystem"
     if (queue.promotionType === "ecosystem") {
@@ -261,10 +287,11 @@ function runPromotion(opts = {}) {
   // 3. Update featured flags in overrides.json (additive)
   if (!dryRun && existsSync(overridesPath)) {
     const overrides = safeParseJson(overridesPath, {});
+    const featureableSlugs = new Set(getFeatureableSlugs(queue, results));
     let changed = false;
     for (const entry of queue.slugs) {
       const slug = typeof entry === "string" ? entry : entry.slug;
-      if (overrides[slug] && !overrides[slug].featured) {
+      if (featureableSlugs.has(slug) && overrides[slug] && !overrides[slug].featured) {
         overrides[slug].featured = true;
         changed = true;
         console.log(`  Featured: ${slug}`);

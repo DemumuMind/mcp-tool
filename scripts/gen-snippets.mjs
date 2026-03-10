@@ -17,6 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveSiteUrl } from "./lib/config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -125,7 +126,7 @@ for (const slug of enabledSlugs) {
       lines.push(msg.text);
       if (goId) {
         lines.push("");
-        lines.push(`Source: localhost:4321/go/${goId}`);
+        lines.push(`Source: ${resolveSiteUrl(`/go/${goId}/`)}`);
       }
       lines.push("```");
       lines.push("");

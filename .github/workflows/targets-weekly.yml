@@ -39,8 +39,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-github-facts.mjs
 
+      - name: Generate link registry
+        run: node scripts/gen-links.mjs
+
       - name: Fetch distribution signals
-        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-distribution-signals.mjs

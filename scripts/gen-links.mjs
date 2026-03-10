@@ -17,6 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveSiteUrl } from "./lib/config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -43,13 +44,13 @@ function abbreviate(slug) {
 
 /** Channel → default target URL pattern */
 function targetForChannel(channel, slug) {
-  const toolPage = `https://localhost:4321/tools/${slug}/`;
+  const toolPage = resolveSiteUrl(`/tools/${slug}/`);
   const repo = `https://github.com/DemumuMind/${slug}`;
   switch (channel) {
     case "readme":
       return repo;
     case "presskit":
-      return `https://localhost:4321/presskit/${slug}/`;
+      return resolveSiteUrl(`/presskit/${slug}/`);
     default:
       return toolPage;
   }
@@ -166,7 +167,7 @@ for (const slug of enabledSlugs) {
   links.push({
     id: `${pfx}-toolpage`,
     slug,
-    target: `https://localhost:4321/tools/${slug}/`,
+    target: resolveSiteUrl(`/tools/${slug}/`),
     utm: { source: "demumumind", medium: "cta", campaign: pfx, content: "toolpage" },
     channel: "cta",
     toolRef: tool.id,

@@ -16,6 +16,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fetchWithRetry } from "./lib/http.mjs";
 
 const ORG = process.env.ORG || "DemumuMind";
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
@@ -54,7 +55,7 @@ async function ghFetch(url) {
   };
   if (TOKEN) headers["Authorization"] = `Bearer ${TOKEN}`;
 
-  const res = await fetch(url, { headers });
+  const res = await fetchWithRetry(url, { headers, timeoutMs: 10000, retries: 2, retryDelayMs: 250 });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`GitHub API ${res.status} for ${url}\n${body}`);
@@ -70,7 +71,13 @@ async function ghFetchOptional(url) {
   };
   if (TOKEN) headers["Authorization"] = `Bearer ${TOKEN}`;
 
-  const res = await fetch(url, { headers });
+  const res = await fetchWithRetry(url, {
+    headers,
+    timeoutMs: 10000,
+    retries: 2,
+    retryDelayMs: 250,
+    retryableStatusCodes: new Set([408, 425, 429, 500, 502, 503, 504]),
+  });
   if (res.status === 404) return null;
   if (res.status === 403) {
     rateLimited = true;

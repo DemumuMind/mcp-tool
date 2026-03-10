@@ -24,6 +24,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { buildPromoWeekReceipt } from "./gen-promo-week-receipt.mjs";
+import { getSiteBaseUrl } from "./lib/config.mjs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const DATA_DIR = join(ROOT, "site", "src", "data");
@@ -49,7 +50,7 @@ function safeParseJson(filePath, fallback = null) {
  * @returns {object|null} Outreach run manifest, or null if disabled
  */
 export function buildOutreachRun(queue, promo, opts = {}) {
-  const siteBase = opts.siteBase || "https://localhost:4321";
+  const siteBase = opts.siteBase || getSiteBaseUrl();
   const maxItems = opts.maxItems || 3;
   const marketirDir = opts.marketirDir || join(ROOT, "site", "src", "data", "marketir");
   const overrides = opts.overrides || safeParseJson(join(DATA_DIR, "overrides.json"), {});

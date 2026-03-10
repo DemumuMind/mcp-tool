@@ -65,7 +65,7 @@ const {
   pageClass = "",
 } = Astro.props;
 
-const siteUrl = kit.site.url || "http://localhost:4321/";
+const siteUrl = kit.site.url || "https://example.invalid/";
 const canonicalUrl = new URL(currentPath || "/", siteUrl).href;
 const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).href : undefined;
 const routeFamily = routeFamilyProp || inferRouteFamily(currentPath);

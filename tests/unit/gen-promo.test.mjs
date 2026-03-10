@@ -11,6 +11,7 @@ const {
   loadPromoQueue,
   generatePromoReport,
   generateCampaignBundle,
+  getFeatureableSlugs,
 } = promo;
 
 function makeTempDir(label) {
@@ -210,5 +211,55 @@ describe("runGenerator", () => {
     ]);
     assert.equal(calls[0].options.timeout, 60000);
     assert.equal(calls[0].options.stdio, "inherit");
+  });
+});
+
+describe("getFeatureableSlugs", () => {
+  it("marks a slug featureable only when every required channel succeeded", () => {
+    const queue = {
+      slugs: [{ slug: "alpha", channels: ["presskit", "snippets"] }],
+    };
+    const results = [
+      { slug: "alpha", channel: "presskit", ok: true },
+      { slug: "alpha", channel: "snippets", ok: true },
+    ];
+
+    assert.deepEqual(getFeatureableSlugs(queue, results), ["alpha"]);
+  });
+
+  it("does not mark a slug featureable when any required channel fails", () => {
+    const queue = {
+      slugs: [{ slug: "alpha", channels: ["presskit", "snippets"] }],
+    };
+    const results = [
+      { slug: "alpha", channel: "presskit", ok: true },
+      { slug: "alpha", channel: "snippets", ok: false, error: "missing data" },
+    ];
+
+    assert.deepEqual(getFeatureableSlugs(queue, results), []);
+  });
+
+  it("does not mark a slug featureable when a required channel never ran", () => {
+    const queue = {
+      slugs: [{ slug: "alpha", channels: ["presskit", "snippets"] }],
+    };
+    const results = [
+      { slug: "alpha", channel: "presskit", ok: true },
+    ];
+
+    assert.deepEqual(getFeatureableSlugs(queue, results), []);
+  });
+
+  it("uses default channels for string queue entries", () => {
+    const queue = {
+      slugs: ["alpha"],
+    };
+    const results = [
+      { slug: "alpha", channel: "presskit", ok: true },
+      { slug: "alpha", channel: "snippets", ok: true },
+      { slug: "alpha", channel: "campaigns", ok: true },
+    ];
+
+    assert.deepEqual(getFeatureableSlugs(queue, results), ["alpha"]);
   });
 });

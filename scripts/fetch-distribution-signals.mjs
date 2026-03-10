@@ -21,6 +21,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { getSiteUrl } from "./lib/config.mjs";
+import { fetchWithRetry } from "./lib/http.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -33,6 +35,10 @@ const TOKEN = process.env.GITHUB_TOKEN || "";
 const THROTTLE_MS = 2000; // GitHub code search rate limit: 10 req/min
 const SELF_ORG = "DemumuMind";
 const SELF_SITE_REPO = "DemumuMind/mcp-tool";
+const GO_LINK_SEARCH_PREFIX = (() => {
+  const siteUrl = new URL(getSiteUrl());
+  return `${siteUrl.host}${siteUrl.pathname.replace(/\/$/, "")}`;
+})();
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -56,7 +62,7 @@ async function ghApi(endpoint) {
   };
   if (TOKEN) headers["Authorization"] = `token ${TOKEN}`;
 
-  const res = await fetch(url, { headers });
+  const res = await fetchWithRetry(url, { headers, timeoutMs: 10000, retries: 2, retryDelayMs: 250 });
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`);
   }
@@ -87,7 +93,7 @@ const signals = [];
 const errors = [];
 
 for (const link of links) {
-  const query = encodeURIComponent(`localhost:4321/go/${link.id}`);
+  const query = encodeURIComponent(`${GO_LINK_SEARCH_PREFIX}/go/${link.id}`);
   const endpoint = `search/code?q=${query}`;
 
   try {

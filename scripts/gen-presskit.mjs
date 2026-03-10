@@ -20,6 +20,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { htmlEsc } from "./lib/sanitize.mjs";
 import { fail, warn } from "./lib/errors.mjs";
+import { resolveSiteUrl } from "./lib/config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -132,7 +133,7 @@ for (const slug of enabledSlugs) {
     stability: override?.stability || null,
     kind: override?.kind || null,
     repo: `https://github.com/DemumuMind/${slug}`,
-    site: `https://localhost:4321/tools/${slug}/`,
+    site: resolveSiteUrl(`/tools/${slug}/`),
     valueProps: tool.positioning?.valueProps || [],
     provenClaims: resolvedClaims.map((c) => ({
       id: c.id,
@@ -166,7 +167,7 @@ for (const slug of enabledSlugs) {
       : null,
     trackedLinks: (linksBySlug.get(slug) || []).map((l) => ({
       id: l.id,
-      url: `https://localhost:4321/go/${l.id}/`,
+      url: resolveSiteUrl(`/go/${l.id}/`),
       channel: l.channel,
     })),
     press: tool.press
@@ -316,7 +317,7 @@ for (const slug of enabledSlugs) {
   readmeLines.push(`- [GitHub](${presskitJson.repo})`);
   readmeLines.push(`- [Tool page](${presskitJson.site})`);
   if (tool.press) {
-    readmeLines.push(`- [Press page](https://localhost:4321/press/${slug}/)`);
+    readmeLines.push(`- [Press page](${resolveSiteUrl(`/press/${slug}/`)})`);
   }
   readmeLines.push("");
 
@@ -325,7 +326,7 @@ for (const slug of enabledSlugs) {
     readmeLines.push("## Tracked links");
     readmeLines.push("");
     for (const l of toolLinks) {
-      readmeLines.push(`- [${l.id}](https://localhost:4321/go/${l.id}/) (${l.channel})`);
+      readmeLines.push(`- [${l.id}](${resolveSiteUrl(`/go/${l.id}/`)}) (${l.channel})`);
     }
     readmeLines.push("");
   }
@@ -540,7 +541,7 @@ for (const slug of enabledSlugs) {
     raLines.push(`- [GitHub](${presskitJson.repo})`);
     raLines.push(`- [Tool page](${presskitJson.site})`);
     if (tool.press) {
-      raLines.push(`- [Press page](https://localhost:4321/press/${slug}/)`);
+      raLines.push(`- [Press page](${resolveSiteUrl(`/press/${slug}/`)})`);
     }
     raLines.push("");
     raLines.push("---");

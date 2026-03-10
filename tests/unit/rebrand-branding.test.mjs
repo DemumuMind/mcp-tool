@@ -15,7 +15,7 @@ describe("DemumuMind canonical brand metadata", () => {
     assert.equal(config.org.account, "DemumuMind");
     assert.equal(config.org.url, "https://github.com/DemumuMind");
     assert.equal(config.site.title, "DemumuMind");
-    assert.equal(config.site.url, "http://localhost:4321/");
+    assert.equal(config.site.url, "");
     assert.equal(config.repo.marketing, "DemumuMind/mcp-tool");
   });
 

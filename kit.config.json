@@ -7,7 +7,7 @@
   },
   "site": {
     "title": "DemumuMind",
-    "url": "http://localhost:4321/",
+    "url": "",
     "description": "Building the tools that AI agents use to get real work done."
   },
   "repo": {

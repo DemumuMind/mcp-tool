@@ -28,6 +28,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { fail } from "./lib/errors.mjs";
+import { fetchWithRetry } from "./lib/http.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -53,7 +54,7 @@ async function fetchRaw(remotePath) {
   const headers = { Accept: "application/vnd.github.v3.raw" };
   if (TOKEN) headers["Authorization"] = `token ${TOKEN}`;
 
-  const res = await fetch(url, { headers });
+  const res = await fetchWithRetry(url, { headers, timeoutMs: 10000, retries: 2, retryDelayMs: 250 });
   if (!res.ok) {
     throw new Error(`Failed to fetch ${remotePath}: ${res.status} ${res.statusText}`);
   }
@@ -65,7 +66,7 @@ async function fetchBinary(remotePath) {
   const headers = { Accept: "application/octet-stream" };
   if (TOKEN) headers["Authorization"] = `token ${TOKEN}`;
 
-  const res = await fetch(url, { headers });
+  const res = await fetchWithRetry(url, { headers, timeoutMs: 10000, retries: 2, retryDelayMs: 250 });
   if (!res.ok) {
     throw new Error(`Failed to fetch ${remotePath}: ${res.status} ${res.statusText}`);
   }

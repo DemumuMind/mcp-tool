@@ -3,12 +3,14 @@ name: Site quality checks
 on:
   pull_request:
     paths:
+      - 'kit.config.json'
+      - 'package.json'
       - 'site/**'
       - 'scripts/**'
       - 'tests/**'
       - 'submissions/**'
       - 'examples/**'
-      - '.github/workflows/site-quality.yml'
+      - '.github/workflows/**'
   workflow_dispatch: {}
 
 permissions:

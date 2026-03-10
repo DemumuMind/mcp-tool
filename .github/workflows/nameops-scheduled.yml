@@ -124,12 +124,18 @@ jobs:
             2>/dev/null | sha256sum | cut -d' ' -f1)
           echo "hash=$HASH" >> "$GITHUB_OUTPUT"
 
+      - name: Compute generator fingerprint
+        id: generator_fingerprint
+        env:
+          MARKETING_SHA: ${{ steps.shas.outputs.marketing_sha }}
+        run: echo "hash=$MARKETING_SHA" >> "$GITHUB_OUTPUT"
+
       - name: Restore generator cache
         id: gen_cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .gen-cache
-          key: gen-outputs-${{ steps.input_hash.outputs.hash }}
+          key: gen-outputs-${{ steps.input_hash.outputs.hash }}-${{ steps.generator_fingerprint.outputs.hash }}
 
       - name: Generate ops actions
         if: steps.gen_cache.outputs.cache-hit != 'true'

@@ -27,6 +27,7 @@ const DEFAULTS = {
 };
 
 export const KIT_VERSION_SUPPORTED = [1, 1]; // [min, max]
+export const DEFAULT_PUBLIC_SITE_URL = "https://example.invalid/";
 
 // ── Deep merge ───────────────────────────────────────────────
 
@@ -113,6 +114,28 @@ export function getConfig() {
   _cached = loadKitConfig(root);
   _cachedRoot = root;
   return _cached;
+}
+
+export function normalizeSiteUrl(raw = DEFAULT_PUBLIC_SITE_URL) {
+  const source = raw || DEFAULT_PUBLIC_SITE_URL;
+  const url = new URL(source);
+  if (!url.pathname.endsWith("/")) {
+    url.pathname += "/";
+  }
+  return url.toString();
+}
+
+export function getSiteUrl(config = getConfig()) {
+  return normalizeSiteUrl(process.env.PUBLIC_SITE_URL || config.site?.url || DEFAULT_PUBLIC_SITE_URL);
+}
+
+export function getSiteBaseUrl(config = getConfig()) {
+  return getSiteUrl(config).replace(/\/$/, "");
+}
+
+export function resolveSiteUrl(pathname = "/", config = getConfig()) {
+  const relativePath = pathname.startsWith("/") ? pathname.slice(1) : pathname;
+  return new URL(relativePath, getSiteUrl(config)).toString();
 }
 
 /**

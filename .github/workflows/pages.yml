@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'kit.config.json'
       - 'site/**'
       - 'scripts/**'
       - '.github/workflows/pages.yml'
@@ -21,6 +22,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -63,6 +66,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -79,4 +84,4 @@ jobs:
         with:
           node-version: 22
       - name: Smoke test live site
-        run: node scripts/smoke-test.mjs
+        run: node scripts/smoke-test.mjs "${{ needs.deploy.outputs.page_url }}"

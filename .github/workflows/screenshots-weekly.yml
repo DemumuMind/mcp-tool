@@ -89,12 +89,15 @@ jobs:
 
       - name: Build screenshot backlog issue body
         id: backlog
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
         run: |
           node -e "
           const fs = require('fs');
           const overrides = JSON.parse(fs.readFileSync('site/src/data/overrides.json', 'utf8'));
           const projects = JSON.parse(fs.readFileSync('site/src/data/projects.json', 'utf8'));
           const projectMap = new Map(projects.map(p => [p.repo, p]));
+          const siteBase = (process.env.PUBLIC_SITE_URL || 'https://example.invalid').replace(/\/$/, '');
 
           const placeholders = Object.entries(overrides)
             .filter(([_, v]) => v.screenshotType === 'placeholder')
@@ -113,7 +116,7 @@ jobs:
             for (const repo of placeholders) {
               const p = projectMap.get(repo);
               const name = p ? p.name : repo;
-              body += '- [ ] **' + name + '** (\`' + repo + '\`) — [tool page](https://localhost:4321/tools/' + repo + '/)\n';
+              body += '- [ ] **' + name + '** (\`' + repo + '\`) — [tool page](' + siteBase + '/tools/' + repo + '/)\n';
             }
           }
 

@@ -26,6 +26,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveSiteUrl } from "./lib/config.mjs";
+import { fetchWithRetry } from "./lib/http.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -96,7 +98,7 @@ async function ghApi(endpoint) {
   };
   if (TOKEN) headers["Authorization"] = `token ${TOKEN}`;
 
-  const res = await fetch(url, { headers });
+  const res = await fetchWithRetry(url, { headers, timeoutMs: 10000, retries: 2, retryDelayMs: 250 });
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}: ${url}`);
   }
@@ -659,8 +661,8 @@ for (const slug of enabledSlugs) {
   readmeLines.push("");
   readmeLines.push(`- [Full JSON](targets.json)`);
   readmeLines.push(`- [CSV export](targets.csv)`);
-  readmeLines.push(`- [Outreach pack](https://localhost:4321/outreach/${slug}/)`);
-  readmeLines.push(`- [Press page](https://localhost:4321/press/${slug}/)`);
+  readmeLines.push(`- [Outreach pack](${resolveSiteUrl(`/outreach/${slug}/`)})`);
+  readmeLines.push(`- [Press page](${resolveSiteUrl(`/press/${slug}/`)})`);
   readmeLines.push("");
 
   fs.writeFileSync(
@@ -677,8 +679,8 @@ for (const slug of enabledSlugs) {
 
   const draftCandidates = sorted.slice(0, MAX_DRAFTS);
   const oneLiner = tool.positioning?.oneLiner || "";
-  const pressPageUrl = `https://localhost:4321/press/${slug}/`;
-  const outreachPackUrl = `https://localhost:4321/outreach/${slug}/`;
+  const pressPageUrl = resolveSiteUrl(`/press/${slug}/`);
+  const outreachPackUrl = resolveSiteUrl(`/outreach/${slug}/`);
 
   // Proof bullets
   const proofBullets = proven.slice(0, 3).map((c) =>

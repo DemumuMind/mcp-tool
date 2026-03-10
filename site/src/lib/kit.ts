@@ -25,7 +25,7 @@ export const kit = {
   },
   site: {
     title: (raw.site?.title as string) ?? '',
-    url: (raw.site?.url as string) ?? '',
+    url: (process.env.PUBLIC_SITE_URL as string) ?? (raw.site?.url as string) ?? '',
     description: (raw.site?.description as string) ?? '',
   },
   repo: {

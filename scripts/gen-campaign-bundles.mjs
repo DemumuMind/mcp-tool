@@ -18,6 +18,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveSiteUrl } from "./lib/config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -277,12 +278,13 @@ for (const campaign of filteredCampaigns) {
       lines.push(msg.text);
       if (goId) {
         lines.push("");
-        lines.push(`Source: localhost:4321/go/${goId}`);
+        lines.push(`Source: ${resolveSiteUrl(`/go/${goId}/`)}`);
       }
       lines.push("```");
       lines.push("");
       if (goId) {
-        lines.push(`_Tracked link: [localhost:4321/go/${goId}](https://localhost:4321/go/${goId}/)_`);
+        const trackedUrl = resolveSiteUrl(`/go/${goId}/`);
+        lines.push(`_Tracked link: [${trackedUrl}](${trackedUrl})_`);
         lines.push("");
       }
 

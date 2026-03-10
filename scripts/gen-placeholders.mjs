@@ -26,6 +26,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { escapeXml } from "./lib/sanitize.mjs";
+import { resolveSiteUrl } from "./lib/config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -115,7 +116,7 @@ function generateSvg(project) {
   const stability = project.stability || "experimental";
   const stabColor = stabilityColor(stability);
   const kind = project.kind ? escapeXml(project.kind) : null;
-  const url = escapeXml(`localhost:4321/tools/${project.repo}/`);
+  const url = escapeXml(resolveSiteUrl(`/tools/${project.repo}/`));
 
   // Build elements
   let y = 180; // starting y after top padding
