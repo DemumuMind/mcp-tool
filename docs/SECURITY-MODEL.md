@@ -8,7 +8,9 @@ Threat model and security controls for the DemumuMind marketing pipeline.
 |--------|-------------|----------|
 | MarketIR upstream (mcpt-marketing) | **High** | Schema-validated, hash-locked, version-controlled |
 | GitHub API responses | **Low** | Repo names, descriptions, topics come from arbitrary repo owners |
+| `workflow_dispatch` inputs | **Low** | Routed through environment variables before entering shell scripts |
 | User-authored overrides.json | **High** | Direct human edits, schema-validated in CI |
+| Browser localStorage telemetry | **Low** | Rendered through DOM node construction with `textContent`, exported manually only |
 | Generated HTML/SVG output | **Untrusted until escaped** | All fields pass through `htmlEsc()` / `escapeXml()` |
 
 ## Data Flow
@@ -31,6 +33,13 @@ Generated output (HTML/SVG/MD)
   --> gen-partner-packs.mjs -> site/public/partners/<slug>/ (MD)
   --> gen-snippets.mjs -> site/public/snippets/<slug>/ (MD)
 
+workflow_dispatch inputs
+  --> apply-control-patch.yml / apply-submission-status.yml
+  --> env vars -> Node CLI entrypoints -> validated JSON writes -> PR branch
+
+Browser localStorage telemetry
+  --> tracker.ts -> /lab/telemetry-export/ preview -> manual JSONL download
+
 Astro build
   --> site/dist/ -> GitHub Pages deploy
 ```
@@ -48,6 +57,7 @@ Consumers:
 - `gen-presskit.mjs` -- imports `htmlEsc`, escapes all tool data in HTML output
 - `gen-go-links.mjs` -- imports `htmlEsc` + `validateUrl`, validates redirect targets
 - `gen-placeholders.mjs` -- imports `escapeXml`, escapes tool data in SVG templates
+- `/lab/telemetry-export/` -- builds table rows via DOM node construction and `textContent` for localStorage-backed preview data
 
 Astro pages use expression syntax `{value}` which auto-escapes output. No `set:html` is used anywhere in the codebase.
 
@@ -55,6 +65,9 @@ Astro pages use expression syntax `{value}` which auto-escapes output. No `set:h
 
 ### Action pinning
 All GitHub Actions are pinned to commit SHAs (not version tags) to prevent supply chain attacks via tag-moving.
+
+### Workflow input handling
+`workflow_dispatch` inputs must flow through `env:` bindings before shell execution. Direct `${{ inputs.* }}` interpolation inside `run:` blocks is treated as a policy violation and covered by unit tests.
 
 ### Permissions
 Every workflow declares explicit `permissions:` blocks with least privilege:
@@ -73,6 +86,8 @@ Both CI (`site-quality.yml`) and live smoke test (`smoke-test.mjs`) scan HTML ou
 ### Unit tests (`tests/unit/`)
 - `sanitize.test.mjs` -- validates all escape characters, XSS vectors, URL protocol rejection
 - `html-output-safety.test.mjs` -- proves XSS fixtures are neutralized by `htmlEsc`
+- `telemetry-preview.test.mjs` -- proves the telemetry export page avoids `innerHTML`, uses DOM-node rendering, and keeps docs aligned
+- `workflow-security-hardening.test.mjs` -- enforces SHA-pinned actions and shell-safe workflow input handling
 
 ### Invariant tests (`tests/invariants/`)
 - `data-integrity.test.mjs` -- cross-referential checks (collections -> projects, overrides -> projects, link URL validation, no contradictory flags)
@@ -89,4 +104,4 @@ This is a static marketing site with no:
 - Dynamic API endpoints
 - User-generated content (all content is author-controlled)
 
-The attack surface is limited to: XSS via GitHub API data flowing through generators into HTML, and supply chain attacks via GitHub Actions.
+The main attack surface is limited to: data-to-HTML/DOM rendering, shell execution in automation/generators, workflow inputs for write-capable jobs, and GitHub Actions supply chain controls.

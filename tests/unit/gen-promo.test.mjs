@@ -4,7 +4,14 @@ import { mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { existsSync } from "node:fs";
-import { isPromotionEnabled, loadPromoQueue, generatePromoReport, generateCampaignBundle } from "../../scripts/gen-promo.mjs";
+import * as promo from "../../scripts/gen-promo.mjs";
+
+const {
+  isPromotionEnabled,
+  loadPromoQueue,
+  generatePromoReport,
+  generateCampaignBundle,
+} = promo;
 
 function makeTempDir(label) {
   const dir = join(tmpdir(), `promo-test-${label}-${Date.now()}-${Math.random().toString(36).slice(2)}`);
@@ -174,5 +181,34 @@ describe("generateCampaignBundle", () => {
     assert.ok(md.includes("beta"), "should include beta slug");
     assert.ok(md.includes("/press/alpha/"), "should have alpha press link");
     assert.ok(md.includes("/press/beta/"), "should have beta press link");
+  });
+});
+
+describe("runGenerator", () => {
+  it("passes slug filters as literal execFileSync arguments", () => {
+    assert.equal(typeof promo.runGenerator, "function");
+
+    const calls = [];
+    const ok = promo.runGenerator(
+      "/tmp/gen-presskit.mjs",
+      'alpha; echo "owned"',
+      false,
+      {
+        execFileSyncImpl(file, args, options) {
+          calls.push({ file, args, options });
+        },
+      }
+    );
+
+    assert.equal(ok, true);
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].file, process.execPath);
+    assert.deepEqual(calls[0].args, [
+      "/tmp/gen-presskit.mjs",
+      "--slugs",
+      'alpha; echo "owned"',
+    ]);
+    assert.equal(calls[0].options.timeout, 60000);
+    assert.equal(calls[0].options.stdio, "inherit");
   });
 });

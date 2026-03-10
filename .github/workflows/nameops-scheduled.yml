@@ -29,16 +29,16 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout marketing repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Checkout nameops repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           repository: DemumuMind/nameops
           path: _nameops
           token: ${{ secrets.NAMEOPS_PAT || secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
 
@@ -49,7 +49,7 @@ jobs:
           echo "nameops_sha=$(git -C _nameops rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Restore COE cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .coe-cache
           key: coe-nameops-${{ hashFiles('_nameops/data/names.txt') }}-${{ github.run_number }}
@@ -104,7 +104,9 @@ jobs:
 
       - name: Determine run mode
         id: mode
-        run: echo "value=${{ github.event.inputs.mode || 'fast' }}" >> "$GITHUB_OUTPUT"
+        env:
+          REQUESTED_MODE: ${{ github.event.inputs.mode || 'fast' }}
+        run: echo "value=$REQUESTED_MODE" >> "$GITHUB_OUTPUT"
 
       - name: Compute input hash
         id: input_hash
@@ -124,7 +126,7 @@ jobs:
 
       - name: Restore generator cache
         id: gen_cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .gen-cache
           key: gen-outputs-${{ steps.input_hash.outputs.hash }}

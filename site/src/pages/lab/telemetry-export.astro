@@ -74,6 +74,40 @@ import Base from '../../layouts/Base.astro';
 <script>
   import { getEvents, clearEvents, exportEventsJsonl } from '../../lib/tracker';
 
+  function buildPreviewRow(event) {
+    const row = document.createElement('tr');
+
+    const typeCell = document.createElement('td');
+    const typeCode = document.createElement('code');
+    typeCode.textContent = String(event?.type ?? '');
+    typeCell.append(typeCode);
+
+    const timestampCell = document.createElement('td');
+    timestampCell.textContent = new Date(event?.timestamp ?? '').toLocaleString();
+
+    const payloadCell = document.createElement('td');
+    const payloadCode = document.createElement('code');
+    try {
+      payloadCode.textContent = JSON.stringify(event?.payload ?? {});
+    } catch {
+      payloadCode.textContent = '[unserializable payload]';
+    }
+    payloadCell.append(payloadCode);
+
+    row.append(typeCell, timestampCell, payloadCell);
+    return row;
+  }
+
+  function buildEmptyStateRow() {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 3;
+    cell.className = 'empty-state';
+    cell.textContent = 'No events yet.';
+    row.append(cell);
+    return row;
+  }
+
   function updateUI() {
     const events = getEvents();
     const countEl = document.getElementById('event-count');
@@ -82,22 +116,12 @@ import Base from '../../layouts/Base.astro';
     const tbody = document.getElementById('preview-body');
     if (!tbody) return;
 
-    if (events.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No events yet.</td></tr>';
-      return;
-    }
-
     const recent = events.slice(-20).reverse();
-    tbody.innerHTML = recent
-      .map(
-        (e) =>
-          `<tr>
-            <td><code>${e.type}</code></td>
-            <td>${new Date(e.timestamp).toLocaleString()}</td>
-            <td><code>${JSON.stringify(e.payload)}</code></td>
-          </tr>`
-      )
-      .join('');
+    const rows = recent.length > 0
+      ? recent.map((event) => buildPreviewRow(event))
+      : [buildEmptyStateRow()];
+
+    tbody.replaceChildren(...rows);
   }
 
   // Download handler

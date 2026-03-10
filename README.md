@@ -87,11 +87,11 @@ Everything runs locally. No cloud dependencies for core functionality. Tools com
 
 | Aspect | Detail |
 |--------|--------|
-| **Data touched** | GitHub org metadata (via API), tool manifests (JSON), site build output |
-| **Data NOT touched** | No user data, no analytics, no external tracking services |
-| **Permissions** | Read: GitHub API (org repos, releases). Write: site data files, build output |
-| **Network** | GitHub API only -- for org metadata sync |
-| **Telemetry** | None collected or sent |
+| **Data touched** | GitHub org metadata (via API), registry/MarketIR snapshots, tool manifests (JSON), site build output, optional local telemetry export files |
+| **Data NOT touched** | No user accounts, no cookies, no remote analytics or third-party tracking services |
+| **Permissions** | Read: GitHub API + raw GitHub content for registry/MarketIR sync. Write: site data files, generated artifacts, GitHub PR branches in automation |
+| **Network** | GitHub API plus raw GitHub content fetches for registry and MarketIR sync jobs |
+| **Telemetry** | No remote telemetry. Optional browser-local event buffer is exported manually from `/lab/telemetry-export/` |
 
 See [SECURITY.md](SECURITY.md) and [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md) for full details.
 

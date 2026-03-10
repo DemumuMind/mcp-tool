@@ -25,9 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
 
@@ -35,7 +35,9 @@ jobs:
         run: npm ci
 
       - name: Validate and apply status
-        run: node scripts/apply-submission-status.mjs '${{ inputs.patch_json }}'
+        env:
+          PATCH_JSON: ${{ inputs.patch_json }}
+        run: node scripts/apply-submission-status.mjs "$PATCH_JSON"
 
       - name: Run invariant tests
         run: node --test tests/invariants/*.test.mjs
@@ -53,31 +55,19 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PATCH_JSON: ${{ inputs.patch_json }}
+          REASON: ${{ inputs.reason }}
         run: |
           BRANCH="submission-status/$(date +%Y%m%d-%H%M%S)"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
           git add site/src/data/submissions.json
-          git commit -m "chore(submissions): update submission status
-
-          Reason: ${{ inputs.reason }}"
+          git commit -m "chore(submissions): update submission status" -m "Reason: $REASON"
           git push origin "$BRANCH"
-          RISK_NOTES=$(cat /tmp/submission-status-risk-notes.txt 2>/dev/null || echo 'No risk notes')
+          export RISK_NOTES="$(cat /tmp/submission-status-risk-notes.txt 2>/dev/null || echo 'No risk notes')"
+          node scripts/lib/workflow-pr-body.mjs submission-status /tmp/pr-body.md
           gh pr create \
             --title "chore(submissions): update submission status" \
-            --body "$(cat <<'EOF'
-          ## Submission Status Update
-
-          **Reason:** ${{ inputs.reason }}
-
-          ### Patch Applied
-          ```json
-          ${{ inputs.patch_json }}
-          ```
-
-          ### Risk Notes
-          '"${RISK_NOTES}"'
-          EOF
-          )" \
+            --body-file /tmp/pr-body.md \
             --base main --head "$BRANCH"

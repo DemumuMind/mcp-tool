@@ -21,7 +21,7 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { resolve, join } from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const DATA_DIR = join(ROOT, "site", "src", "data");
@@ -167,15 +167,23 @@ export function generateCampaignBundle(queue, results, opts = {}) {
 
 // ── Runner ──────────────────────────────────────────────────
 
-function runGenerator(script, slugs, dryRun) {
-  const cmd = `node ${script} --slugs ${slugs}`;
+export function runGenerator(
+  script,
+  slugs,
+  dryRun,
+  {
+    execFileSyncImpl = execFileSync,
+    nodeBinary = process.execPath,
+  } = {}
+) {
+  const args = [script, "--slugs", String(slugs)];
   if (dryRun) {
-    console.log(`  [dry-run] Would run: ${cmd}`);
+    console.log(`  [dry-run] Would run: ${nodeBinary} ${args.join(" ")}`);
     return true;
   }
   try {
-    console.log(`  $ ${cmd}`);
-    execSync(cmd, { stdio: "inherit", timeout: 60000 });
+    console.log(`  $ ${nodeBinary} ${args.join(" ")}`);
+    execFileSyncImpl(nodeBinary, args, { stdio: "inherit", timeout: 60000 });
     return true;
   } catch (err) {
     console.error(`  Failed: ${err.message}`);
