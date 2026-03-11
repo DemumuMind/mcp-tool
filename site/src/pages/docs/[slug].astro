@@ -1,0 +1,88 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
+
+export function getStaticPaths() {
+  return getMarketplaceContent().docs.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const relatedDocs = getMarketplaceContent().docs.filter((entry) => entry.slug !== doc.slug).slice(0, 3);
+---
+
+<Base title={`${doc.title} - DemumuMind MCP`} description={doc.summary} currentPath={`/docs/${doc.slug}/`}>
+  <div class="page-content">
+    <PageHero eyebrow={doc.eyebrow} title={doc.title} lede={doc.summary} meta={[`${doc.sections.length} sections`, "Marketplace guide"]}>
+      <Fragment slot="actions">
+        <a href={withBase("/docs/")} class="btn btn-primary">All docs</a>
+        <a href={withBase("/tools/")} class="btn btn-secondary">Browse tools</a>
+      </Fragment>
+    </PageHero>
+
+    {doc.sections.map((section) => (
+      <section class="doc-section">
+        <h2>{section.title}</h2>
+        {section.body.map((paragraph) => <p>{paragraph}</p>)}
+        {section.bullets && (
+          <ul>
+            {section.bullets.map((bullet) => <li>{bullet}</li>)}
+          </ul>
+        )}
+      </section>
+    ))}
+
+    {relatedDocs.length > 0 && (
+      <section class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Continue reading</p>
+            <h2 class="section-shell__title">Related docs</h2>
+          </div>
+        </div>
+        <div class="docs-grid docs-grid--related">
+          {relatedDocs.map((entry) => (
+            <a href={withBase(`/docs/${entry.slug}/`)} class="doc-related-card">
+              <span class="doc-related-card__title">{entry.title}</span>
+              <span class="doc-related-card__summary">{entry.summary}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  .doc-section {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .docs-grid--related {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .doc-related-card {
+    display: grid;
+    gap: 0.45rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+    text-decoration: none;
+  }
+
+  .doc-related-card__title {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .doc-related-card__summary {
+    color: var(--color-text-muted);
+  }
+</style>

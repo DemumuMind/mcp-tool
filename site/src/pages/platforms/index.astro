@@ -1,0 +1,29 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
+
+const content = getMarketplaceContent();
+---
+
+<Base title="Platforms - DemumuMind MCP" description="Browse the MCP marketplace by clients, runtimes, and compatibility hubs." currentPath="/platforms/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Platforms"
+      title="Compatibility hubs for real adoption paths."
+      lede="Move from a client or runtime shape into the right MCP listings without rebuilding the filter stack manually."
+      meta={[`${content.platforms.length} platform hubs`, "Compatibility-first", "SEO-ready landing pages"]}
+    />
+
+    <div class="platform-hub-grid">
+      {content.platforms.map((platform) => (
+        <a href={withBase(`/platforms/${platform.slug}/`)} class="collection-item">
+          <span class="collection-item-name">{platform.title}</span>
+          <span class="collection-item-desc">{platform.description}</span>
+          <span class="collection-item-count">{platform.count} tools</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>

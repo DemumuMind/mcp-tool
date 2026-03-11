@@ -1,0 +1,36 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import MarketplaceCard from "../../components/MarketplaceCard.astro";
+import { getMarketplaceContent, getPlatformModel } from "../../lib/content/marketplace.ts";
+
+export function getStaticPaths() {
+  return getMarketplaceContent().platforms.map((platform) => ({ params: { slug: platform.slug } }));
+}
+
+const content = getMarketplaceContent();
+const platform = getPlatformModel(Astro.params.slug || "");
+if (!platform) throw new Error(`Unknown platform ${Astro.params.slug}`);
+const entries = content.catalog.primary.filter((entry) =>
+  entry.compatibility.platforms.some((candidate) => candidate.slug === platform.slug)
+);
+---
+
+<Base title={`${platform.title} - DemumuMind MCP`} description={platform.description} currentPath={`/platforms/${platform.slug}/`}>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Platform hub"
+      title={platform.title}
+      lede={platform.description}
+      meta={[`${platform.count} tools`, "Compatibility-led discovery", "Filtered MCP surface"]}
+    />
+
+    <div class="browse-grid">
+      {entries.map((entry) => (
+        <div class="browse-grid__item">
+          <MarketplaceCard entry={entry} />
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>

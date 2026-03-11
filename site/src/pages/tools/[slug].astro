@@ -1,324 +1,209 @@
 ---
 import Base from "../../layouts/Base.astro";
-import PublicProof from "../../components/marketir/PublicProof.astro";
-import RealityPanel from "../../components/RealityPanel.astro";
-import TryItNow from "../../components/TryItNow.astro";
-import projects from "../../data/projects.json";
-import proofs from "../../data/audit/proofs.json";
-import releases from "../../data/releases.json";
-import overrides from "../../data/overrides.json";
-import { getProofData, getPressData, loadSnapshot } from "../../lib/marketir/loader.mjs";
-import fs from "node:fs";
-import path from "node:path";
+import MarketplaceCard from "../../components/MarketplaceCard.astro";
+import { getMarketplaceContent, getToolDossier } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
-  return (projects as any[]).map((project: any) => ({
-    params: { slug: project.repo },
-    props: { project },
+  return getMarketplaceContent().catalog.all.map((entry) => ({
+    params: { slug: entry.slug },
   }));
 }
 
-const { project } = Astro.props;
-const orgUrl = `https://github.com/DemumuMind/${project.repo}`;
-const toolProof = (proofs as any[]).find((proof: any) => proof.repo === project.repo);
-const isRegistered = project.registered === true;
-const isDeprecated = project.deprecated === true;
-const hasInstall = Boolean(project.install);
-const latestRelease = (releases as any[]).find((release: any) => release.repo === project.repo);
-const hasRelease = Boolean(latestRelease);
-const projectTags = new Set(project.tags || []);
-const related = (projects as any[])
-  .filter((candidate: any) => candidate.repo !== project.repo && (candidate.tags || []).some((tag: string) => projectTags.has(tag)))
-  .slice(0, 3);
+const content = getMarketplaceContent();
+const tool = getToolDossier(Astro.params.slug || "");
 
-const toolOverride = (overrides as any)[project.repo];
-const showProof = toolOverride?.publicProof === true;
-const proofData = showProof ? getProofData(project.repo) : null;
-const snapshot = showProof && proofData ? loadSnapshot() : null;
-const pressData = showProof ? getPressData(project.repo) : null;
-const presskitDir = path.resolve("public/presskit", project.repo);
-const hasPresskit = showProof && fs.existsSync(presskitDir);
+if (!tool) {
+  throw new Error(`Unknown tool dossier: ${Astro.params.slug}`);
+}
 
-const statusSignals = [
-  { label: isRegistered ? "Registry listed" : "Org-only", positive: isRegistered },
-  { label: hasInstall ? "Install path" : "No install path", positive: hasInstall },
-  { label: hasRelease ? "Release evidence" : "No release evidence", positive: hasRelease },
-  { label: project.description ? "Documented" : "Sparse docs", positive: Boolean(project.description) },
-];
+const genericPlatformSlugs = new Set(["any-mcp-client", "terminal", "desktop"]);
+const toolTags = new Set(tool.tags);
+const toolPlatforms = new Set(
+  tool.compatibility.platforms
+    .map((platform) => platform.slug)
+    .filter((slug) => !genericPlatformSlugs.has(slug)),
+);
+
+const related = content.catalog.primary
+  .filter((entry) => entry.slug !== tool.slug)
+  .map((entry) => {
+    const sharedTags = entry.tags.filter((tag) => toolTags.has(tag)).length;
+    const sharedSpecificPlatforms = entry.compatibility.platforms.filter((platform) =>
+      toolPlatforms.has(platform.slug),
+    ).length;
+    const categoryMatch = entry.primaryCategory === tool.primaryCategory ? 1 : 0;
+    const score = categoryMatch * 4 + sharedTags * 2 + sharedSpecificPlatforms * 3;
+    return { entry, score };
+  })
+  .filter((candidate) => candidate.score >= 4)
+  .sort((a, b) => b.score - a.score || b.entry.quality.score - a.entry.quality.score)
+  .slice(0, 3)
+  .map((candidate) => candidate.entry);
 ---
 
-<Base
-  title={`${project.name} - DemumuMind`}
-  description={project.tagline || project.description}
-  currentPath={`/tools/${project.repo}/`}
->
+<Base title={`${tool.name} - DemumuMind MCP`} description={tool.description} currentPath={`/tools/${tool.slug}/`}>
   <div class="tool-profile">
-    <a href={withBase("/tools/")} class="back-link">&larr; Back to registry</a>
+    <a href={withBase("/tools/")} class="back-link">&larr; Back to browse</a>
 
     <section class="tool-profile__hero">
       <div class="tool-profile__lead">
-        <p class="eyebrow">Tool dossier</p>
-        <h1>{project.name}</h1>
-        <p class="tool-profile__lede">{project.tagline || project.description}</p>
-        {project.description && project.tagline && project.tagline !== project.description && (
-          <p class="tool-profile__body">{project.description}</p>
-        )}
+        <p class="eyebrow">{tool.primaryCategoryTitle}</p>
+        <h1>{tool.name}</h1>
+        <p class="tool-profile__lede">{tool.summary}</p>
+        <p class="tool-profile__body">{tool.description}</p>
 
         <div class="tool-profile__badges">
-          {isRegistered ? <span class="badge badge-registered">Registry</span> : <span class="badge badge-kind">Org-only</span>}
-          {isDeprecated && <span class="badge badge-experimental">Deprecated</span>}
-          {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
-          {project.kind && <span class="badge badge-kind">{project.kind}</span>}
-          {project.language && <span class="badge badge-kind">{project.language}</span>}
-          {latestRelease?.tag && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="release-tag">{latestRelease.tag}</a>}
+          <span class="badge badge-kind">{tool.kind}</span>
+          <span class="badge badge-registered">{tool.pricing}</span>
+          <span class:list={["badge", tool.quality.verified ? "badge-stable" : "badge-beta"]}>
+            {tool.quality.verified ? "Verified" : tool.quality.label}
+          </span>
+          <span class="badge badge-kind">{tool.freshnessLabel}</span>
         </div>
 
         <div class="tool-links">
-          <a href={orgUrl} class="btn btn-primary" rel="noopener">View on GitHub</a>
-          <a href={`${orgUrl}/issues`} class="btn btn-secondary" rel="noopener">Issues</a>
-          <a href={`${orgUrl}/releases`} class="btn btn-secondary" rel="noopener">Releases</a>
-          {showProof && pressData && <a href={withBase(`/press/${project.repo}/`)} class="btn btn-secondary">Press page</a>}
-          {hasPresskit && <a href={withBase(`/presskit/${project.repo}/`)} class="btn btn-secondary">Press kit</a>}
+          <a href={tool.primaryActionUrl} class="btn btn-primary" rel="noopener noreferrer">Open docs / adopt</a>
+          {tool.repoUrl && <a href={tool.repoUrl} class="btn btn-secondary" rel="noopener noreferrer">GitHub</a>}
+          {tool.releaseTag && tool.repoUrl && <a href={`${tool.repoUrl}/releases`} class="btn btn-secondary" rel="noopener noreferrer">Releases</a>}
         </div>
       </div>
 
       <aside class="tool-profile__side">
         <div class="tool-meta-grid">
-          {project.stars > 0 && (
-            <div class="meta-block">
-              <span class="meta-label">Stars</span>
-              <span class="meta-value">{project.stars}</span>
-            </div>
-          )}
-          {project.language && (
-            <div class="meta-block">
-              <span class="meta-label">Language</span>
-              <span class="meta-value">{project.language}</span>
-            </div>
-          )}
-          {project.updatedAt && (
-            <div class="meta-block">
-              <span class="meta-label">Last updated</span>
-              <span class="meta-value">{new Date(project.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</span>
-            </div>
-          )}
-          {latestRelease?.publishedAt && (
-            <div class="meta-block">
-              <span class="meta-label">Latest release</span>
-              <span class="meta-value">{new Date(latestRelease.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</span>
-            </div>
-          )}
+          <div class="meta-block">
+            <span class="meta-label">Quality score</span>
+            <span class="meta-value">{tool.quality.score}</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">Category</span>
+            <span class="meta-value">{tool.primaryCategoryTitle}</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">Language</span>
+            <span class="meta-value">{tool.language}</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">Stars</span>
+            <span class="meta-value">{tool.stars}</span>
+          </div>
         </div>
 
         <div class="signal-strip">
-          {statusSignals.map((signal) => (
-            <span class:list={["signal", signal.positive ? "signal-yes" : "signal-no"]}>{signal.label}</span>
+          {tool.compatibility.platforms.map((platform) => (
+            <span class="signal signal-yes">{platform.title}</span>
           ))}
         </div>
       </aside>
     </section>
 
-    {isDeprecated && (
-      <div class="deprecated-notice">
-        This tool has been archived or deprecated. Keep it as reference material, not as an active install recommendation.
-      </div>
-    )}
-
-    {toolProof && (
-      <RealityPanel
-        verified={toolProof.verified}
-        concept={toolProof.concept}
-        proofs={toolProof.proofs}
-      />
-    )}
-
-    {toolProof && (
-      <TryItNow
-        project={project}
-        verified={toolProof.verified}
-        concept={toolProof.concept}
-        proofs={toolProof.proofs}
-      />
-    )}
-
-    {project.screenshot && (
-      <section class="tool-screenshot">
-        <img src={withBase(project.screenshot)} alt={`${project.name} screenshot`} loading="lazy" width="1280" />
-        {project.screenshotType === "placeholder" && <span class="tool-screenshot__label">Preview</span>}
-      </section>
-    )}
-
-    {(project.goodFor || project.notFor) && (
-      <section class="fit-section">
-        {project.goodFor && (
-          <div class="fit-col">
-            <h2>Good for</h2>
-            <ul>
-              {project.goodFor.map((item: string) => <li>{item}</li>)}
-            </ul>
-          </div>
-        )}
-        {project.notFor && (
-          <div class="fit-col">
-            <h2>Not for</h2>
-            <ul>
-              {project.notFor.map((item: string) => <li>{item}</li>)}
-            </ul>
-          </div>
-        )}
-      </section>
-    )}
-
-    {project.tags && project.tags.length > 0 && (
-      <section class="tool-tags">
-        {project.tags.map((tag: string) => <span class="tag">{tag}</span>)}
-      </section>
-    )}
-
-    {showProof && proofData && snapshot && <PublicProof proofData={proofData} snapshot={snapshot} />}
-
-    {related.length > 0 && (
-      <section class="related-section">
+    <section class="section-split">
+      <div class="section-shell">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Related dossiers</p>
-            <h2 class="section-shell__title">Nearby tools</h2>
+            <p class="section-kicker">Adoption</p>
+            <h2 class="section-shell__title">Why teams open this tool</h2>
           </div>
         </div>
-        <div class="related-grid">
-          {related.map((candidate: any) => (
-            <a href={withBase(`/tools/${candidate.repo}/`)} class="related-item">
-              <span class="related-name">{candidate.name}</span>
-              <span class="related-desc">{candidate.tagline || candidate.description}</span>
-            </a>
+        {tool.goodFor.length > 0 ? (
+          <ul class="ops-list">
+            {tool.goodFor.map((item) => <li>{item}</li>)}
+          </ul>
+        ) : (
+          <div class="empty-state">Use the docs and compatibility signals above to validate whether this listing fits your workflow.</div>
+        )}
+      </div>
+
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Compatibility</p>
+            <h2 class="section-shell__title">Client, transport, and runtime fit</h2>
+          </div>
+        </div>
+        <ul class="ops-list">
+          {tool.compatibility.platforms.map((platform) => <li>Platform: {platform.title}</li>)}
+          {tool.compatibility.transports.map((transport) => <li>Transport: {transport}</li>)}
+          {tool.compatibility.runtimeSignals.map((runtime) => <li>Runtime: {runtime}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Limits</p>
+          <h2 class="section-shell__title">What to check before rollout</h2>
+        </div>
+      </div>
+      {tool.notFor.length > 0 ? (
+        <ul class="ops-list">
+          {tool.notFor.map((item) => <li>{item}</li>)}
+        </ul>
+      ) : (
+        <div class="empty-state">This dossier does not include explicit "not for" guidance yet. Prefer checking docs and repo issues before production use.</div>
+      )}
+    </section>
+
+    <section class="section-split">
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Adoption path</p>
+            <h2 class="section-shell__title">Start using the tool</h2>
+          </div>
+        </div>
+        <div class="launch-panel__card">
+          {tool.install ? (
+            <div class="launch-panel__command">
+              <code>{tool.install}</code>
+            </div>
+          ) : (
+            <p class="launch-panel__note">No direct install command is published. Use the docs or homepage to evaluate the current adoption path.</p>
+          )}
+          <div class="tool-links">
+            {tool.docsUrl && <a href={tool.docsUrl} class="btn btn-secondary" rel="noopener noreferrer">Docs</a>}
+            {tool.homepage && <a href={tool.homepage} class="btn btn-secondary" rel="noopener noreferrer">Homepage</a>}
+          </div>
+        </div>
+      </div>
+
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Quality breakdown</p>
+            <h2 class="section-shell__title">Why this score looks the way it does</h2>
+          </div>
+        </div>
+        <div class="stats-grid">
+          {Object.entries(tool.quality.breakdown).map(([label, value]) => (
+            <div class="metric-card">
+              <span class="metric-card__label">{label}</span>
+              <strong class="metric-card__value">{value}</strong>
+            </div>
           ))}
+        </div>
+      </div>
+    </section>
+
+    {tool.screenshot && (
+      <section class="tool-screenshot">
+        <img src={withBase(tool.screenshot)} alt={`${tool.name} preview`} loading="lazy" width="1280" />
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Alternatives</p>
+            <h2 class="section-shell__title">Nearby tools to compare next</h2>
+          </div>
+        </div>
+        <div class="featured-tools-grid">
+          {related.map((entry) => <MarketplaceCard entry={entry} compact />)}
         </div>
       </section>
     )}
   </div>
 </Base>
-
-<style>
-  .tool-profile {
-    display: grid;
-    gap: 1.5rem;
-  }
-
-  .back-link {
-    color: var(--color-text-dim);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-decoration: none;
-  }
-
-  .tool-profile__hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
-    gap: 1rem;
-    padding: 1.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
-      var(--color-surface);
-  }
-
-  .tool-profile__lead {
-    display: grid;
-    gap: 1rem;
-    align-content: start;
-  }
-
-  .tool-profile__lead h1 {
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 4vw, 4rem);
-    letter-spacing: -0.05em;
-  }
-
-  .tool-profile__lede {
-    color: var(--color-text-muted);
-    font-size: 1.08rem;
-    line-height: 1.7;
-  }
-
-  .tool-profile__body {
-    color: var(--color-text-dim);
-    font-size: 0.96rem;
-    line-height: 1.7;
-  }
-
-  .tool-profile__badges,
-  .signal-strip,
-  .tool-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .tool-profile__side {
-    display: grid;
-    gap: 1rem;
-    align-content: start;
-  }
-
-  .deprecated-notice {
-    padding: 0.95rem 1rem;
-    border: 1px solid rgba(217, 107, 59, 0.24);
-    border-radius: var(--radius);
-    background: rgba(217, 107, 59, 0.08);
-    color: var(--color-text-muted);
-  }
-
-  .tool-screenshot {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .tool-screenshot__label {
-    position: absolute;
-    top: 0.85rem;
-    right: 0.85rem;
-  }
-
-  .fit-section {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    padding: 1.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .fit-col {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .fit-col h2 {
-    font-size: 1rem;
-  }
-
-  .fit-col ul {
-    margin: 0;
-    padding-left: 1rem;
-    color: var(--color-text-muted);
-  }
-
-  .fit-col li + li {
-    margin-top: 0.35rem;
-  }
-
-  @media (max-width: 900px) {
-    .tool-profile__hero,
-    .fit-section {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

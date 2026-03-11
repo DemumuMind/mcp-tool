@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<Base title="Terms - DemumuMind MCP" description="Marketplace terms for using the DemumuMind MCP catalog and public submission flows." currentPath="/terms/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Terms"
+      title="Marketplace terms in plain language."
+      lede="The catalog is a public discovery surface, not a guarantee, warranty, or managed certification program."
+      meta={["Discovery only", "No paid verification", "Public data sources"]}
+    />
+
+    <h2>Use of the catalog</h2>
+    <p>The marketplace exists to help users discover MCP tools and compare adoption signals. You are responsible for evaluating external products before using them in production.</p>
+
+    <h2>Listings and accuracy</h2>
+    <p>Listings are assembled from public sources, submissions, and automated classification. DemumuMind MCP may update or remove listings as the source data changes.</p>
+
+    <h2>No endorsement</h2>
+    <p>Appearance in the catalog does not create a partnership, certification, or endorsement relationship.</p>
+  </div>
+</Base>

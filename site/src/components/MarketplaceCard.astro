@@ -1,0 +1,56 @@
+---
+import type { CatalogEntry } from "../lib/content/marketplace";
+import { withBase } from "../lib/site-paths";
+
+interface Props {
+  entry: CatalogEntry;
+  compact?: boolean;
+}
+
+const { entry, compact = false } = Astro.props;
+const platformPreview = entry.compatibility.platforms.slice(0, compact ? 2 : 3);
+---
+
+<article class:list={["marketplace-card", compact && "marketplace-card--compact", entry.deprecated && "marketplace-card--deprecated"]}>
+  <div class="marketplace-card__top">
+    <div>
+      <p class="marketplace-card__eyebrow">{entry.primaryCategoryTitle}</p>
+      <h3 class="marketplace-card__title"><a href={withBase(`/tools/${entry.slug}/`)}>{entry.name}</a></h3>
+    </div>
+    <div class="marketplace-card__score">
+      <span class:list={["score-pill", entry.quality.verified && "score-pill--verified"]}>
+        {entry.quality.verified ? "Verified" : entry.quality.label}
+      </span>
+      <strong>{entry.quality.score}</strong>
+    </div>
+  </div>
+
+  <p class="marketplace-card__summary">{entry.summary}</p>
+
+  <div class="marketplace-card__meta">
+    <span class="tag">{entry.kind}</span>
+    <span class="tag">{entry.pricing}</span>
+    <span class="tag">{entry.freshnessLabel}</span>
+    {entry.releaseTag && <span class="tag">{entry.releaseTag}</span>}
+  </div>
+
+  <div class="marketplace-card__signals">
+    <span>Docs: {entry.docsUrl ? "Yes" : "No"}</span>
+    <span>Install: {entry.install ? "Ready" : "Guide"}</span>
+    <span>Stars: {entry.stars}</span>
+    <span>Signals: {entry.proofSignals.length || 0}</span>
+  </div>
+
+  {platformPreview.length > 0 && (
+    <div class="marketplace-card__platforms">
+      {platformPreview.map((platform) => (
+        <span class="compat-pill">{platform.title}</span>
+      ))}
+    </div>
+  )}
+
+  <div class="marketplace-card__actions">
+    <a href={withBase(`/tools/${entry.slug}/`)} class="btn btn-primary">Open dossier</a>
+    <a href={entry.primaryActionUrl} class="btn btn-secondary" rel="noopener noreferrer">Adopt</a>
+  </div>
+</article>

@@ -1,0 +1,81 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import { getMarketplaceContent } from "../lib/content/marketplace.ts";
+import { withBase } from "../lib/site-paths";
+
+const content = getMarketplaceContent();
+---
+
+<Base title="Stats - DemumuMind MCP" description="Marketplace health and coverage across the MCP ecosystem." currentPath="/stats/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Marketplace health"
+      title="Public stats that explain the shape of the ecosystem."
+      lede="Stats focus on catalog breadth, verification coverage, category depth, and platform coverage instead of private telemetry."
+      meta={[`${content.stats.totalListings} listings`, `${content.stats.verifiedListings} verified`, `${content.stats.totalStars} total stars`]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/methodology/")} class="btn btn-primary">Read methodology</a>
+        <a href={withBase("/tools/")} class="btn btn-secondary">Browse tools</a>
+      </Fragment>
+    </PageHero>
+
+    <div class="stats-grid">
+      <div class="metric-card">
+        <span class="metric-card__label">Average quality</span>
+        <strong class="metric-card__value">{content.stats.averageScore}</strong>
+      </div>
+      <div class="metric-card">
+        <span class="metric-card__label">Open source</span>
+        <strong class="metric-card__value">{content.stats.openSourceListings}</strong>
+      </div>
+      <div class="metric-card">
+        <span class="metric-card__label">Commercial</span>
+        <strong class="metric-card__value">{content.stats.commercialListings}</strong>
+      </div>
+      <div class="metric-card">
+        <span class="metric-card__label">Fresh listings</span>
+        <strong class="metric-card__value">{content.stats.freshListings}</strong>
+      </div>
+    </div>
+
+    <section class="section-split">
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Top categories</p>
+            <h2 class="section-shell__title">Where the volume lives</h2>
+          </div>
+        </div>
+        <div class="platform-hub-grid">
+          {content.stats.topCategories.map((category) => (
+            <a href={withBase(`/categories/${category.slug}/`)} class="collection-item">
+              <span class="collection-item-name">{category.title}</span>
+              <span class="collection-item-desc">{category.description}</span>
+              <span class="collection-item-count">{category.count} listings</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Top platforms</p>
+            <h2 class="section-shell__title">Compatibility coverage</h2>
+          </div>
+        </div>
+        <div class="platform-hub-grid">
+          {content.stats.topPlatforms.map((platform) => (
+            <a href={withBase(`/platforms/${platform.slug}/`)} class="collection-item">
+              <span class="collection-item-name">{platform.title}</span>
+              <span class="collection-item-desc">{platform.description}</span>
+              <span class="collection-item-count">{platform.count} tools</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>

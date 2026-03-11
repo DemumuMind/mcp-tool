@@ -1,0 +1,33 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import MarketplaceCard from "../../components/MarketplaceCard.astro";
+import { getCollectionModel, getMarketplaceContent } from "../../lib/content/marketplace.ts";
+
+export function getStaticPaths() {
+  return getMarketplaceContent().collections.map((collection) => ({ params: { slug: collection.slug } }));
+}
+
+const content = getMarketplaceContent();
+const collection = getCollectionModel(Astro.params.slug || "");
+if (!collection) throw new Error(`Unknown collection ${Astro.params.slug}`);
+---
+
+<Base title={`${collection.title} - DemumuMind MCP`} description={collection.description} currentPath={`/collections/${collection.slug}/`}>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Collection"
+      title={collection.title}
+      lede={collection.description}
+      meta={[`${collection.count} tools`, "Curated path", "Built from marketplace listings"]}
+    />
+
+    <div class="browse-grid">
+      {collection.tools.map((entry) => (
+        <div class="browse-grid__item">
+          <MarketplaceCard entry={entry} />
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>

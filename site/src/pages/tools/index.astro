@@ -1,319 +1,236 @@
 ---
-import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
-import projects from "../../data/projects.json";
-import RealityPills from "../../components/RealityPills.astro";
-import proofs from "../../data/audit/proofs.json";
-import { withBase } from "../../lib/site-paths";
+import PageHero from "../../components/PageHero.astro";
+import MarketplaceCard from "../../components/MarketplaceCard.astro";
+import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
 
-const languages = [...new Set((projects as any[]).map((project: any) => project.language).filter(Boolean))].sort();
-const stabilities = ["stable", "beta", "experimental"];
-const kinds = [...new Set((projects as any[]).map((project: any) => project.kind).filter(Boolean))].sort();
-const registeredCount = (projects as any[]).filter((project: any) => project.registered).length;
-const verifiedCount = (proofs as any[]).filter((proof: any) => proof.verified).length;
-const proofBackedCount = (proofs as any[]).filter((proof: any) => (proof.proofs || []).length > 0).length;
+const content = getMarketplaceContent();
+const kindOptions = [...new Set(content.catalog.primary.map((entry) => entry.kind))].sort();
+
+function getDaysSince(dateValue: string) {
+  const timestamp = dateValue ? new Date(dateValue).getTime() : 0;
+  if (!timestamp) return Number.POSITIVE_INFINITY;
+  return Math.max(0, Math.floor((Date.now() - timestamp) / 86_400_000));
+}
 ---
 
 <Base
-  title="Tools - DemumuMind"
-  description="Browse MCP servers, desktop apps, and AI tooling from DemumuMind."
+  title="Browse Tools - DemumuMind MCP"
+  description="Browse a compatibility-aware MCP marketplace with shareable filters and dossier pages."
   currentPath="/tools/"
 >
   <PageHero
-    eyebrow="Curated registry"
-    title="Browse operator-grade tools."
-    lede="Compare install paths, proof signals, release posture, and editorial readiness across the DemumuMind catalog."
-    layout="split"
+    eyebrow="Browse tools"
+    title="Search the MCP marketplace with builder-grade filters."
+    lede="Use one browse surface for search, categories, compatibility, pricing, freshness, and verified signals."
     meta={[
-      `${registeredCount} registry-listed tools`,
-      `${(projects as any[]).length - registeredCount} org-only repos`,
-      "Filter by build, kind, proof, and stability",
+      `${content.catalog.primary.length} primary listings`,
+      `${content.stats.verifiedListings} verified`,
+      `${content.platforms.length} platform hubs`,
     ]}
-    proofItems={[
-      `${verifiedCount} verified entries`,
-      `${proofBackedCount} proof-backed repos`,
-      `${languages.length} languages represented`,
-    ]}
-    asideTitle="How to read the catalog"
-    asideBody="Treat this page as a decision surface: filter by proof posture, build path, and stability before you open a repo."
   />
 
-  <div class="toolbar">
+  <section class="facet-toolbar">
     <div class="search-wrapper">
-      <input
-        type="text"
-        id="search"
-        class="search-input"
-        placeholder="Search tools, repos, tags, or descriptions"
-        autocomplete="off"
-      />
-      <button id="search-clear" class="search-clear" aria-label="Clear search" hidden>&times;</button>
+      <input id="filter-q" class="search-input" type="text" placeholder="Search tools, tags, categories, or descriptions" />
     </div>
-    <div class="filter-group">
-      <select id="filter-status" class="filter-select">
-        <option value="">All status cues</option>
-        <option value="verified">Verified only</option>
-        <option value="concept">Concept only</option>
-        <option value="needs-copy">Needs copy</option>
+    <div class="filters-grid">
+      <select id="filter-category" class="filter-select">
+        <option value="">All categories</option>
+        {content.categories.map((category) => <option value={category.slug}>{category.title}</option>)}
       </select>
-      <select id="filter-build" class="filter-select">
-        <option value="">All build proofs</option>
-        <option value="npm">NPM / Node.js</option>
-        <option value="python">Python</option>
-        <option value="dotnet">.NET</option>
-        <option value="cargo">Rust / Cargo</option>
-        <option value="docker">Container</option>
-      </select>
-      <select id="filter-lang" class="filter-select">
-        <option value="">All languages</option>
-        {languages.map((language: string) => <option value={language}>{language}</option>)}
+      <select id="filter-platform" class="filter-select">
+        <option value="">All platforms</option>
+        {content.platforms.map((platform) => <option value={platform.slug}>{platform.title}</option>)}
       </select>
       <select id="filter-kind" class="filter-select">
         <option value="">All types</option>
-        {kinds.map((kind: string) => <option value={kind}>{kind}</option>)}
+        {kindOptions.map((kind) => <option value={kind}>{kind}</option>)}
       </select>
-      <select id="filter-stability" class="filter-select">
-        <option value="">All stability</option>
-        {stabilities.map((stability: string) => <option value={stability}>{stability}</option>)}
+      <select id="filter-pricing" class="filter-select">
+        <option value="">All pricing</option>
+        <option value="open-source">Open Source</option>
+        <option value="free">Free</option>
+        <option value="commercial">Commercial</option>
       </select>
-      <select id="sort-by" class="filter-select">
-        <option value="featured">Featured first</option>
-        <option value="updated">Recently updated</option>
-        <option value="stars">Most stars</option>
-        <option value="name">Name A-Z</option>
+      <select id="filter-freshness" class="filter-select">
+        <option value="">Any freshness</option>
+        <option value="new">New</option>
+        <option value="recent">Recent</option>
       </select>
-      <label class="toggle-label" title="Show tools that are not yet listed in the registry">
-        <input type="checkbox" id="show-orgonly" />
-        <span>Show org-only</span>
+      <select id="filter-sort" class="filter-select">
+        <option value="quality">Quality</option>
+        <option value="newest">Newest</option>
+        <option value="stars">Stars</option>
+        <option value="name">Name</option>
+      </select>
+      <label class="toggle-label">
+        <input id="filter-verified" type="checkbox" />
+        <span>Verified only</span>
       </label>
     </div>
-  </div>
+  </section>
 
   <div class="results-count" id="results-count"></div>
-
-  <div class="project-grid" id="project-grid">
-    {(projects as any[]).map((project: any) => (
-      <article
-        class={`project-card project-card--tool${project.deprecated ? " project-card--deprecated" : ""}`}
-        data-name={project.name.toLowerCase()}
-        data-desc={project.description.toLowerCase()}
-        data-repo={project.repo}
-        data-lang={project.language || ""}
-        data-kind={project.kind || ""}
-        data-stability={project.stability || ""}
-        data-featured={project.featured ? "1" : "0"}
-        data-stars={project.stars || 0}
-        data-updated={project.updatedAt || ""}
-        data-tags={(project.tags || []).join(" ").toLowerCase()}
-        data-registered={project.registered ? "1" : "0"}
-        data-deprecated={project.deprecated ? "1" : "0"}
-        data-verified={proofs.find((proof: any) => proof.repo === project.repo)?.verified ? "1" : "0"}
-        data-concept={proofs.find((proof: any) => proof.repo === project.repo)?.concept ? "1" : "0"}
-        data-build={(proofs.find((proof: any) => proof.repo === project.repo)?.proofs || []).join(" ")}
-        data-needs-copy={(project.tags || []).includes("needs-copy") ? "1" : "0"}
+  <div class="browse-grid" id="browse-grid">
+    {content.catalog.primary.map((entry) => (
+      <div
+        class="browse-grid__item"
+        data-name={entry.name.toLowerCase()}
+        data-summary={`${entry.summary} ${entry.description} ${entry.tags.join(" ")}`.toLowerCase()}
+        data-category={entry.primaryCategory}
+        data-platform={entry.compatibility.platforms.map((platform) => platform.slug).join(" ")}
+        data-kind={entry.kind}
+        data-pricing={entry.pricing}
+        data-verified={entry.quality.verified ? "1" : "0"}
+        data-freshness={entry.isNew ? "new" : getDaysSince(entry.updatedAt) <= 90 ? "recent" : "steady"}
+        data-quality={entry.quality.score}
+        data-stars={entry.stars}
+        data-updated={entry.updatedAt}
       >
-        <div class="card-header">
-          <div>
-            <h3><a href={withBase(`/tools/${project.repo}/`)}>{project.name}</a></h3>
-            <p class="project-card__repo">{project.repo}</p>
-          </div>
-          <div class="card-badges">
-            {project.deprecated && <span class="badge badge-experimental">Deprecated</span>}
-            {project.registered && !project.deprecated && <span class="badge badge-registered">Registry</span>}
-            {project.stability && <span class={`badge badge-${project.stability}`}>{project.stability}</span>}
-            {project.kind && <span class="badge badge-kind">{project.kind}</span>}
-          </div>
-        </div>
-
-        <RealityPills
-          verified={proofs.find((proof: any) => proof.repo === project.repo)?.verified || false}
-          concept={proofs.find((proof: any) => proof.repo === project.repo)?.concept || false}
-          proofs={proofs.find((proof: any) => proof.repo === project.repo)?.proofs || []}
-        />
-
-        <p>{project.tagline || project.description}</p>
-        {project.install && <code class="install-line">{project.install}</code>}
-
-        <div class="card-meta">
-          {project.stars > 0 && <span class="meta-item">{project.stars} stars</span>}
-          {project.language && <span class="meta-item">{project.language}</span>}
-          {project.updatedAt && <span class="meta-item">Updated {new Date(project.updatedAt).toLocaleDateString("en-US")}</span>}
-        </div>
-
-        <div class="tags">
-          {(project.tags || []).slice(0, 5).map((tag: string) => (
-            <span class="tag">{tag}</span>
-          ))}
-        </div>
-      </article>
+        <MarketplaceCard entry={entry} />
+      </div>
     ))}
   </div>
-</Base>
+  <div class="marketplace-pagination">
+    <button id="pagination-prev" class="btn btn-secondary" type="button">Previous</button>
+    <span id="pagination-label" class="results-count"></span>
+    <button id="pagination-next" class="btn btn-secondary" type="button">Next</button>
+  </div>
 
-<style>
-  .project-card--tool {
-    min-height: 100%;
-  }
+  <script is:inline>
+    const pageSize = 12;
+    const grid = document.getElementById("browse-grid");
+    const resultsCount = document.getElementById("results-count");
+    const paginationPrev = document.getElementById("pagination-prev");
+    const paginationNext = document.getElementById("pagination-next");
+    const paginationLabel = document.getElementById("pagination-label");
+    const items = Array.from(grid.querySelectorAll(".browse-grid__item"));
+    const controls = {
+      q: document.getElementById("filter-q"),
+      category: document.getElementById("filter-category"),
+      platform: document.getElementById("filter-platform"),
+      kind: document.getElementById("filter-kind"),
+      pricing: document.getElementById("filter-pricing"),
+      freshness: document.getElementById("filter-freshness"),
+      sort: document.getElementById("filter-sort"),
+      verified: document.getElementById("filter-verified"),
+    };
 
-  .project-card--deprecated {
-    opacity: 0.72;
-    border-style: dashed;
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .card-badges,
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-
-  .project-card__repo {
-    color: var(--color-text-dim);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .install-line {
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .project-card[hidden] {
-    display: none;
-  }
-</style>
-
-<script>
-  const grid = document.getElementById("project-grid");
-  const cards = Array.from(grid.querySelectorAll(".project-card"));
-  const search = document.getElementById("search");
-  const clearButton = document.getElementById("search-clear");
-  const languageFilter = document.getElementById("filter-lang");
-  const kindFilter = document.getElementById("filter-kind");
-  const stabilityFilter = document.getElementById("filter-stability");
-  const statusFilter = document.getElementById("filter-status");
-  const buildFilter = document.getElementById("filter-build");
-  const sortBy = document.getElementById("sort-by");
-  const showOrgOnly = document.getElementById("show-orgonly");
-  const resultsCount = document.getElementById("results-count");
-
-  function applyFilters() {
-    const query = search.value.toLowerCase().trim();
-    const language = languageFilter.value;
-    const kind = kindFilter.value;
-    const stability = stabilityFilter.value;
-    const status = statusFilter.value;
-    const build = buildFilter.value;
-    const includeOrgOnly = showOrgOnly.checked;
-
-    clearButton.hidden = !query;
-
-    let visible = 0;
-    let hiddenDeprecated = 0;
-
-    for (const card of cards) {
-      const matchesSearch =
-        !query ||
-        card.dataset.name.includes(query) ||
-        card.dataset.desc.includes(query) ||
-        card.dataset.repo.includes(query) ||
-        card.dataset.tags.includes(query);
-      const matchesLanguage = !language || card.dataset.lang === language;
-      const matchesKind = !kind || card.dataset.kind === kind;
-      const matchesStability = !stability || card.dataset.stability === stability;
-      const matchesStatus =
-        !status ||
-        (status === "verified" && card.dataset.verified === "1") ||
-        (status === "concept" && card.dataset.concept === "1") ||
-        (status === "needs-copy" && card.dataset.needsCopy === "1");
-      const matchesBuild = !build || (card.dataset.build || "").includes(build);
-      const matchesRegistered = includeOrgOnly || card.dataset.registered === "1";
-      const isDeprecated = card.dataset.deprecated === "1";
-      const matchesDeprecated = !isDeprecated || includeOrgOnly || Boolean(query);
-
-      const show =
-        matchesSearch &&
-        matchesLanguage &&
-        matchesKind &&
-        matchesStability &&
-        matchesStatus &&
-        matchesBuild &&
-        matchesRegistered &&
-        matchesDeprecated;
-
-      card.hidden = !show;
-      if (show) visible++;
-      if (!show && isDeprecated && matchesSearch && matchesLanguage && matchesKind && matchesStability) {
-        hiddenDeprecated++;
-      }
+    function readState() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        q: params.get("q") || "",
+        category: params.get("category") || "",
+        platform: params.get("platform") || "",
+        compatibility: params.get("compatibility") || "",
+        type: params.get("type") || "",
+        pricing: params.get("pricing") || "",
+        freshness: params.get("freshness") || "",
+        verified: params.get("verified") === "1",
+        sort: params.get("sort") || "quality",
+        page: Number(params.get("page") || "1"),
+      };
     }
 
-    let countText = `${visible} of ${cards.length} tools`;
-    if (hiddenDeprecated > 0 && !includeOrgOnly) {
-      countText += ` · ${hiddenDeprecated} deprecated hidden`;
+    function writeState(state) {
+      const params = new URLSearchParams();
+      if (state.q) params.set("q", state.q);
+      if (state.category) params.set("category", state.category);
+      if (state.platform) params.set("platform", state.platform);
+      if (state.type) params.set("type", state.type);
+      if (state.pricing) params.set("pricing", state.pricing);
+      if (state.freshness) params.set("freshness", state.freshness);
+      if (state.verified) params.set("verified", "1");
+      if (state.sort && state.sort !== "quality") params.set("sort", state.sort);
+      if (state.page > 1) params.set("page", String(state.page));
+      const next = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      window.history.replaceState({}, "", next);
     }
-    resultsCount.textContent = countText;
-    applySort();
-  }
 
-  function applySort() {
-    const mode = sortBy.value;
-    const visibleCards = cards.filter((card) => !card.hidden);
+    function applyStateToControls(state) {
+      controls.q.value = state.q;
+      controls.category.value = state.category;
+      controls.platform.value = state.platform || state.compatibility;
+      controls.kind.value = state.type;
+      controls.pricing.value = state.pricing;
+      controls.freshness.value = state.freshness;
+      controls.sort.value = state.sort;
+      controls.verified.checked = state.verified;
+    }
 
-    visibleCards.sort((a, b) => {
-      switch (mode) {
-        case "featured": {
-          const aFeatured = a.dataset.featured === "1" ? 1 : 0;
-          const bFeatured = b.dataset.featured === "1" ? 1 : 0;
-          if (aFeatured !== bFeatured) return bFeatured - aFeatured;
-          return Number(b.dataset.stars || 0) - Number(a.dataset.stars || 0);
+    function render(pageOverride) {
+      const requestedPage = pageOverride ?? readState().page ?? 1;
+      const state = {
+        q: controls.q.value.trim().toLowerCase(),
+        category: controls.category.value,
+        platform: controls.platform.value,
+        type: controls.kind.value,
+        pricing: controls.pricing.value,
+        freshness: controls.freshness.value,
+        verified: controls.verified.checked,
+        sort: controls.sort.value,
+        page: Math.max(1, requestedPage),
+      };
+
+      const visible = items.filter((item) => {
+        const matchesQuery =
+          !state.q ||
+          item.dataset.name.includes(state.q) ||
+          item.dataset.summary.includes(state.q);
+        const matchesCategory = !state.category || item.dataset.category === state.category;
+        const matchesPlatform = !state.platform || item.dataset.platform.includes(state.platform);
+        const matchesType = !state.type || item.dataset.kind === state.type;
+        const matchesPricing = !state.pricing || item.dataset.pricing === state.pricing;
+        const matchesFreshness = !state.freshness || item.dataset.freshness === state.freshness;
+        const matchesVerified = !state.verified || item.dataset.verified === "1";
+        return matchesQuery && matchesCategory && matchesPlatform && matchesType && matchesPricing && matchesFreshness && matchesVerified;
+      });
+
+      visible.sort((a, b) => {
+        switch (state.sort) {
+          case "newest":
+            return b.dataset.updated.localeCompare(a.dataset.updated);
+          case "stars":
+            return Number(b.dataset.stars) - Number(a.dataset.stars);
+          case "name":
+            return a.dataset.name.localeCompare(b.dataset.name);
+          default:
+            return Number(b.dataset.quality) - Number(a.dataset.quality);
         }
-        case "updated":
-          return (b.dataset.updated || "").localeCompare(a.dataset.updated || "");
-        case "stars":
-          return Number(b.dataset.stars || 0) - Number(a.dataset.stars || 0);
-        case "name":
-          return (a.dataset.name || "").localeCompare(b.dataset.name || "");
-        default:
-          return 0;
+      });
+
+      for (const item of items) {
+        item.hidden = true;
       }
+
+      const totalPages = Math.max(1, Math.ceil(visible.length / pageSize));
+      const page = Math.min(state.page, totalPages);
+      const start = (page - 1) * pageSize;
+      const pageItems = visible.slice(start, start + pageSize);
+
+      for (const item of pageItems) {
+        item.hidden = false;
+        grid.appendChild(item);
+      }
+
+      resultsCount.textContent = `${visible.length} tools found`;
+      paginationLabel.textContent = `Page ${page} of ${totalPages}`;
+      paginationPrev.disabled = page <= 1;
+      paginationNext.disabled = page >= totalPages;
+      writeState({ ...state, page });
+    }
+
+    const initialState = readState();
+    applyStateToControls(initialState);
+    render(initialState.page);
+
+    Object.values(controls).forEach((control) => {
+      control.addEventListener(control.type === "checkbox" ? "change" : "input", () => render(1));
+      if (control.tagName === "SELECT") control.addEventListener("change", () => render(1));
     });
 
-    for (const card of visibleCards) {
-      grid.appendChild(card);
-    }
-  }
-
-  search.addEventListener("input", applyFilters);
-  clearButton.addEventListener("click", () => {
-    search.value = "";
-    applyFilters();
-    search.focus();
-  });
-  languageFilter.addEventListener("change", applyFilters);
-  kindFilter.addEventListener("change", applyFilters);
-  stabilityFilter.addEventListener("change", applyFilters);
-  statusFilter.addEventListener("change", applyFilters);
-  buildFilter.addEventListener("change", applyFilters);
-  sortBy.addEventListener("change", applyFilters);
-  showOrgOnly.addEventListener("change", applyFilters);
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "/" && document.activeElement !== search) {
-      event.preventDefault();
-      search.focus();
-    }
-  });
-
-  applyFilters();
-</script>
+    paginationPrev.addEventListener("click", () => render(readState().page - 1));
+    paginationNext.addEventListener("click", () => render(readState().page + 1));
+  </script>
+</Base>

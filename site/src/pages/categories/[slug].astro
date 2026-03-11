@@ -1,0 +1,34 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import MarketplaceCard from "../../components/MarketplaceCard.astro";
+import { getCategoryModel, getMarketplaceContent } from "../../lib/content/marketplace.ts";
+
+export function getStaticPaths() {
+  return getMarketplaceContent().categories.map((category) => ({ params: { slug: category.slug } }));
+}
+
+const content = getMarketplaceContent();
+const category = getCategoryModel(Astro.params.slug || "");
+if (!category) throw new Error(`Unknown category ${Astro.params.slug}`);
+const entries = content.catalog.primary.filter((entry) => entry.primaryCategory === category.slug);
+---
+
+<Base title={`${category.title} - DemumuMind MCP`} description={category.description} currentPath={`/categories/${category.slug}/`}>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Category"
+      title={category.title}
+      lede={category.description}
+      meta={[`${category.count} listings`, "Marketplace category page", "Quality-ranked dossiers"]}
+    />
+
+    <div class="browse-grid">
+      {entries.map((entry) => (
+        <div class="browse-grid__item">
+          <MarketplaceCard entry={entry} />
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>
