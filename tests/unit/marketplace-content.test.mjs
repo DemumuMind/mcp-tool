@@ -206,6 +206,51 @@ describe("marketplace content layer", () => {
     assert.ok(adoptable.score > docsOnly.score);
   });
 
+  it("rewards dedicated docs maturity above repo-readme docs", () => {
+    const readmeDocs = deriveQualityScore({
+      name: "Readme Docs MCP",
+      repo: "readme-docs-mcp",
+      kind: "mcp-server",
+      description: "Managed MCP server with a repo readme only.",
+      updatedAt: new Date().toISOString(),
+    });
+
+    const dedicatedDocs = deriveQualityScore({
+      name: "Dedicated Docs MCP",
+      kind: "mcp-server",
+      description: "Managed MCP server with dedicated documentation.",
+      homepage: "https://example.com",
+      docsUrl: "https://docs.example.com/mcp",
+      updatedAt: new Date().toISOString(),
+    });
+
+    assert.ok(dedicatedDocs.breakdown.docs > readmeDocs.breakdown.docs);
+  });
+
+  it("keeps hosted docs-first listings competitive without forcing install commands", () => {
+    const hosted = deriveQualityScore({
+      name: "Hosted MCP",
+      kind: "mcp-server",
+      description: "Hosted MCP service with official docs.",
+      homepage: "https://example.com",
+      docsUrl: "https://docs.example.com/mcp",
+      pricing: "free",
+      updatedAt: new Date().toISOString(),
+      tags: ["mcp", "remote-mcp", "chatgpt"],
+    });
+
+    const sparseRepo = deriveQualityScore({
+      name: "Sparse Repo MCP",
+      repo: "sparse-repo-mcp",
+      kind: "mcp-server",
+      description: "Hosted MCP service with official docs.",
+      updatedAt: new Date().toISOString(),
+      tags: ["mcp"],
+    });
+
+    assert.ok(hosted.score > sparseRepo.score);
+  });
+
   it("uses freshness and release momentum in trend scoring, not just stars", () => {
     const now = new Date().toISOString();
     const hot = getTrendScore({

@@ -228,3 +228,67 @@ export const MARKETPLACE_FAQ = [
       "No. Use quality score to prioritize attention, then open the dossier and inspect docs, resources, compatibility, and adoption signals directly.",
   },
 ] as const;
+
+export const MARKETPLACE_PRESETS = [
+  {
+    slug: "verified-new",
+    title: "Verified + New",
+    summary: "Fresh, verified listings worth checking first.",
+    description: "Use this preset when you want recently refreshed listings that already clear the automatic verified bar.",
+    eyebrow: "Preset",
+    rationale: [
+      "Good for quick weekly scans of what changed without dropping into the full catalog.",
+      "Useful when you want freshness and minimum trust posture before deeper evaluation.",
+    ],
+    state: {
+      verified: true,
+      freshness: "new",
+      sort: "newest",
+    },
+  },
+  {
+    slug: "hosted",
+    title: "Hosted MCP",
+    summary: "Hosted and remote MCP surfaces with official docs.",
+    description: "Use this preset when you want MCP products delivered through official hosted/docs surfaces rather than repo-first installation.",
+    eyebrow: "Preset",
+    rationale: [
+      "Includes hosted free and hosted commercial listings.",
+      "Useful for teams evaluating remote MCP access before self-hosted stacks.",
+    ],
+    state: {
+      source: "external",
+      sort: "quality",
+    },
+  },
+  {
+    slug: "multi-client",
+    title: "Multi-client",
+    summary: "Listings with broader explicit client coverage.",
+    description: "Use this preset when compatibility breadth matters more than category affinity.",
+    eyebrow: "Preset",
+    rationale: [
+      "Prioritizes explicit client/platform support over generic MCP compatibility.",
+      "Useful for agents and teams that switch between multiple client surfaces.",
+    ],
+    state: {
+      sort: "compatibility",
+    },
+  },
+  {
+    slug: "builders",
+    title: "Builder Stack",
+    summary: "Open-source, verified tools for hands-on building.",
+    description: "Use this preset when you want repo-backed tools with stronger builder ergonomics and a clearer adoption path.",
+    eyebrow: "Preset",
+    rationale: [
+      "Best for engineering teams that prefer open-source and docs-led rollout.",
+      "Good default preset for evaluating stack components to pair together.",
+    ],
+    state: {
+      pricing: "open-source",
+      verified: true,
+      sort: "quality",
+    },
+  },
+] as const;

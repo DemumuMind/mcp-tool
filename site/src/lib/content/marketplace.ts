@@ -4,7 +4,7 @@ import releases from "../../data/releases.json" with { type: "json" };
 import collections from "../../data/collections.json" with { type: "json" };
 import marketplaceSeed from "../../data/marketplace-seed.json" with { type: "json" };
 import orgStats from "../../data/org-stats.json" with { type: "json" };
-import { CATEGORY_META, MARKETPLACE_DOCS, MARKETPLACE_FAQ, PLATFORM_META } from "./marketplace-content.ts";
+import { CATEGORY_META, MARKETPLACE_DOCS, MARKETPLACE_FAQ, MARKETPLACE_PRESETS, PLATFORM_META } from "./marketplace-content.ts";
 
 export type PricingModel = "open-source" | "free" | "commercial";
 
@@ -162,12 +162,67 @@ export interface ComparisonModel {
     left: string[];
     right: string[];
   };
+  lanePairs: ComparisonPair[];
 }
 
 export interface ComparisonPair {
   left: CatalogEntry;
   right: CatalogEntry;
   href: string;
+  reason: string;
+  pairScore: number;
+}
+
+export interface ComparisonPairOptions {
+  maxPairs?: number;
+  maxPairsPerTool?: number;
+  minPairScore?: number;
+}
+
+export interface ComparisonHubGroup {
+  slug: string;
+  title: string;
+  description: string;
+  kind: "category" | "platform";
+  pairs: ComparisonPair[];
+}
+
+export interface CompareHubModel {
+  allPairs: ComparisonPair[];
+  pagePairs: ComparisonPair[];
+  featuredPairs: ComparisonPair[];
+  groups: ComparisonHubGroup[];
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  totalPairs: number;
+}
+
+export interface BrowseState {
+  q: string;
+  category: string;
+  source: string;
+  platform: string;
+  type: string;
+  pricing: string;
+  freshness: string;
+  verified: boolean;
+  sort: string;
+  page: number;
+}
+
+export interface BrowsePresetModel {
+  slug: string;
+  title: string;
+  summary: string;
+  description: string;
+  eyebrow: string;
+  rationale: string[];
+  state: Partial<BrowseState>;
+  featuredTools: CatalogEntry[];
+  browseHref: string;
+  count: number;
+  averageScore: number;
 }
 
 export interface MarketplaceContent {
@@ -182,6 +237,7 @@ export interface MarketplaceContent {
   categories: CategoryModel[];
   platforms: PlatformModel[];
   collections: CollectionModel[];
+  presets: BrowsePresetModel[];
   docs: DocEntry[];
   faq: FaqEntry[];
   stats: StatsSnapshot;
@@ -213,6 +269,21 @@ function titleCase(value: string) {
 
 function cleanText(value: unknown, fallback = "") {
   return typeof value === "string" ? value.trim() : fallback;
+}
+
+export function getDefaultBrowseState(): BrowseState {
+  return {
+    q: "",
+    category: "",
+    source: "",
+    platform: "",
+    type: "",
+    pricing: "",
+    freshness: "",
+    verified: false,
+    sort: "quality",
+    page: 1,
+  };
 }
 
 function getRepoUrl(raw: RawProject) {
@@ -375,6 +446,35 @@ function getFreshnessScore(updatedAt: string, releasePublishedAt?: string) {
   return { score: 3, label: "Needs a freshness check" };
 }
 
+function getReleaseCadenceScore(releasePublishedAt: string, updatedAt: string) {
+  const releaseDays = getDaysSince(releasePublishedAt);
+  if (!Number.isFinite(releaseDays)) return 0;
+
+  const releaseTimestamp = new Date(releasePublishedAt).getTime();
+  const updateTimestamp = new Date(updatedAt).getTime();
+  const closeToUpdate =
+    Number.isFinite(releaseTimestamp) &&
+    Number.isFinite(updateTimestamp) &&
+    Math.abs(releaseTimestamp - updateTimestamp) <= 90 * 86_400_000;
+
+  if (releaseDays <= 45) return closeToUpdate ? 5 : 4;
+  if (releaseDays <= 90) return closeToUpdate ? 4 : 3;
+  if (releaseDays <= 180) return 1;
+  return 0;
+}
+
+function getDocsMaturityScore(raw: RawProject, docsUrl: string, homepage: string) {
+  const docsAreReadme = docsUrl.toLowerCase().includes("#readme");
+  const docsAreDedicated = Boolean(docsUrl && homepage && docsUrl !== homepage && !docsAreReadme);
+
+  return (
+    (docsUrl ? 8 : 0) +
+    (homepage ? 6 : 0) +
+    (cleanText(raw.description).length >= 24 ? 4 : 0) +
+    (docsAreDedicated ? 6 : docsUrl !== homepage ? 2 : 0)
+  );
+}
+
 function getCompatibilityQualityScore(compatibility: CompatibilityProfile) {
   const explicitPlatforms = compatibility.platforms.filter((platform) => !genericPlatformSlugs.has(platform.slug)).length;
   const genericPlatforms = compatibility.platforms.length - explicitPlatforms;
@@ -411,6 +511,16 @@ function getTrustScore(raw: RawProject, proof: RawProof | undefined, release: Ra
     (release ? 4 : 0) +
     (docsUrl && homepage ? 2 : 0)
   );
+}
+
+function getSourceTypeTrustScore(raw: RawProject, docsUrl: string, homepage: string) {
+  const isExternal = !cleanText(raw.repo);
+
+  if (isExternal) {
+    return docsUrl && homepage ? 4 : 0;
+  }
+
+  return docsUrl && getRepoUrl(raw) ? 2 : 0;
 }
 
 function getPenaltyScore(raw: RawProject, docsUrl: string, homepage: string) {
@@ -450,15 +560,16 @@ export function deriveQualityScore(raw: RawProject): QualityScoreBreakdown {
   const proof = proofByRepo.get(cleanText(raw.repo));
   const release = releaseByRepo.get(cleanText(raw.repo));
   const freshness = getFreshnessScore(cleanText(raw.updatedAt), cleanText(release?.publishedAt));
+  const releaseCadence = getReleaseCadenceScore(cleanText(release?.publishedAt), cleanText(raw.updatedAt));
   const compatibility = deriveCompatibilityProfile(raw);
-  const docs = (docsUrl ? 12 : 0) + (homepage ? 8 : 0) + (cleanText(raw.description).length >= 24 ? 6 : 0);
+  const docs = getDocsMaturityScore(raw, docsUrl, homepage);
   const adoption = getAdoptionScore(raw, docsUrl, homepage);
   const compatibilityScore = getCompatibilityQualityScore(compatibility);
   const popularity = getPopularityScore(Number(raw.stars || 0), cleanText(raw.updatedAt));
-  const trust = getTrustScore(raw, proof, release, docsUrl, homepage);
+  const trust = getTrustScore(raw, proof, release, docsUrl, homepage) + getSourceTypeTrustScore(raw, docsUrl, homepage);
   const media = cleanText(raw.screenshot) ? 8 : 0;
   const penalty = getPenaltyScore(raw, docsUrl, homepage);
-  const score = Math.max(0, Math.min(100, docs + adoption + compatibilityScore + freshness.score + popularity + trust + media - penalty + 16));
+  const score = Math.max(0, Math.min(100, docs + adoption + compatibilityScore + freshness.score + releaseCadence + popularity + trust + media - penalty + 12));
   const verified = score >= 72 && meetsPrimaryListingBar(raw);
 
   return {
@@ -469,7 +580,7 @@ export function deriveQualityScore(raw: RawProject): QualityScoreBreakdown {
       docs,
       adoption,
       compatibility: compatibilityScore,
-      freshness: freshness.score,
+      freshness: freshness.score + releaseCadence,
       popularity,
       trust,
       media,
@@ -630,6 +741,91 @@ function averageScore(entries: CatalogEntry[]) {
   return Math.round(entries.reduce((total, entry) => total + entry.quality.score, 0) / entries.length);
 }
 
+export const MAX_COMPARE_PAIRS = 180;
+export const COMPARE_PAGE_SIZE = 24;
+
+export function applyBrowseState(entries: CatalogEntry[], partialState: Partial<BrowseState>) {
+  const state = { ...getDefaultBrowseState(), ...partialState };
+
+  return entries
+    .filter((entry) => {
+      const searchableText = `${entry.name} ${entry.summary} ${entry.description} ${entry.tags.join(" ")}`.toLowerCase();
+      const matchesQuery = !state.q || searchableText.includes(state.q.toLowerCase());
+      const matchesCategory = !state.category || entry.primaryCategory === state.category;
+      const matchesSource = !state.source || entry.sourceType === state.source;
+      const matchesPlatform = !state.platform || entry.compatibility.platforms.some((platform) => platform.slug === state.platform);
+      const matchesType = !state.type || entry.kind === state.type;
+      const matchesPricing = !state.pricing || entry.pricing === state.pricing;
+      const matchesFreshness =
+        !state.freshness ||
+        (state.freshness === "new" ? entry.isNew : state.freshness === "recent" ? getDaysSince(entry.updatedAt) <= 90 : true);
+      const matchesVerified = !state.verified || entry.quality.verified;
+
+      return (
+        matchesQuery &&
+        matchesCategory &&
+        matchesSource &&
+        matchesPlatform &&
+        matchesType &&
+        matchesPricing &&
+        matchesFreshness &&
+        matchesVerified
+      );
+    })
+    .sort((a, b) => {
+      switch (state.sort) {
+        case "compatibility":
+          return getCompatibilitySortScore(b) - getCompatibilitySortScore(a) || sortByQuality(a, b);
+        case "newest":
+          return sortByNewest(a, b);
+        case "stars":
+          return b.stars - a.stars || sortByQuality(a, b);
+        case "name":
+          return a.name.localeCompare(b.name);
+        default:
+          return sortByQuality(a, b);
+      }
+    });
+}
+
+export function buildBrowseHref(partialState: Partial<BrowseState>) {
+  const state = { ...getDefaultBrowseState(), ...partialState };
+  const params = new URLSearchParams();
+  if (state.q) params.set("q", state.q);
+  if (state.category) params.set("category", state.category);
+  if (state.source) params.set("source", state.source);
+  if (state.platform) params.set("platform", state.platform);
+  if (state.type) params.set("type", state.type);
+  if (state.pricing) params.set("pricing", state.pricing);
+  if (state.freshness) params.set("freshness", state.freshness);
+  if (state.verified) params.set("verified", "1");
+  if (state.sort && state.sort !== "quality") params.set("sort", state.sort);
+  if (state.page > 1) params.set("page", String(state.page));
+  const query = params.toString();
+  return query ? `/tools/?${query}` : "/tools/";
+}
+
+function buildPresetModels(entries: CatalogEntry[]) {
+  return (MARKETPLACE_PRESETS as Array<Record<string, any>>).map((preset) => {
+    const state = { ...getDefaultBrowseState(), ...(preset.state || {}) };
+    const matchedTools = applyBrowseState(entries, preset.state || {});
+
+    return {
+      slug: cleanText(preset.slug),
+      title: cleanText(preset.title),
+      summary: cleanText(preset.summary),
+      description: cleanText(preset.description),
+      eyebrow: cleanText(preset.eyebrow, "Preset"),
+      rationale: Array.isArray(preset.rationale) ? preset.rationale.filter(Boolean) : [],
+      state,
+      featuredTools: matchedTools.slice(0, 6),
+      browseHref: buildBrowseHref(state),
+      count: matchedTools.length,
+      averageScore: averageScore(matchedTools),
+    };
+  });
+}
+
 export function buildMarketplaceContent(
   projectItems: RawProject[] = projects as RawProject[],
   externalSeedItems: RawProject[] = marketplaceSeed as RawProject[],
@@ -640,6 +836,7 @@ export function buildMarketplaceContent(
   const categories = buildCategoryModels(primaryCatalog);
   const platforms = buildPlatformModels(primaryCatalog);
   const collectionModels = buildCollectionModels(primaryCatalog);
+  const presets = buildPresetModels(primaryCatalog);
   const docs = MARKETPLACE_DOCS.map((doc) => ({ ...doc }));
   const faq = MARKETPLACE_FAQ.map((item) => ({ ...item }));
 
@@ -671,6 +868,7 @@ export function buildMarketplaceContent(
     categories,
     platforms,
     collections: collectionModels,
+    presets,
     docs,
     faq,
     stats,
@@ -699,11 +897,37 @@ export function getCollectionModel(slug: string) {
   return marketplaceContent.collections.find((collection) => collection.slug === slug);
 }
 
+export function getBrowsePresetModels() {
+  return marketplaceContent.presets;
+}
+
+export function getBrowsePresetModel(slug: string) {
+  return marketplaceContent.presets.find((preset) => preset.slug === slug);
+}
+
+export function getCompareHubModel(page = 1, pageSize = COMPARE_PAGE_SIZE): CompareHubModel {
+  const allPairs = getComparisonPairs({ maxPairs: MAX_COMPARE_PAIRS });
+  const totalPages = Math.max(1, Math.ceil(allPairs.length / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+
+  return {
+    allPairs,
+    pagePairs: allPairs.slice(startIndex, startIndex + pageSize),
+    featuredPairs: getFeaturedComparisonPairs(12),
+    groups: getComparisonHubGroups(6),
+    page: safePage,
+    pageSize,
+    totalPages,
+    totalPairs: allPairs.length,
+  };
+}
+
 export function getDocEntry(slug: string) {
   return marketplaceContent.docs.find((doc) => doc.slug === slug);
 }
 
-function canonicalizeComparisonPair(leftSlug: string, rightSlug: string) {
+export function normalizeComparisonPair(leftSlug: string, rightSlug: string) {
   if (leftSlug === rightSlug) {
     return [leftSlug, rightSlug];
   }
@@ -711,8 +935,13 @@ function canonicalizeComparisonPair(leftSlug: string, rightSlug: string) {
   return leftSlug < rightSlug ? [leftSlug, rightSlug] : [rightSlug, leftSlug];
 }
 
+export function isCanonicalComparisonPair(leftSlug: string, rightSlug: string) {
+  const [normalizedLeft, normalizedRight] = normalizeComparisonPair(leftSlug, rightSlug);
+  return normalizedLeft === leftSlug && normalizedRight === rightSlug;
+}
+
 export function buildCanonicalCompareHref(leftSlug: string, rightSlug: string) {
-  const [left, right] = canonicalizeComparisonPair(leftSlug, rightSlug);
+  const [left, right] = normalizeComparisonPair(leftSlug, rightSlug);
   return `/compare/${left}-vs-${right}/`;
 }
 
@@ -759,30 +988,119 @@ export function getRelatedTools(slug: string): RelatedToolMatch[] {
     .slice(0, 4);
 }
 
-export function getComparisonPairs(): ComparisonPair[] {
-  const seen = new Set<string>();
-  const pairs: ComparisonPair[] = [];
+function buildComparisonPairScore(source: CatalogEntry, match: RelatedToolMatch) {
+  return (
+    match.score * 100 +
+    source.quality.score +
+    match.entry.quality.score +
+    source.trendScore +
+    match.entry.trendScore
+  );
+}
+
+function sortComparisonPairs(a: ComparisonPair, b: ComparisonPair) {
+  return (
+    b.pairScore - a.pairScore ||
+    b.left.quality.score + b.right.quality.score - (a.left.quality.score + a.right.quality.score) ||
+    a.left.slug.localeCompare(b.left.slug) ||
+    a.right.slug.localeCompare(b.right.slug)
+  );
+}
+
+export function getComparisonPairs(options: ComparisonPairOptions = {}): ComparisonPair[] {
+  const {
+    maxPairs = MAX_COMPARE_PAIRS,
+    maxPairsPerTool = 3,
+    minPairScore = 4,
+  } = options;
+  const candidateByKey = new Map<string, ComparisonPair>();
 
   for (const entry of marketplaceContent.catalog.primary) {
     for (const match of getRelatedTools(entry.slug)) {
-      const [leftSlug, rightSlug] = canonicalizeComparisonPair(entry.slug, match.entry.slug);
-      const key = `${leftSlug}|${rightSlug}`;
-      if (seen.has(key)) continue;
+      if (match.score < minPairScore) continue;
 
+      const [leftSlug, rightSlug] = normalizeComparisonPair(entry.slug, match.entry.slug);
+      const key = `${leftSlug}|${rightSlug}`;
       const left = getToolDossier(leftSlug);
       const right = getToolDossier(rightSlug);
       if (!left || !right) continue;
-
-      seen.add(key);
-      pairs.push({
+      const nextPair: ComparisonPair = {
         left,
         right,
         href: buildCanonicalCompareHref(left.slug, right.slug),
-      });
+        reason: match.reason,
+        pairScore: buildComparisonPairScore(entry, match),
+      };
+      const existing = candidateByKey.get(key);
+      if (!existing || nextPair.pairScore > existing.pairScore) {
+        candidateByKey.set(key, nextPair);
+      }
     }
   }
 
-  return pairs.sort((a, b) => a.left.slug.localeCompare(b.left.slug) || a.right.slug.localeCompare(b.right.slug));
+  const exposureCounts = new Map<string, number>();
+  const selected: ComparisonPair[] = [];
+
+  for (const pair of [...candidateByKey.values()].sort(sortComparisonPairs)) {
+    const leftCount = exposureCounts.get(pair.left.slug) || 0;
+    const rightCount = exposureCounts.get(pair.right.slug) || 0;
+    if (leftCount >= maxPairsPerTool || rightCount >= maxPairsPerTool) continue;
+
+    selected.push(pair);
+    exposureCounts.set(pair.left.slug, leftCount + 1);
+    exposureCounts.set(pair.right.slug, rightCount + 1);
+
+    if (selected.length >= maxPairs) break;
+  }
+
+  return selected;
+}
+
+export function getFeaturedComparisonPairs(limit = 24) {
+  return getComparisonPairs({
+    maxPairs: limit,
+    maxPairsPerTool: 2,
+    minPairScore: 5,
+  });
+}
+
+export function getComparisonHubGroups(limitPerGroup = 6): ComparisonHubGroup[] {
+  const sourcePairs = getComparisonPairs({
+    maxPairs: 72,
+    maxPairsPerTool: 3,
+    minPairScore: 5,
+  });
+  const categoryGroups = marketplaceContent.categories
+    .map((category) => ({
+      slug: category.slug,
+      title: category.title,
+      description: category.description,
+      kind: "category" as const,
+      pairs: sourcePairs.filter(
+        (pair) =>
+          pair.left.primaryCategory === category.slug &&
+          pair.right.primaryCategory === category.slug,
+      ).slice(0, limitPerGroup),
+    }))
+    .filter((group) => group.pairs.length > 0)
+    .slice(0, 5);
+  const platformGroups = marketplaceContent.platforms
+    .filter((platform) => !genericPlatformSlugs.has(platform.slug))
+    .map((platform) => ({
+      slug: platform.slug,
+      title: platform.title,
+      description: platform.description,
+      kind: "platform" as const,
+      pairs: sourcePairs.filter((pair) => {
+        const leftPlatforms = pair.left.compatibility.platforms.map((entry) => entry.slug);
+        const rightPlatforms = pair.right.compatibility.platforms.map((entry) => entry.slug);
+        return leftPlatforms.includes(platform.slug) && rightPlatforms.includes(platform.slug);
+      }).slice(0, limitPerGroup),
+    }))
+    .filter((group) => group.pairs.length > 0)
+    .slice(0, 5);
+
+  return [...categoryGroups, ...platformGroups];
 }
 
 function formatPricingLabel(pricing: PricingModel) {
@@ -831,6 +1149,20 @@ export function buildComparisonModel(leftSlug: string, rightSlug: string): Compa
     right.compatibility.platforms[0] ? `Choose ${right.name} if you already target ${right.compatibility.platforms[0].title}.` : `Choose ${right.name} if you want a lighter-weight compatibility surface.`,
     right.install ? `Choose ${right.name} if you want a direct install path.` : `Choose ${right.name} if docs-led or hosted onboarding is acceptable.`,
   ];
+  const lanePairs = getComparisonPairs({
+    maxPairs: 12,
+    maxPairsPerTool: 6,
+    minPairScore: 5,
+  })
+    .filter((pair) => pair.href !== buildCanonicalCompareHref(left.slug, right.slug))
+    .filter(
+      (pair) =>
+        pair.left.primaryCategory === left.primaryCategory ||
+        pair.right.primaryCategory === left.primaryCategory ||
+        pair.left.primaryCategory === right.primaryCategory ||
+        pair.right.primaryCategory === right.primaryCategory,
+    )
+    .slice(0, 4);
 
   return {
     left,
@@ -896,5 +1228,6 @@ export function buildComparisonModel(leftSlug: string, rightSlug: string): Compa
       left: leftRecommendations,
       right: rightRecommendations,
     },
+    lanePairs,
   };
 }

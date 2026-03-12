@@ -24,6 +24,7 @@ function inferRouteFamily(currentPath: string): Props["routeFamily"] {
   if (
     currentPath === "/" ||
     currentPath.startsWith("/tools/") ||
+    currentPath.startsWith("/compare/") ||
     currentPath.startsWith("/categories/") ||
     currentPath.startsWith("/platforms/") ||
     currentPath.startsWith("/collections/")
@@ -77,6 +78,7 @@ const routeFamily = routeFamilyProp || inferRouteFamily(currentPath);
 const primaryNavLinks = [
   { href: "/", label: "Home" },
   { href: "/tools/", label: "Browse Tools" },
+  { href: "/compare/", label: "Compare" },
   { href: "/categories/", label: "Categories" },
   { href: "/docs/", label: "Docs" },
   { href: "/stats/", label: "Stats" },
@@ -86,6 +88,7 @@ const primaryNavLinks = [
 const secondaryNavLinks = [
   { href: "/platforms/", label: "Platforms" },
   { href: "/collections/", label: "Collections" },
+  { href: "/tools/presets/", label: "Presets" },
   { href: "/submit/", label: "Submit" },
   { href: "/request-category/", label: "Request Category" },
   { href: "/methodology/", label: "Methodology" },

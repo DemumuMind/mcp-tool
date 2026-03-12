@@ -20,8 +20,14 @@ const sharedCategory = comparison.left.primaryCategory === comparison.right.prim
   : "";
 ---
 
-<Base title={`${comparison.compareTitle} - DemumuMind MCP`} description={`Compare ${comparison.left.name} and ${comparison.right.name} across compatibility, adoption, and quality signals.`} currentPath={canonicalHref}>
+<Base title={`${comparison.compareTitle} - DemumuMind MCP`} description={comparison.summary} currentPath={canonicalHref}>
   <div class="page-content">
+    <div class="breadcrumbs">
+      <a href={withBase("/compare/")}>Compare hub</a>
+      <span>/</span>
+      <span>{comparison.compareTitle}</span>
+    </div>
+
     <section class="page-hero">
       <p class="eyebrow">Comparison</p>
       <h1 class="page-hero__title">{comparison.compareTitle}</h1>
@@ -32,6 +38,7 @@ const sharedCategory = comparison.left.primaryCategory === comparison.right.prim
         <p>{comparison.summary}</p>
       </div>
       <div class="page-hero__actions">
+        <a href={withBase("/compare/")} class="btn btn-secondary">Compare hub</a>
         <a href={withBase(`/tools/${comparison.left.slug}/`)} class="btn btn-secondary">Open {comparison.left.name}</a>
         <a href={withBase(`/tools/${comparison.right.slug}/`)} class="btn btn-secondary">Open {comparison.right.name}</a>
         {sharedCategory && <a href={withBase(`/tools/?category=${sharedCategory}`)} class="btn btn-secondary">Browse {comparison.left.primaryCategoryTitle}</a>}
@@ -146,10 +153,55 @@ const sharedCategory = comparison.left.primaryCategory === comparison.right.prim
         <li>Use tool dossiers next if you need the full context before choosing one path.</li>
       </ul>
     </section>
+
+    {comparison.lanePairs.length > 0 && (
+      <section class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">More in this lane</p>
+            <h2 class="section-shell__title">Related comparisons to open next</h2>
+          </div>
+        </div>
+        <div class="compare-lane-grid">
+          {comparison.lanePairs.map((pair) => (
+            <article class="compare-lane-card">
+              <div class="compare-lane-card__meta">
+                <span class="tag">{pair.left.primaryCategoryTitle}</span>
+                <span class="results-count">{pair.reason}</span>
+              </div>
+              <h3><a href={withBase(pair.href)}>{pair.left.name} vs {pair.right.name}</a></h3>
+              <p>{pair.left.quality.score} vs {pair.right.quality.score}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 </Base>
 
 <style>
+  .compare-lane-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+  }
+
+  .compare-lane-card {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem;
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    background: color-mix(in srgb, var(--color-surface, rgba(255, 255, 255, 0.02)) 94%, transparent);
+  }
+
+  .compare-lane-card__meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
   .compare-summary {
     max-width: 60rem;
     padding: 1rem 1.25rem;

@@ -1,0 +1,58 @@
+---
+import type { ComparisonPair } from "../lib/content/marketplace.ts";
+import { withBase } from "../lib/site-paths";
+
+interface Props {
+  pair: ComparisonPair;
+}
+
+const { pair } = Astro.props;
+---
+
+<article class="comparison-pair-card">
+  <div class="comparison-pair-card__top">
+    <p class="comparison-pair-card__eyebrow">{pair.left.primaryCategoryTitle}</p>
+    <h3 class="comparison-pair-card__title">
+      <a href={withBase(pair.href)}>{pair.left.name} vs {pair.right.name}</a>
+    </h3>
+  </div>
+  <p class="comparison-pair-card__reason">{pair.reason}</p>
+  <div class="comparison-pair-card__meta">
+    <span class="tag">{pair.left.quality.score} / {pair.right.quality.score}</span>
+    <span class="tag">{pair.left.freshnessLabel}</span>
+    <span class="tag">{pair.right.freshnessLabel}</span>
+  </div>
+  <div class="comparison-pair-card__actions">
+    <a href={withBase(pair.href)} class="btn btn-secondary">Open comparison</a>
+    <a href={withBase(`/tools/${pair.left.slug}/`)} class="btn btn-secondary">{pair.left.name}</a>
+    <a href={withBase(`/tools/${pair.right.slug}/`)} class="btn btn-secondary">{pair.right.name}</a>
+  </div>
+</article>
+
+<style>
+  .comparison-pair-card {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    background: color-mix(in srgb, var(--color-surface, rgba(255, 255, 255, 0.02)) 94%, transparent);
+  }
+
+  .comparison-pair-card__eyebrow,
+  .comparison-pair-card__reason {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .comparison-pair-card__title {
+    margin: 0;
+  }
+
+  .comparison-pair-card__meta,
+  .comparison-pair-card__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+</style>

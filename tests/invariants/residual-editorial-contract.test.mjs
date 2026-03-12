@@ -35,6 +35,26 @@ const PAGE_CASES = [
     requiredPatterns: [/import PageHero from /, /<PageHero/s],
   },
   {
+    label: "weekly focus reference",
+    filePath: path.join(REPO_ROOT, "site", "src", "pages", "now.astro"),
+    requiredPatterns: [/import PageHero from /, /<PageHero/s, /withBase/],
+  },
+  {
+    label: "pulse reference",
+    filePath: path.join(REPO_ROOT, "site", "src", "pages", "pulse.astro"),
+    requiredPatterns: [/import PageHero from /, /<PageHero/s, /Reference surface/],
+  },
+  {
+    label: "registry reference",
+    filePath: path.join(REPO_ROOT, "site", "src", "pages", "registry.astro"),
+    requiredPatterns: [/import PageHero from /, /<PageHero/s, /Reference surface/],
+  },
+  {
+    label: "override review reference",
+    filePath: path.join(REPO_ROOT, "site", "src", "pages", "review.astro"),
+    requiredPatterns: [/import PageHero from /, /<PageHero/s, /Reference surface/],
+  },
+  {
     label: "logo studio dossier",
     filePath: path.join(REPO_ROOT, "site", "src", "pages", "tools", "logo-studio.astro"),
     requiredPatterns: [/tool-profile__hero/, /tool-meta-grid/, /signal-strip/],

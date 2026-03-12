@@ -15,6 +15,7 @@ import { withBase } from "../lib/site-paths";
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
         <a href={withBase("/categories/")} class="btn btn-secondary">Open categories</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
       </Fragment>
     </PageHero>
 
@@ -30,6 +31,10 @@ import { withBase } from "../lib/site-paths";
       <a href={withBase("/collections/")} class="collection-item">
         <span class="collection-item-name">Start with a collection</span>
         <span class="collection-item-desc">Collections are the guided paths when you want a curated stack instead of a full marketplace browse.</span>
+      </a>
+      <a href={withBase("/stats/")} class="collection-item">
+        <span class="collection-item-name">Start with market health</span>
+        <span class="collection-item-desc">Use stats when you want to see category depth, verification coverage, and ecosystem shape before picking a lane.</span>
       </a>
     </div>
   </div>
