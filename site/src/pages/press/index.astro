@@ -1,12 +1,11 @@
 ---
-import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
 import overrides from "../../data/overrides.json";
 import { getToolBySlug } from "../../lib/marketir/loader.mjs";
 import { withBase } from "../../lib/site-paths";
 
 const overrideMap = overrides as Record<string, any>;
-
 const pressTools = Object.keys(overrideMap)
   .filter((slug) => overrideMap[slug]?.publicProof === true)
   .map((slug) => {
@@ -16,71 +15,37 @@ const pressTools = Object.keys(overrideMap)
       slug,
       name: tool.name,
       oneLiner: tool.positioning?.oneLiner || "",
-      stability: overrideMap[slug]?.stability,
-      kind: overrideMap[slug]?.kind,
       quoteCount: tool.press?.quotes?.length || 0,
-      hasOffers: (tool.press?.partnerOffers?.length || 0) > 0,
     };
   })
   .filter(Boolean);
 ---
 
-<Base title="Press - DemumuMind" description="Press pages, verified claims, and partner resources for DemumuMind projects." currentPath="/press/">
-  <div class="press-index">
+<Base title="Press Reference - DemumuMind MCP" description="Secondary reference surface for press-ready marketplace listings." currentPath="/press/">
+  <div class="page-content">
     <PageHero
-      eyebrow="Press directory"
-      title="Reuse the story, not the hype."
-      lede="Each press page pairs approved narrative, verified claims, and distribution-ready assets so partners can quote from something inspectable."
-      layout="split"
-      meta={[`${pressTools.length} press pages`, "Approved quote banks", "Partner-ready assets"]}
-      proofItems={["Public proof required", "Narrative approved", "Partner reuse ready"]}
-      asideTitle="Distribution posture"
-      asideBody="These pages are designed to be quotable and auditable at the same time, so external coverage can reuse evidence-backed language."
-    />
+      eyebrow="Reference surface"
+      title="Press reference for marketplace-ready MCP products"
+      lede="This is a secondary reference layer for press-ready listings. Primary discovery should still start in the marketplace, not here."
+      meta={[`${pressTools.length} press-ready listings`, "Reference surface", "Marketplace-linked"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+      </Fragment>
+    </PageHero>
 
-    {pressTools.length === 0 ? (
-      <div class="empty-state">
-        <p>No tools with press data are available yet.</p>
-      </div>
-    ) : (
-      <div class="tools-grid">
-        {pressTools.map((tool) => (
-          <a href={withBase(`/press/${tool.slug}/`)} class="tool-card">
-            <div class="card-header">
-              <h2>{tool.name}</h2>
-              <div class="badges">
-                {tool.stability && <span class={`badge badge-${tool.stability}`}>{tool.stability}</span>}
-                {tool.kind && <span class="badge badge-kind">{tool.kind}</span>}
-              </div>
-            </div>
-            <p class="one-liner">{tool.oneLiner}</p>
-            <div class="card-meta">
-              {tool.quoteCount > 0 && <span>{tool.quoteCount} quotes</span>}
-              {tool.hasOffers && <span>Partner offers</span>}
-            </div>
-          </a>
-        ))}
-      </div>
-    )}
+    <div class="tools-grid">
+      {pressTools.map((tool) => (
+        <a href={withBase(`/press/${tool.slug}/`)} class="tool-card">
+          <h2>{tool.name}</h2>
+          <p>{tool.oneLiner || "Reference-ready narrative and quote surface."}</p>
+          <div class="card-meta">
+            <span>{tool.quoteCount} quotes</span>
+            <span>Reference</span>
+          </div>
+        </a>
+      ))}
+    </div>
   </div>
 </Base>
-
-<style>
-  .press-index {
-    display: grid;
-    gap: 1.5rem;
-  }
-
-  .card-header,
-  .badges {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .one-liner {
-    color: var(--color-text-muted);
-  }
-</style>

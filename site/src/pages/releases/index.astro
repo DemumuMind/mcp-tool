@@ -1,16 +1,8 @@
 ---
-import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
 import releases from "../../data/releases.json";
-import projects from "../../data/projects.json";
-import dailyNote from "../../data/daily-note.json";
-
-const projectRepos = new Set((projects as any[]).map((project: any) => project.repo));
-
-function formatTime(iso: string) {
-  if (!iso) return "";
-  return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
+import { withBase } from "../../lib/site-paths";
 
 function timeAgo(iso: string) {
   if (!iso) return "";
@@ -22,94 +14,33 @@ function timeAgo(iso: string) {
   if (hours < 24) return `${hours}h ago`;
   return new Date(iso).toLocaleDateString();
 }
-
-function formatDate(iso: string) {
-  if (!iso) return "";
-  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-}
 ---
 
-<Base title="Releases - DemumuMind" description="Recent releases across the DemumuMind organization." currentPath="/releases/">
-  <PageHero
-    eyebrow="Release chronicle"
-    title="Track the cadence."
-    lede="Every tagged release lands here with freshness, summary bullets, and a direct path back to the originating tool dossier."
-    layout="split"
-    meta={[
-      `${(releases as any[]).length} release entries`,
-      `Refreshed ${timeAgo(dailyNote.generatedAt)}`,
-      formatTime(dailyNote.generatedAt),
-    ]}
-    proofItems={["Freshness visible", "Tag-to-dossier path", "Chronology over hype"]}
-    asideTitle="Why releases matter"
-    asideBody="Release cadence is a trust signal here: operators can inspect whether a tool is alive, stable, and shipping with a readable trail."
-  />
+<Base title="Release Reference - DemumuMind MCP" description="Secondary release reference for tools listed in the MCP marketplace." currentPath="/releases/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Reference surface"
+      title="Marketplace release reference"
+      lede="Release history remains available as a secondary reference surface for operators who want freshness context after they discover a tool."
+      meta={[`${(releases as any[]).length} release entries`, "Reference surface", "Marketplace-linked"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Open stats</a>
+      </Fragment>
+    </PageHero>
 
-  <div class="release-feed">
-    {(releases as any[]).map((release: any) => (
-      <article class="release-entry">
-        <div class="release-header">
-          {projectRepos.has(release.repo) ? (
-            <a href={`/tools/${release.repo}/`} class="release-tool">{release.toolName}</a>
-          ) : (
-            <span class="release-tool release-tool--orphan">{release.toolName}</span>
-          )}
-          <a href={release.url} class="release-tag" rel="noopener">
-            {release.tag}
-            {release.prerelease && <span class="badge-pre">pre</span>}
-          </a>
-          <time class="release-date" datetime={release.publishedAt} title={formatDate(release.publishedAt)}>
-            {timeAgo(release.publishedAt)}
-          </time>
-        </div>
-        {release.name && release.name !== release.tag && <p class="release-name">{release.name}</p>}
-        {release.body?.length > 0 && (
-          <ul class="release-bullets">
-            {release.body.map((bullet: string) => <li>{bullet}</li>)}
-          </ul>
-        )}
-      </article>
-    ))}
-  </div>
-
-  {(releases as any[]).length === 0 && (
-    <div class="empty-state">
-      <p>No releases yet. Run the sync workflow to populate this page.</p>
+    <div class="release-feed">
+      {(releases as any[]).map((release: any) => (
+        <article class="release-entry">
+          <div class="release-header">
+            <a href={withBase(`/tools/${release.repo}/`)} class="release-tool">{release.toolName}</a>
+            <span class="release-tag">{release.tag}</span>
+            <time class="release-date" datetime={release.publishedAt}>{timeAgo(release.publishedAt)}</time>
+          </div>
+          {release.name && <p class="release-name">{release.name}</p>}
+        </article>
+      ))}
     </div>
-  )}
+  </div>
 </Base>
-
-<style>
-  .release-feed {
-    display: grid;
-    gap: 0.9rem;
-  }
-
-  .release-entry {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .release-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .badge-pre {
-    margin-left: 0.4rem;
-    color: var(--color-warning);
-    font-size: 0.65rem;
-  }
-
-  .release-bullets {
-    margin: 0;
-    padding-left: 1rem;
-    color: var(--color-text-muted);
-  }
-
-  .release-bullets li + li {
-    margin-top: 0.35rem;
-  }
-</style>

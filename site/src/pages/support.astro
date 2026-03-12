@@ -1,42 +1,28 @@
 ---
-import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import { withBase } from "../lib/site-paths";
 ---
 
-<Base title="Support - DemumuMind" description="How to get help with DemumuMind projects." currentPath="/support/">
+<Base title="Support - DemumuMind MCP" description="Marketplace support reference for issues, docs, submissions, and security reporting." currentPath="/support/">
   <div class="page-content">
     <PageHero
-      eyebrow="Support"
-      title="Procedural help, not a ticket maze."
-      lede="Issues are the primary support path. Discussions are for broader questions. Security reports stay private."
-      meta={["Issues first", "Private security reporting", "Org-wide discussions"]}
-      proofItems={["Public bugs in issues", "Private vulns stay private", "Use-case details required"]}
-      asideTitle="Support posture"
-      asideBody="The fastest path to help is a reproducible report with environment and expected behavior, not an abstract complaint."
-    />
+      eyebrow="Marketplace support"
+      title="Support reference for the catalog and listed MCP products"
+      lede="This page now acts as a marketplace support reference: where to read docs, how to submit tools, and where to route bugs or security concerns."
+      meta={["Marketplace support", "Docs first", "Submission-aware"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/docs/")} class="btn btn-primary">Open docs</a>
+        <a href={withBase("/submit/")} class="btn btn-secondary">Submit a tool</a>
+      </Fragment>
+    </PageHero>
 
-    <h2>Filing an issue</h2>
-    <ol>
-      <li><strong>What you expected</strong> to happen.</li>
-      <li><strong>What actually happened</strong>, including the error text.</li>
-      <li><strong>How to reproduce it</strong> from a clean state.</li>
-      <li><strong>Environment</strong>: OS, runtime version, and tool version.</li>
-    </ol>
-
-    <h2>Feature requests</h2>
-    <p>
-      Open an issue with the <code>enhancement</code> label and describe the use case, not only the proposed solution.
-    </p>
-
-    <h2>Security</h2>
-    <p>
-      Do not file vulnerabilities publicly. Use GitHub&apos;s private vulnerability reporting on the affected repository.
-    </p>
-
-    <h2>General questions</h2>
-    <p>
-      For questions that do not fit a bug report, use{" "}
-      <a href="https://github.com/orgs/DemumuMind/discussions" rel="noopener">DemumuMind Discussions</a>.
-    </p>
+    <ul class="ops-list">
+      <li>Use the marketplace docs to understand ranking, verification, compatibility, and submission policy.</li>
+      <li>Use submit and request-category for catalog changes, not support issues.</li>
+      <li>For tool-specific bugs, go to the linked product homepage or repository from the dossier page.</li>
+      <li>For security-sensitive issues, use private vendor or repository security reporting, not public comments.</li>
+    </ul>
   </div>
 </Base>
