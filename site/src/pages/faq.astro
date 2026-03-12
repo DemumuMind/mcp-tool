@@ -1,0 +1,61 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import { getMarketplaceContent } from "../lib/content/marketplace.ts";
+import { withBase } from "../lib/site-paths";
+
+const { faq } = getMarketplaceContent();
+---
+
+<Base title="FAQ - DemumuMind MCP" description="Answers to the main questions about ranking, verified status, compatibility, and marketplace inclusion." currentPath="/faq/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="FAQ"
+      title="Questions builders ask before they trust a marketplace."
+      lede="The FAQ focuses on how listings are classified, why quality score exists, what verified means, and how to submit new MCP tools."
+      meta={[`${faq.length} answers`, "Automatic verified", "Public methodology"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/methodology/")} class="btn btn-primary">Open methodology</a>
+        <a href={withBase("/submit/")} class="btn btn-secondary">Submit a tool</a>
+      </Fragment>
+    </PageHero>
+
+    <div class="faq-list">
+      {faq.map((item) => (
+        <details class="faq-item" id={item.slug}>
+          <summary>{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .faq-list {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .faq-item {
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .faq-item summary {
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item p {
+    margin-top: 0.85rem;
+  }
+</style>

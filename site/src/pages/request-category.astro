@@ -1,0 +1,43 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import { kit } from "../lib/kit";
+import { withBase } from "../lib/site-paths";
+
+const repoUrl = `https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}`;
+const issueUrl = `${repoUrl}/issues/new?title=${encodeURIComponent("Category request: new MCP marketplace taxonomy slot")}`;
+---
+
+<Base
+  title="Request Category - DemumuMind MCP"
+  description="Request new taxonomy coverage when the marketplace does not yet describe an MCP workflow, client, or platform correctly."
+  currentPath="/request-category/"
+>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Taxonomy request"
+      title="Ask for better category coverage."
+      lede="The first release uses automatic taxonomy, but category requests still matter. Use this route when an MCP workflow, platform, or market slice is underrepresented."
+      meta={["Automatic taxonomy", "GitHub-native intake", "Marketplace curation input"]}
+    >
+      <Fragment slot="actions">
+        <a href={issueUrl} class="btn btn-primary" rel="noopener">Open GitHub issue</a>
+        <a href={withBase("/submit/")} class="btn btn-secondary">Submit a tool</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">What to include</p>
+          <h2 class="section-shell__title">Make the gap obvious</h2>
+        </div>
+      </div>
+      <ul>
+        <li>The workflow or product segment that needs a category.</li>
+        <li>Examples of tools that do not fit well in the current taxonomy.</li>
+        <li>The client, runtime, or platform context that makes this category useful.</li>
+      </ul>
+    </section>
+  </div>
+</Base>

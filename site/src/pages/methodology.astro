@@ -1,0 +1,74 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import { getMarketplaceContent } from "../lib/content/marketplace.ts";
+import { withBase } from "../lib/site-paths";
+
+const content = getMarketplaceContent();
+const stats = content.stats;
+---
+
+<Base
+  title="Methodology - DemumuMind MCP"
+  description="How ranking, automatic verified, compatibility, freshness, and inclusion rules work inside the DemumuMind MCP marketplace."
+  currentPath="/methodology/"
+>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Methodology"
+      title="Explain the logic, then show the listings."
+      lede="DemumuMind MCP uses explicit factors for ranking, automatic verified, and primary catalog eligibility. This page explains those factors and the limits of the model."
+      meta={[`Avg. score ${stats.averageScore}`, `${stats.verifiedListings} verified listings`, "Auto-publish pipeline"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/docs/quality-score/")} class="btn btn-primary">Score guide</a>
+        <a href={withBase("/tools/")} class="btn btn-secondary">Inspect the catalog</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Ranking</p>
+          <h2 class="section-shell__title">Weighted quality score</h2>
+        </div>
+      </div>
+      <p class="section-subheading">
+        Ranking prioritizes documentation, adoption path, freshness, popularity, trust signals, and media completeness. Deprecated tools are strongly penalized.
+      </p>
+      <ul>
+        <li><strong>Docs:</strong> homepage, docs, and a clear summary lift the score.</li>
+        <li><strong>Adoption:</strong> install guidance and use-case framing matter.</li>
+        <li><strong>Freshness:</strong> recently updated tools rise above stale ones.</li>
+        <li><strong>Trust:</strong> release and proof signals help, but do not replace docs.</li>
+      </ul>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Verified</p>
+          <h2 class="section-shell__title">Automatic verified, not paid certification</h2>
+        </div>
+      </div>
+      <p class="section-subheading">
+        Verified is automatic in v1. It reflects a score threshold plus minimum listing quality, not a sponsorship program and not a hand-managed badge.
+      </p>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Eligibility</p>
+          <h2 class="section-shell__title">Primary catalog rules</h2>
+        </div>
+      </div>
+      <ul>
+        <li>Every primary listing needs a clear summary of the MCP surface.</li>
+        <li>Official homepage or docs must exist.</li>
+        <li>There must be a practical adoption path such as install, docs, or a clear product homepage.</li>
+        <li>Commercial products are allowed if their canonical docs are strong enough.</li>
+      </ul>
+    </section>
+  </div>
+</Base>

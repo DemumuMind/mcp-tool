@@ -8,13 +8,13 @@ function readJson(...segments) {
 }
 
 describe("DemumuMind canonical brand metadata", () => {
-  it("kit.config.json uses DemumuMind as the canonical site, org, and repo identity", () => {
+  it("kit.config.json uses DemumuMind org identity and the DemumuMind MCP site brand", () => {
     const config = readJson("kit.config.json");
 
     assert.equal(config.org.name, "DemumuMind");
     assert.equal(config.org.account, "DemumuMind");
     assert.equal(config.org.url, "https://github.com/DemumuMind");
-    assert.equal(config.site.title, "DemumuMind");
+    assert.equal(config.site.title, "DemumuMind MCP");
     assert.equal(config.site.url, "https://demumumind.github.io/mcp-tool/");
     assert.equal(config.repo.marketing, "DemumuMind/mcp-tool");
   });

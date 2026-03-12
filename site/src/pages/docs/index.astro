@@ -1,0 +1,64 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
+
+const { docs } = getMarketplaceContent();
+---
+
+<Base
+  title="Docs - DemumuMind MCP"
+  description="Guides for choosing MCP tools, understanding compatibility, reading quality score signals, and publishing into the marketplace."
+  currentPath="/docs/"
+>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Docs"
+      title="Marketplace docs for the MCP ecosystem."
+      lede="These pages explain how to use the catalog, how compatibility works, how quality score is derived, and how new tools enter the marketplace."
+      meta={[`${docs.length} guides`, "Builder-grade discovery", "GitHub-native submission"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Open browse</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Read methodology</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="docs-grid">
+      {docs.map((doc) => (
+        <article class="doc-card">
+          <p class="eyebrow">{doc.eyebrow}</p>
+          <h2><a href={withBase(`/docs/${doc.slug}/`)}>{doc.title}</a></h2>
+          <p>{doc.summary}</p>
+          <span class="doc-card__meta">{doc.sections.length} sections</span>
+        </article>
+      ))}
+    </section>
+  </div>
+</Base>
+
+<style>
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .doc-card {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .doc-card__meta {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

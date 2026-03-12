@@ -15,38 +15,33 @@ interface Props {
   description?: string;
   currentPath?: string;
   ogImage?: string;
-  routeFamily?: "brand" | "catalog" | "trust" | "press" | "activity" | "ops" | "utility";
+  routeFamily?: "brand" | "catalog" | "reference" | "ops" | "utility";
   pageClass?: string;
 }
 
 function inferRouteFamily(currentPath: string): Props["routeFamily"] {
   if (!currentPath || currentPath === "/404/") return "utility";
-  if (["/", "/about/", "/start/", "/support/"].includes(currentPath)) return "brand";
-  if (currentPath.startsWith("/tools/") || currentPath === "/registry/") return "catalog";
   if (
-    currentPath.startsWith("/trust/") ||
-    currentPath.startsWith("/proof/") ||
-    currentPath.startsWith("/promo/") ||
-    currentPath.startsWith("/receipts/") ||
-    currentPath.startsWith("/review/") ||
-    currentPath.startsWith("/experiments/") ||
-    currentPath.startsWith("/clearance/")
+    currentPath === "/" ||
+    currentPath.startsWith("/tools/") ||
+    currentPath.startsWith("/categories/") ||
+    currentPath.startsWith("/platforms/") ||
+    currentPath.startsWith("/collections/")
   ) {
-    return "trust";
+    return "catalog";
   }
   if (
-    currentPath.startsWith("/press/") ||
+    currentPath.startsWith("/docs/") ||
+    currentPath.startsWith("/faq/") ||
+    currentPath.startsWith("/methodology/") ||
+    currentPath.startsWith("/terms/") ||
+    currentPath.startsWith("/privacy/") ||
+    currentPath.startsWith("/about/") ||
+    currentPath.startsWith("/request-category/") ||
     currentPath.startsWith("/submit/") ||
-    currentPath.startsWith("/now/")
+    currentPath.startsWith("/stats/")
   ) {
-    return "press";
-  }
-  if (
-    currentPath.startsWith("/releases/") ||
-    currentPath.startsWith("/pulse/") ||
-    currentPath.startsWith("/newsletter/")
-  ) {
-    return "activity";
+    return "reference";
   }
   if (currentPath.startsWith("/lab/")) return "ops";
   return "brand";
@@ -59,7 +54,7 @@ function isActivePath(currentPath: string, href: string) {
 
 const {
   title,
-  description = kit.site.description || "Building the tools that AI agents use to get real work done.",
+  description = kit.site.description || "DemumuMind MCP is a discovery marketplace for MCP servers, apps, and tooling.",
   currentPath = "",
   ogImage,
   routeFamily: routeFamilyProp,
@@ -75,28 +70,28 @@ const routeFamily = routeFamilyProp || inferRouteFamily(currentPath);
 
 const primaryNavLinks = [
   { href: "/", label: "Home" },
-  { href: "/tools/", label: "Tools" },
-  { href: "/trust/", label: "Trust" },
-  { href: "/proof/", label: "Proof" },
-  { href: "/press/", label: "Press" },
-  { href: "/start/", label: "Start" },
+  { href: "/tools/", label: "Browse Tools" },
+  { href: "/categories/", label: "Categories" },
+  { href: "/docs/", label: "Docs" },
+  { href: "/stats/", label: "Stats" },
+  { href: "/faq/", label: "FAQ" },
 ];
 
 const secondaryNavLinks = [
-  { href: "/about/", label: "About" },
-  { href: "/registry/", label: "Registry" },
+  { href: "/platforms/", label: "Platforms" },
+  { href: "/collections/", label: "Collections" },
   { href: "/submit/", label: "Submit" },
-  { href: "/support/", label: "Support" },
-  { href: "/newsletter/", label: "Newsletter" },
+  { href: "/request-category/", label: "Request Category" },
+  { href: "/methodology/", label: "Methodology" },
+  { href: "/about/", label: "About" },
+  { href: "/privacy/", label: "Privacy" },
 ];
 
 const meta = registryMeta as any;
 const schemaLabel = meta.schemaVersion ? `Schema v${meta.schemaVersion}` : null;
-const refLabel = meta.registryTag || meta.registryRef || null;
 const syncDate = meta.lastSyncAt
   ? new Date(meta.lastSyncAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
   : null;
-const cleanupUrl = meta.cleanupIssueUrl || null;
 ---
 
 <!doctype html>
@@ -121,44 +116,27 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
   <body class:list={["site-shell", pageClass]} data-route-family={routeFamily}>
     <header class="site-nav">
       <div class="site-nav__inner">
-        <div class="site-nav__cluster">
-          <a href={withBase("/")} class="site-brand">
-            <span class="site-brand__kicker">{kit.site.title || "DemumuMind"}</span>
-            <span class="site-brand__title">Trust-First Tool Index</span>
-          </a>
-
-          <div class="site-nav__status" aria-label="Site posture">
-            <span>local-first</span>
-            <span>inspectable</span>
-            <span>receipt-backed</span>
-          </div>
-        </div>
+        <a href={withBase("/")} class="site-brand">
+          <span class="site-brand__kicker">{kit.site.title || "DemumuMind MCP"}</span>
+          <span class="site-brand__title">MCP Marketplace</span>
+        </a>
 
         <nav class="site-nav__primary" aria-label="Primary">
           <ul class="nav-links">
             {primaryNavLinks.map((link) => (
               <li>
-                <a
-                  href={withBase(link.href)}
-                  class="nav-link"
-                  aria-current={isActivePath(currentPath, link.href) ? "page" : undefined}
-                >
+                <a href={withBase(link.href)} class="nav-link" aria-current={isActivePath(currentPath, link.href) ? "page" : undefined}>
                   {link.label}
                 </a>
               </li>
             ))}
-            <li id="admin-nav-item" hidden>
-              <a href={withBase("/lab/")} class="nav-link nav-link--lab">Lab</a>
-            </li>
           </ul>
         </nav>
 
-        <div class="site-nav__rail">
-          <div class="site-nav__meta">
-            <span>{schemaLabel || "Schema tracked"}</span>
-            <span>{syncDate ? `Synced ${syncDate}` : "Static build"}</span>
-          </div>
-          <a href={withBase("/trust/")} class="site-nav__cta">Verify claims</a>
+        <div class="site-nav__meta">
+          <span>Auto-verified</span>
+          <span>Compatibility-first</span>
+          <a href={withBase("/submit/")} class="site-nav__submit">Submit Tool</a>
         </div>
       </div>
     </header>
@@ -172,15 +150,15 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
     <footer class="site-footer">
       <div class="site-footer__inner">
         <div class="site-footer__intro">
-          <span class="footer-kicker">{kit.site.title || "DemumuMind"}</span>
+          <span class="footer-kicker">{kit.site.title || "DemumuMind MCP"}</span>
           <p>
-            Curated agent tools, trust dossiers, press surfaces, and release receipts for serious local-first workflows.
+            A broad MCP marketplace with builder-depth signals: discovery, adoption, compatibility, and methodology in one public surface.
           </p>
         </div>
 
         <div class="site-footer__nav">
           <div>
-            <h2>Explore</h2>
+            <h2>Marketplace</h2>
             <ul>
               {primaryNavLinks.map((link) => (
                 <li><a href={withBase(link.href)}>{link.label}</a></li>
@@ -200,44 +178,11 @@ const cleanupUrl = meta.cleanupIssueUrl || null;
 
         <div class="site-footer__meta">
           {schemaLabel && <span>{schemaLabel}</span>}
-          {refLabel && <span>Ref {refLabel}</span>}
           {syncDate && <span>Synced {syncDate}</span>}
-          {cleanupUrl && <a href={cleanupUrl} rel="noopener">Cleanup queue</a>}
+          <span>DemumuMind-owned</span>
         </div>
       </div>
     </footer>
-
-    <script is:inline>
-      (function () {
-        const key = "demumumind_admin_nav";
-        if (typeof window === "undefined") return;
-
-        const url = new URL(window.location.href);
-        if (url.searchParams.get("admin") === "1") {
-          localStorage.setItem(key, "1");
-          url.searchParams.delete("admin");
-          window.history.replaceState({}, "", url.toString());
-        }
-
-        window.addEventListener("keydown", (event) => {
-          if (!event.ctrlKey || !event.shiftKey || !["L", "l"].includes(event.key)) return;
-          const enabled = localStorage.getItem(key) === "1";
-          if (enabled) {
-            localStorage.removeItem(key);
-            alert("Lab mode disabled");
-          } else {
-            localStorage.setItem(key, "1");
-            alert("Lab mode enabled");
-          }
-          window.location.reload();
-        });
-
-        if (localStorage.getItem(key) === "1") {
-          const adminLink = document.getElementById("admin-nav-item");
-          if (adminLink) adminLink.hidden = false;
-        }
-      })();
-    </script>
   </body>
 </html>
 

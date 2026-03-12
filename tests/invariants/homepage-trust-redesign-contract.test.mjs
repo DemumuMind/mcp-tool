@@ -7,63 +7,37 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, "../..");
-const PAGE_HERO_PATH = path.join(REPO_ROOT, "site", "src", "components", "PageHero.astro");
 const HOME_PAGE_PATH = path.join(REPO_ROOT, "site", "src", "pages", "index.astro");
 const BASE_LAYOUT_PATH = path.join(REPO_ROOT, "site", "src", "layouts", "Base.astro");
 const GLOBAL_CSS_PATH = path.join(REPO_ROOT, "site", "src", "styles", "global.css");
-const PUBLIC_HERO_PAGES = [
-  path.join(REPO_ROOT, "site", "src", "pages", "tools", "index.astro"),
-  path.join(REPO_ROOT, "site", "src", "pages", "trust.astro"),
-  path.join(REPO_ROOT, "site", "src", "pages", "press", "index.astro"),
-  path.join(REPO_ROOT, "site", "src", "pages", "start.astro"),
-  path.join(REPO_ROOT, "site", "src", "pages", "support.astro"),
-  path.join(REPO_ROOT, "site", "src", "pages", "newsletter", "index.astro"),
-  path.join(REPO_ROOT, "site", "src", "pages", "releases", "index.astro"),
-];
 
-describe("Homepage trust redesign contract", () => {
-  it("expands PageHero into a richer shared primitive", () => {
-    const source = fs.readFileSync(PAGE_HERO_PATH, "utf8");
-
-    assert.match(source, /proofItems\?: string\[\]/, "PageHero should support proofItems");
-    assert.match(source, /asideTitle\?: string/, "PageHero should support an aside title");
-    assert.match(source, /asideBody\?: string/, "PageHero should support aside body copy");
-    assert.match(source, /<slot name="aside"/, "PageHero should expose an aside slot");
-  });
-
-  it("restructures the homepage around trust-first sections", () => {
+describe("Homepage marketplace contract", () => {
+  it("restructures the homepage around a search-first marketplace flow", () => {
     const source = fs.readFileSync(HOME_PAGE_PATH, "utf8");
 
-    assert.match(source, /trust-proof-band/, "homepage should include a trust proof band");
-    assert.match(source, /operator-path-grid/, "homepage should include audience path cards");
-    assert.match(source, /section-kicker">Curated discovery</, "homepage should foreground curated discovery");
-    assert.match(source, /section-kicker">Editorial spotlight</, "homepage should include an editorial spotlight section");
+    assert.match(source, /marketplace-hero/, "homepage should include a marketplace hero");
+    assert.match(source, /search-omnibox/, "homepage should include omnibox search");
+    assert.match(source, /featured-tools-grid/, "homepage should include a featured tools section");
+    assert.match(source, /platform-hub-grid/, "homepage should include platform hubs");
+    assert.match(source, /faq-preview-grid/, "homepage should include FAQ previews");
   });
 
-  it("updates the shared shell to expose trust-oriented navigation and CTA treatment", () => {
+  it("updates the shared shell to expose marketplace-first navigation", () => {
     const source = fs.readFileSync(BASE_LAYOUT_PATH, "utf8");
 
-    assert.match(source, /site-nav__status/, "Base layout should expose a dedicated status rail");
-    assert.match(source, /site-nav__cta/, "Base layout should expose a shared header CTA");
+    assert.match(source, /Browse Tools/, "primary nav should include Browse Tools");
+    assert.match(source, /Categories/, "primary nav should include Categories");
+    assert.match(source, /Docs/, "primary nav should include Docs");
+    assert.match(source, /Stats/, "primary nav should include Stats");
+    assert.match(source, /FAQ/, "primary nav should include FAQ");
   });
 
-  it("defines the new public-facing shell and homepage design tokens", () => {
+  it("defines marketplace-specific shell and browse tokens", () => {
     const source = fs.readFileSync(GLOBAL_CSS_PATH, "utf8");
 
-    assert.match(source, /--hero-grid:/, "global theme should define a hero grid token");
-    assert.match(source, /--surface-glass:/, "global theme should define a glass surface token");
-    assert.match(source, /\.trust-proof-band/, "global stylesheet should define trust proof band styling");
-    assert.match(source, /\.operator-path-grid/, "global stylesheet should define operator path styling");
-  });
-
-  it("upgrades major public pages to the richer hero interface", () => {
-    for (const filePath of PUBLIC_HERO_PAGES) {
-      const source = fs.readFileSync(filePath, "utf8");
-      assert.match(
-        source,
-        /proofItems=|asideTitle=|layout="split"/,
-        `${path.relative(REPO_ROOT, filePath)} should use the richer PageHero interface`
-      );
-    }
+    assert.match(source, /--marketplace-accent:/, "global theme should define a marketplace accent token");
+    assert.match(source, /--search-hero-grid:/, "global theme should define the search hero grid token");
+    assert.match(source, /\.marketplace-card/, "global stylesheet should define marketplace card styling");
+    assert.match(source, /\.facet-toolbar/, "global stylesheet should define facet toolbar styling");
   });
 });

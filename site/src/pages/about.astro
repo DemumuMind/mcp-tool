@@ -1,43 +1,93 @@
 ---
-import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import { getMarketplaceContent } from "../lib/content/marketplace.ts";
+import { withBase } from "../lib/site-paths";
+
+const content = getMarketplaceContent();
+const stats = content.stats;
 ---
 
-<Base title="About - DemumuMind" description="What DemumuMind is building and why." currentPath="/about/">
+<Base
+  title="About - DemumuMind MCP"
+  description="What DemumuMind MCP is building, who the marketplace is for, and why the catalog emphasizes compatibility, adoption, and transparent signals."
+  currentPath="/about/"
+>
   <div class="page-content">
     <PageHero
-      eyebrow="Philosophy"
-      title="Local-first tools with receipts, not mystique."
-      lede="DemumuMind builds MCP servers, desktop apps, and AI infrastructure that stay inspectable, composable, and deterministic."
-      meta={["Open source", "Windows-first", "Protocol-native"]}
-    />
+      eyebrow="About the marketplace"
+      title="A practical marketplace for MCP builders and adopters."
+      lede="DemumuMind MCP is a discovery layer for real MCP servers, clients, desktop apps, and tooling. The goal is not to look official. The goal is to make the ecosystem legible."
+      meta={[
+        `${stats.totalListings} public listings`,
+        `${stats.verifiedListings} automatic verified`,
+        `${stats.commercialListings} commercial surfaces`,
+      ]}
+      proofItems={["Search-first discovery", "Builder-grade signals", "Platform-aware navigation"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">How ranking works</a>
+      </Fragment>
+    </PageHero>
 
-    <h2>Operating principles</h2>
-    <ul>
-      <li><strong>Local-first:</strong> data stays on your machine and core paths keep working offline.</li>
-      <li><strong>Composable:</strong> MCP-native from day one so tools can talk through a shared protocol instead of bespoke glue.</li>
-      <li><strong>Deterministic:</strong> critical paths should produce the same output from the same inputs.</li>
-      <li><strong>Evidence-backed:</strong> promotion, proof, and releases should leave receipts behind.</li>
-    </ul>
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Positioning</p>
+          <h2 class="section-shell__title">Broad marketplace, builder depth</h2>
+        </div>
+      </div>
+      <p class="section-subheading">
+        The product behaves like a broad marketplace on the surface, but each listing still pushes the user toward adoption signals:
+        compatibility, docs, install path, freshness, pricing posture, and related alternatives.
+      </p>
+      <div class="about-grid">
+        <article class="about-card">
+          <h3>Who it helps</h3>
+          <p>MCP builders, evaluators, and teams comparing tools before adoption.</p>
+        </article>
+        <article class="about-card">
+          <h3>What it covers</h3>
+          <p>Servers, clients, desktop apps, SDKs, tooling, curated collections, and platform hubs.</p>
+        </article>
+        <article class="about-card">
+          <h3>What it avoids</h3>
+          <p>No paid placement logic, no user reviews, and no opaque trust claims hidden behind marketing copy.</p>
+        </article>
+      </div>
+    </section>
 
-    <h2>Stack</h2>
-    <ul class="stack-list">
-      <li><span class="tag">Python</span></li>
-      <li><span class="tag">TypeScript</span></li>
-      <li><span class="tag">C#</span></li>
-      <li><span class="tag">.NET MAUI</span></li>
-      <li><span class="tag">WinUI 3</span></li>
-      <li><span class="tag">MCP</span></li>
-      <li><span class="tag">FastMCP</span></li>
-      <li><span class="tag">Ollama</span></li>
-      <li><span class="tag">HNSW</span></li>
-      <li><span class="tag">CUDA</span></li>
-    </ul>
-
-    <h2>Who</h2>
-    <p>
-      One developer shipping under the <a href="https://github.com/DemumuMind" rel="noopener">DemumuMind</a> organization.
-      The point is not to look like a SaaS facade. The point is to ship useful, inspectable tools and make their quality legible.
-    </p>
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Principles</p>
+          <h2 class="section-shell__title">How DemumuMind MCP operates</h2>
+        </div>
+      </div>
+      <ul>
+        <li><strong>Marketplace first:</strong> find and adopt tools quickly, not after a maze of editorial copy.</li>
+        <li><strong>Transparency first:</strong> automatic verified, quality score, and category logic are explained publicly.</li>
+        <li><strong>Compatibility matters:</strong> platform hubs and technical facets are part of discovery, not an afterthought.</li>
+        <li><strong>Commercial is allowed:</strong> official homepage and docs are enough if the MCP surface is clear.</li>
+      </ul>
+    </section>
   </div>
 </Base>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .about-card {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<Base title="Privacy - DemumuMind MCP" description="Privacy summary for the DemumuMind MCP marketplace and its public discovery surfaces." currentPath="/privacy/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Privacy"
+      title="Privacy is simple because the marketplace stays mostly static."
+      lede="The public site is a discovery layer. It does not require accounts, private dashboards, or behavioral profiling to function."
+      meta={["No accounts", "No paid identity layer", "Static-first delivery"]}
+    />
+
+    <h2>Data collected</h2>
+    <p>The marketplace primarily reads public source metadata and optional submission information. It is not designed as a logged-in product.</p>
+
+    <h2>No marketplace profiles</h2>
+    <p>The first release does not create user profiles, saved collections, or review histories.</p>
+
+    <h2>External links</h2>
+    <p>Many listings point to external docs, repositories, and product sites. Their privacy practices are separate from this marketplace.</p>
+  </div>
+</Base>

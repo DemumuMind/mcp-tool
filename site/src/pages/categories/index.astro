@@ -1,0 +1,29 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
+
+const content = getMarketplaceContent();
+---
+
+<Base title="Categories - DemumuMind MCP" description="Browse the MCP marketplace by automatically generated categories." currentPath="/categories/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Categories"
+      title="Browse the ecosystem by workflow lane."
+      lede="Categories are generated from real listing signals, then surfaced as first-class discovery pages."
+      meta={[`${content.categories.length} categories`, `${content.stats.totalListings} primary listings`, "Automatic taxonomy"]}
+    />
+
+    <div class="platform-hub-grid">
+      {content.categories.map((category) => (
+        <a href={withBase(`/categories/${category.slug}/`)} class="collection-item">
+          <span class="collection-item-name">{category.title}</span>
+          <span class="collection-item-desc">{category.description}</span>
+          <span class="collection-item-count">{category.count} listings</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>

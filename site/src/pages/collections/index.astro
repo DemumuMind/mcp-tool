@@ -1,0 +1,29 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
+import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
+
+const content = getMarketplaceContent();
+---
+
+<Base title="Collections - DemumuMind MCP" description="Curated collection pages layered on top of the MCP marketplace taxonomy." currentPath="/collections/">
+  <div class="page-content">
+    <PageHero
+      eyebrow="Collections"
+      title="Curated onboarding paths over a broad catalog."
+      lede="Collections are the secondary discovery layer: tighter tool paths for people who want a starting point, not the whole graph."
+      meta={[`${content.collections.length} collections`, "Curated", "Built on primary listings"]}
+    />
+
+    <div class="platform-hub-grid">
+      {content.collections.map((collection) => (
+        <a href={withBase(`/collections/${collection.slug}/`)} class="collection-item">
+          <span class="collection-item-name">{collection.title}</span>
+          <span class="collection-item-desc">{collection.description}</span>
+          <span class="collection-item-count">{collection.count} tools</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
