@@ -1,7 +1,6 @@
 ---
 import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
-import { kit } from "../../lib/kit";
 import overrides from "../../data/overrides.json";
 import { getProofData, getToolBySlug } from "../../lib/marketir/loader.mjs";
 import { withBase } from "../../lib/site-paths";
@@ -28,18 +27,30 @@ const proofTools = Object.keys(overrideMap)
   .filter(Boolean);
 ---
 
-<Base title={`Proof - ${kit.site.title || "DemumuMind"}`} description={`Verified claims, evidence chains, and transparency data for ${kit.site.title || "DemumuMind"} projects.`} currentPath="/proof/">
-  <div class="proof-index">
+<Base
+  title="Proof Reference - DemumuMind MCP"
+  description="Secondary evidence reference for MCP listings in the marketplace."
+  currentPath="/proof/"
+>
+  <div class="page-content proof-index">
     <PageHero
-      eyebrow="Proof directory"
-      title="Every claim should leave a trail."
-      lede="Browse tool dossiers with proven claims, anti-claims, aspirational statements, and the evidence links behind them."
-      meta={[`${proofTools.length} proof pages`, "Machine-readable references", "Trust over hype"]}
-    />
+      eyebrow="Reference surface"
+      title="Proof reference for marketplace listings"
+      lede="Proof pages stay available as a secondary evidence layer. Use them after browse, categories, platform hubs, or tool dossiers when you need claim-level support, caveats, and source links."
+      meta={[`${proofTools.length} proof references`, "Evidence-linked", "Marketplace-linked"]}
+      asideTitle="Start elsewhere first"
+      asideBody="Primary discovery should begin in the marketplace. Proof pages are supporting dossiers for validation, not the primary browse experience."
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Open stats</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+      </Fragment>
+    </PageHero>
 
     {proofTools.length === 0 ? (
       <div class="empty-state">
-        <p>No tools with proof data are available yet.</p>
+        <p>No tools with public proof references are available yet.</p>
       </div>
     ) : (
       <div class="tools-grid">
@@ -52,11 +63,13 @@ const proofTools = Object.keys(overrideMap)
                 {tool.kind && <span class="badge badge-kind">{tool.kind}</span>}
               </div>
             </div>
-            <p class="one-liner">{tool.oneLiner}</p>
+            <p class="one-liner">
+              {tool.oneLiner || "Evidence-backed claims, limits, and supporting links for this listing."}
+            </p>
             <div class="card-meta">
-              {tool.provenCount > 0 && <span>{tool.provenCount} proven</span>}
-              {tool.aspirationalCount > 0 && <span>{tool.aspirationalCount} aspirational</span>}
-              {tool.antiClaimCount > 0 && <span>{tool.antiClaimCount} anti-claims</span>}
+              {tool.provenCount > 0 && <span>{tool.provenCount} supported</span>}
+              {tool.aspirationalCount > 0 && <span>{tool.aspirationalCount} open claims</span>}
+              {tool.antiClaimCount > 0 && <span>{tool.antiClaimCount} limits</span>}
             </div>
           </a>
         ))}

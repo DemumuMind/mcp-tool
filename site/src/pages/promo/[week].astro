@@ -5,6 +5,7 @@ import ProofBadge from "../../components/ProofBadge.astro";
 import { kit } from "../../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
+import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
   const outreachDir = path.join(process.cwd(), "public/outreach-run");
@@ -67,6 +68,7 @@ try {
   }
 } catch {}
 
+const repoMarketing = kit.repo.marketing || "DemumuMind/mcp-tool";
 const commitSha = trust?.commit || null;
 const hasVerifyData = receipt && (receipt.inputs || receipt.trustReceiptHash);
 
@@ -83,31 +85,39 @@ if (receipt?.inputs) {
   }
 }
 
-const title = `Promotion Week: ${week}`;
-const description = `Tools promoted during the week of ${week}.`;
+function resolveHref(href?: string | null) {
+  if (!href) return null;
+  return href.startsWith("/") ? withBase(href) : href;
+}
+
+const title = `Promotion Reference: ${week}`;
+const description = `Secondary promotion reference for marketplace week ${week}.`;
 ---
 
 <Base title={title} description={description} currentPath={`/promo/${week}/`}>
-  <div class="promo-week-page" data-telemetry-week={week} data-repo-marketing={kit.repo.marketing || "DemumuMind/mcp-tool"}>
+  <div class="page-content promo-week-page" data-telemetry-week={week} data-repo-marketing={repoMarketing}>
     <div class="breadcrumbs">
-      <a href="/receipts/">Receipts</a>
+      <a href={withBase("/receipts/")}>Receipts</a>
       <span>/</span>
       <span>{week}</span>
     </div>
 
     <PageHero
-      eyebrow="Promotion ledger"
-      title={`Promotion Week: ${week}`}
-      lede="Promotion outputs, proof links, and verification inputs for this public push."
+      eyebrow="Reference surface"
+      title={`Promotion reference for ${week}`}
+      lede="This week-level record shows which listings entered outbound promotion and which inputs were hashed. Use it as an audit trail after you evaluate tools in the marketplace."
       meta={[
-        `${items.length} ${items.length === 1 ? "tool" : "tools"}`,
+        `${items.length} ${items.length === 1 ? "listing" : "listings"}`,
         `${promotionType} run`,
         generatedAt ? `Generated ${generatedAt}` : "Generated on demand",
       ]}
+      asideTitle="Promotion is not ranking"
+      asideBody="Inclusion here is a secondary operational signal. Ranking, verification, and shortlist decisions should still come from browse, methodology, stats, and tool dossiers."
     >
       <Fragment slot="actions">
-        <a href="/receipts/" class="btn btn-secondary">All receipts</a>
-        {hasVerifyData && <a href="#verify" class="btn btn-primary">Verify this week</a>}
+        <a href={withBase("/receipts/")} class="btn btn-secondary">All receipts</a>
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
       </Fragment>
     </PageHero>
 
@@ -115,18 +125,21 @@ const description = `Tools promoted during the week of ${week}.`;
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Run contents</p>
-          <h2 class="section-shell__title">Promoted tools</h2>
+          <h2 class="section-shell__title">Included listings</h2>
         </div>
       </div>
       {items.length === 0 ? (
         <div class="empty-state">
-          <p>No tools in this promotion run.</p>
+          <p>No listings were recorded for this promotion week.</p>
         </div>
       ) : (
         <div class="weeks-list">
           {items.map((item, index) => {
             const override = overrides[item.slug] || {};
             const links = item.links || {};
+            const proofHref = resolveHref(links.proof || `/proof/${item.slug}/`);
+            const pressHref = resolveHref(links.presskit);
+            const snippetsHref = resolveHref(links.snippets);
 
             return (
               <article class="week-card">
@@ -142,12 +155,13 @@ const description = `Tools promoted during the week of ${week}.`;
                   </div>
                 </div>
                 <div class="button-row">
-                  {links.proof && <a href={links.proof} class="btn btn-secondary">Proof page</a>}
-                  {links.presskit && <a href={links.presskit} class="btn btn-secondary">Press kit</a>}
-                  {links.snippets && <a href={links.snippets} class="btn btn-secondary">Snippets</a>}
+                  <a href={withBase(`/tools/${item.slug}/`)} class="btn btn-secondary">Tool dossier</a>
+                  {proofHref && <a href={proofHref} class="btn btn-secondary">Proof reference</a>}
+                  {pressHref && <a href={pressHref} class="btn btn-secondary">Press reference</a>}
+                  {snippetsHref && <a href={snippetsHref} class="btn btn-secondary">Messaging snippets</a>}
                   <button
                     class="btn btn-secondary copy-btn"
-                    data-url={`${Astro.site || ""}proof/${item.slug}/`}
+                    data-url={proofHref || withBase(`/proof/${item.slug}/`)}
                     title="Copy proof link"
                   >
                     Copy proof link
@@ -161,11 +175,11 @@ const description = `Tools promoted during the week of ${week}.`;
     </section>
 
     {hasVerifyData && (
-      <section class="section-shell" id="verify">
+      <section class="section-shell" id="audit">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Verification</p>
-            <h2 class="section-shell__title">Verify this week</h2>
+            <p class="section-kicker">Audit bundle</p>
+            <h2 class="section-shell__title">Verification inputs</h2>
           </div>
         </div>
         <div class="verify-recipe">
@@ -174,7 +188,7 @@ const description = `Tools promoted during the week of ${week}.`;
             {commitSha && commitSha !== "unknown" && (
               <span>
                 <strong>Commit:</strong>{" "}
-                <a href={`https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}/commit/${commitSha}`} rel="noopener">
+                <a href={`https://github.com/${repoMarketing}/commit/${commitSha}`} rel="noopener">
                   <code>{commitSha.slice(0, 8)}</code>
                 </a>
               </span>
@@ -212,7 +226,7 @@ const description = `Tools promoted during the week of ${week}.`;
               data-inputs={JSON.stringify(verifyInputs)}
               data-receipt-hash={receipt?.trustReceiptHash || ""}
             >
-              Copy verification bundle
+              Copy audit bundle
             </button>
             <button
               class="btn btn-secondary"
@@ -220,7 +234,7 @@ const description = `Tools promoted during the week of ${week}.`;
               data-commit={commitSha || ""}
               data-files={verifyInputs.map((input) => input.path).join(" ")}
             >
-              Copy verify command
+              Copy verification command
             </button>
           </div>
         </div>
@@ -231,8 +245,8 @@ const description = `Tools promoted during the week of ${week}.`;
       <section class="section-shell">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Receipt notes</p>
-            <h2 class="section-shell__title">Verified inputs</h2>
+            <p class="section-kicker">Recorded hashes</p>
+            <h2 class="section-shell__title">Receipt notes</h2>
           </div>
         </div>
         <div class="steps-box">

@@ -3,7 +3,6 @@ import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
 import ProofBadge from "../../components/ProofBadge.astro";
 import ReceiptLink from "../../components/ReceiptLink.astro";
-import { kit } from "../../lib/kit";
 import fs from "node:fs";
 import path from "node:path";
 import { withBase } from "../../lib/site-paths";
@@ -57,14 +56,40 @@ try {
 weeks.sort((a, b) => b.week.localeCompare(a.week));
 ---
 
-<Base title={`Promotion Receipts - ${kit.site.title || "DemumuMind"}`} description="Browse promotion receipts with hashed inputs and verification data for every promotion week." currentPath="/receipts/">
-  <div class="receipts-page">
+<Base
+  title="Receipt Reference - DemumuMind MCP"
+  description="Secondary operational receipts for marketplace promotion weeks."
+  currentPath="/receipts/"
+>
+  <div class="page-content receipts-page">
     <PageHero
-      eyebrow="Ledger"
-      title="Receipts for every public push."
-      lede="Each promotion week records the inputs, hashes, and links needed to verify what entered the pipeline."
-      meta={[`${weeks.length} receipt weeks`, "Hash-backed", "Promotion evidence"]}
-    />
+      eyebrow="Reference surface"
+      title="Receipt reference for marketplace operations"
+      lede="Weekly receipts document outbound promotion inputs and hashes. They remain useful audit surfaces, but discovery and evaluation should still happen in tools, stats, categories, and methodology."
+      meta={[`${weeks.length} receipt weeks`, "Operational receipts", "Marketplace-linked"]}
+      asideTitle="What receipts are not"
+      asideBody="A receipt shows what entered an outbound workflow. It is not a ranking surface and it does not replace a tool dossier."
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Open stats</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">How to use this surface</p>
+          <h2 class="section-shell__title">Verify outbound runs, then return to the marketplace</h2>
+        </div>
+      </div>
+      <ul class="ops-list">
+        <li>Use tool dossiers, compare pages, and browse filters for product decisions.</li>
+        <li>Use receipt weeks when you need hashed inputs, receipt files, and audit-style promotion context.</li>
+        <li>Use stats and methodology for the marketplace-wide explanation behind these operator records.</li>
+      </ul>
+    </section>
 
     {weeks.length === 0 ? (
       <div class="empty-state">
@@ -76,14 +101,14 @@ weeks.sort((a, b) => b.week.localeCompare(a.week));
           <article class="week-card">
             <div class="week-header">
               <a href={withBase(`/promo/${week.week}/`)} class="week-date">{week.week}</a>
-              <span class="week-count">{week.itemCount} {week.itemCount === 1 ? "tool" : "tools"}</span>
+              <span class="week-count">{week.itemCount} {week.itemCount === 1 ? "listing" : "listings"}</span>
             </div>
             <div class="week-badges">
               {week.hasReceipt && <ProofBadge type="receipt" />}
               {week.hasInputHashes && <ProofBadge type="hashed" />}
             </div>
             <div class="week-links">
-              <a href={withBase(`/promo/${week.week}/`)} class="btn btn-secondary">Promo week</a>
+              <a href={withBase(`/promo/${week.week}/`)} class="btn btn-secondary">Open week reference</a>
               {week.hasReceipt && <ReceiptLink href={`/outreach-run/${week.week}/promo-week-receipt.json`} />}
             </div>
           </article>
@@ -92,3 +117,10 @@ weeks.sort((a, b) => b.week.localeCompare(a.week));
     )}
   </div>
 </Base>
+
+<style>
+  .receipts-page {
+    display: grid;
+    gap: 1.5rem;
+  }
+</style>

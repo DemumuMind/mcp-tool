@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import MarketplaceCard from "../../components/MarketplaceCard.astro";
-import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { getCompatibilitySortScore, getMarketplaceContent } from "../../lib/content/marketplace.ts";
 
 const content = getMarketplaceContent();
 const kindOptions = [...new Set(content.catalog.primary.map((entry) => entry.kind))].sort();
@@ -33,6 +33,7 @@ function getDaysSince(dateValue: string) {
   <section class="facet-toolbar">
     <div class="search-wrapper">
       <input id="filter-q" class="search-input" type="text" placeholder="Search tools, tags, categories, or descriptions" />
+      <input id="filter-source" type="hidden" value="" />
     </div>
     <div class="filters-grid">
       <select id="filter-category" class="filter-select">
@@ -70,6 +71,13 @@ function getDaysSince(dateValue: string) {
         <span>Verified only</span>
       </label>
     </div>
+    <div class="preset-strip">
+      <span class="results-count">Quick presets</span>
+      <button class="btn btn-secondary" type="button" data-quick-view="verified-new">Verified + New</button>
+      <button class="btn btn-secondary" type="button" data-quick-view="hosted">Hosted MCP</button>
+      <button class="btn btn-secondary" type="button" data-quick-view="multi-client">Multi-client</button>
+      <button class="btn btn-secondary" type="button" data-quick-view="builders">Builder stack</button>
+    </div>
   </section>
 
   <section class="saved-view-panel">
@@ -80,7 +88,9 @@ function getDaysSince(dateValue: string) {
       <button class="btn btn-secondary" type="button" data-save-view="hosted">Save hosted view</button>
       <button class="btn btn-secondary" type="button" data-load-view="hosted">Load hosted view</button>
       <button class="btn btn-secondary" type="button" id="clear-saved-views">Clear saved views</button>
+      <button class="btn btn-secondary" type="button" id="clear-filters">Clear filters</button>
     </div>
+    <div class="saved-view-status results-count" id="saved-view-status">No saved view activity yet.</div>
     <div class="active-filter-strip" id="active-filter-strip"></div>
   </section>
 
@@ -92,8 +102,10 @@ function getDaysSince(dateValue: string) {
         data-name={entry.name.toLowerCase()}
         data-summary={`${entry.summary} ${entry.description} ${entry.tags.join(" ")}`.toLowerCase()}
         data-category={entry.primaryCategory}
+        data-source-type={entry.sourceType}
         data-platform={entry.compatibility.platforms.map((platform) => platform.slug).join(" ")}
         data-platform-count={entry.compatibility.platforms.length}
+        data-compatibility-score={getCompatibilitySortScore(entry)}
         data-kind={entry.kind}
         data-pricing={entry.pricing}
         data-verified={entry.quality.verified ? "1" : "0"}
@@ -115,29 +127,71 @@ function getDaysSince(dateValue: string) {
   <script is:inline>
     const pageSize = 12;
     const savedViewsKey = "demumumind-mcp-saved-views";
+    const quickViews = {
+      "verified-new": { verified: true, freshness: "new", sort: "newest" },
+      hosted: { source: "external", sort: "quality" },
+      "multi-client": { sort: "compatibility" },
+      builders: { pricing: "open-source", verified: true, sort: "quality" },
+    };
+    const filterLabels = {
+      q: "Search",
+      category: "Category",
+      source: "Source",
+      platform: "Platform",
+      type: "Type",
+      pricing: "Pricing",
+      freshness: "Freshness",
+      verified: "Verified",
+    };
+    const sortLabels = {
+      quality: "Best quality",
+      compatibility: "Broad client support",
+      newest: "Recently updated",
+      stars: "Popularity",
+      name: "Name A-Z",
+    };
     const grid = document.getElementById("browse-grid");
     const resultsCount = document.getElementById("results-count");
     const paginationPrev = document.getElementById("pagination-prev");
     const paginationNext = document.getElementById("pagination-next");
     const paginationLabel = document.getElementById("pagination-label");
     const activeFilterStrip = document.getElementById("active-filter-strip");
+    const savedViewStatus = document.getElementById("saved-view-status");
     const items = Array.from(grid.querySelectorAll(".browse-grid__item"));
     const controls = {
       q: document.getElementById("filter-q"),
       category: document.getElementById("filter-category"),
+      source: document.getElementById("filter-source"),
       platform: document.getElementById("filter-platform"),
-      kind: document.getElementById("filter-kind"),
+      type: document.getElementById("filter-kind"),
       pricing: document.getElementById("filter-pricing"),
       freshness: document.getElementById("filter-freshness"),
       sort: document.getElementById("filter-sort"),
       verified: document.getElementById("filter-verified"),
     };
 
+    function getDefaultState() {
+      return {
+        q: "",
+        category: "",
+        source: "",
+        platform: "",
+        type: "",
+        pricing: "",
+        freshness: "",
+        verified: false,
+        sort: "quality",
+        page: 1,
+      };
+    }
+
     function readState() {
       const params = new URLSearchParams(window.location.search);
       return {
+        ...getDefaultState(),
         q: params.get("q") || "",
         category: params.get("category") || "",
+        source: params.get("source") || "",
         platform: params.get("platform") || "",
         compatibility: params.get("compatibility") || "",
         type: params.get("type") || "",
@@ -153,6 +207,7 @@ function getDaysSince(dateValue: string) {
       const params = new URLSearchParams();
       if (state.q) params.set("q", state.q);
       if (state.category) params.set("category", state.category);
+      if (state.source) params.set("source", state.source);
       if (state.platform) params.set("platform", state.platform);
       if (state.type) params.set("type", state.type);
       if (state.pricing) params.set("pricing", state.pricing);
@@ -167,24 +222,30 @@ function getDaysSince(dateValue: string) {
     function applyStateToControls(state) {
       controls.q.value = state.q;
       controls.category.value = state.category;
+      controls.source.value = state.source || "";
       controls.platform.value = state.platform || state.compatibility;
-      controls.kind.value = state.type;
+      controls.type.value = state.type;
       controls.pricing.value = state.pricing;
       controls.freshness.value = state.freshness;
       controls.sort.value = state.sort;
       controls.verified.checked = state.verified;
     }
 
+    function setSavedViewStatus(message) {
+      savedViewStatus.textContent = message;
+    }
+
     function renderActiveFilters(state) {
       activeFilterStrip.replaceChildren();
       const labels = [];
-      if (state.q) labels.push(`Search: ${state.q}`);
-      if (state.category) labels.push(`Category: ${state.category}`);
-      if (state.platform) labels.push(`Platform: ${state.platform}`);
-      if (state.type) labels.push(`Type: ${state.type}`);
-      if (state.pricing) labels.push(`Pricing: ${state.pricing}`);
-      if (state.freshness) labels.push(`Freshness: ${state.freshness}`);
-      if (state.verified) labels.push("Verified only");
+      if (state.q) labels.push({ key: "q", text: state.q });
+      if (state.category) labels.push({ key: "category", text: state.category });
+      if (state.source) labels.push({ key: "source", text: state.source === "external" ? "hosted" : state.source });
+      if (state.platform) labels.push({ key: "platform", text: state.platform });
+      if (state.type) labels.push({ key: "type", text: state.type });
+      if (state.pricing) labels.push({ key: "pricing", text: state.pricing });
+      if (state.freshness) labels.push({ key: "freshness", text: state.freshness });
+      if (state.verified) labels.push({ key: "verified", text: "only" });
 
       if (labels.length === 0) {
         const empty = document.createElement("span");
@@ -195,9 +256,12 @@ function getDaysSince(dateValue: string) {
       }
 
       for (const label of labels) {
-        const pill = document.createElement("span");
+        const pill = document.createElement("button");
         pill.className = "active-filter-chip";
-        pill.textContent = label;
+        pill.type = "button";
+        pill.dataset.clearKey = label.key;
+        pill.setAttribute("aria-label", `Clear ${filterLabels[label.key]} filter`);
+        pill.textContent = `${filterLabels[label.key]}: ${label.text} ×`;
         activeFilterStrip.appendChild(pill);
       }
     }
@@ -214,13 +278,23 @@ function getDaysSince(dateValue: string) {
       localStorage.setItem(savedViewsKey, JSON.stringify(savedViews));
     }
 
+    function clearFilter(key) {
+      if (key === "verified") {
+        controls.verified.checked = false;
+      } else if (controls[key]) {
+        controls[key].value = "";
+      }
+      render(1);
+    }
+
     function collectState(pageOverride) {
       const requestedPage = pageOverride ?? readState().page ?? 1;
       return {
         q: controls.q.value.trim().toLowerCase(),
         category: controls.category.value,
+        source: controls.source.value,
         platform: controls.platform.value,
-        type: controls.kind.value,
+        type: controls.type.value,
         pricing: controls.pricing.value,
         freshness: controls.freshness.value,
         verified: controls.verified.checked,
@@ -239,18 +313,19 @@ function getDaysSince(dateValue: string) {
           item.dataset.name.includes(state.q) ||
           item.dataset.summary.includes(state.q);
         const matchesCategory = !state.category || item.dataset.category === state.category;
+        const matchesSource = !state.source || item.dataset.sourceType === state.source;
         const matchesPlatform = !state.platform || item.dataset.platform.includes(state.platform);
         const matchesType = !state.type || item.dataset.kind === state.type;
         const matchesPricing = !state.pricing || item.dataset.pricing === state.pricing;
         const matchesFreshness = !state.freshness || item.dataset.freshness === state.freshness;
         const matchesVerified = !state.verified || item.dataset.verified === "1";
-        return matchesQuery && matchesCategory && matchesPlatform && matchesType && matchesPricing && matchesFreshness && matchesVerified;
+        return matchesQuery && matchesCategory && matchesSource && matchesPlatform && matchesType && matchesPricing && matchesFreshness && matchesVerified;
       });
 
       visible.sort((a, b) => {
         switch (state.sort) {
           case "compatibility":
-            return Number(b.dataset.platformCount) - Number(a.dataset.platformCount) || Number(b.dataset.quality) - Number(a.dataset.quality);
+            return Number(b.dataset.compatibilityScore) - Number(a.dataset.compatibilityScore) || Number(b.dataset.quality) - Number(a.dataset.quality);
           case "newest":
             return b.dataset.updated.localeCompare(a.dataset.updated);
           case "stars":
@@ -276,7 +351,7 @@ function getDaysSince(dateValue: string) {
         grid.appendChild(item);
       }
 
-      resultsCount.textContent = `${visible.length} tools found`;
+      resultsCount.textContent = `${visible.length} tools found · sorted by ${sortLabels[state.sort]}`;
       paginationLabel.textContent = `Page ${page} of ${totalPages}`;
       paginationPrev.disabled = page <= 1;
       paginationNext.disabled = page >= totalPages;
@@ -297,6 +372,7 @@ function getDaysSince(dateValue: string) {
         const savedViews = readSavedViews();
         savedViews[button.dataset.saveView] = collectState(1);
         writeSavedViews(savedViews);
+        setSavedViewStatus(`Saved current filters to ${button.dataset.saveView}.`);
       });
     });
 
@@ -304,17 +380,87 @@ function getDaysSince(dateValue: string) {
       button.addEventListener("click", () => {
         const savedViews = readSavedViews();
         const state = savedViews[button.dataset.loadView];
-        if (!state) return;
+        if (!state) {
+          setSavedViewStatus(`No saved view found for ${button.dataset.loadView}.`);
+          return;
+        }
         applyStateToControls(state);
         render(state.page || 1);
+        setSavedViewStatus(`Loaded saved view ${button.dataset.loadView}.`);
+      });
+    });
+
+    document.querySelectorAll("[data-quick-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextState = { ...getDefaultState(), ...(quickViews[button.dataset.quickView] || {}) };
+        applyStateToControls(nextState);
+        render(1);
+        setSavedViewStatus(`Applied quick preset ${button.dataset.quickView}.`);
       });
     });
 
     document.getElementById("clear-saved-views").addEventListener("click", () => {
       localStorage.removeItem(savedViewsKey);
+      setSavedViewStatus("Cleared all saved views.");
+    });
+
+    document.getElementById("clear-filters").addEventListener("click", () => {
+      applyStateToControls(getDefaultState());
+      render(1);
+      setSavedViewStatus("Cleared all active filters.");
     });
 
     paginationPrev.addEventListener("click", () => render(readState().page - 1));
     paginationNext.addEventListener("click", () => render(readState().page + 1));
+    activeFilterStrip.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-clear-key]");
+      if (!button) return;
+      clearFilter(button.dataset.clearKey);
+      setSavedViewStatus(`Cleared ${filterLabels[button.dataset.clearKey].toLowerCase()} filter.`);
+    });
   </script>
 </Base>
+
+<style>
+  .preset-strip,
+  .saved-view-panel,
+  .saved-view-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .preset-strip {
+    padding-top: 0.75rem;
+  }
+
+  .saved-view-panel {
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .saved-view-status {
+    color: var(--color-text-muted);
+  }
+
+  .active-filter-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .active-filter-chip {
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-surface-soft, rgba(255, 255, 255, 0.04)) 88%, transparent);
+    color: var(--color-text-muted);
+    padding: 0.45rem 0.75rem;
+    font: inherit;
+  }
+
+  button.active-filter-chip {
+    cursor: pointer;
+  }
+</style>
