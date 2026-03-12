@@ -24,6 +24,18 @@ describe("marketplace content layer", () => {
     assert.equal(derivePricingModel(listing), "commercial");
   });
 
+  it("respects explicit pricing overrides for hosted marketplace listings", () => {
+    assert.equal(
+      derivePricingModel({
+        name: "Hosted Free MCP",
+        homepage: "https://example.com",
+        docsUrl: "https://example.com/docs",
+        pricing: "free",
+      }),
+      "free",
+    );
+  });
+
   it("rejects sparse listings from the primary catalog", () => {
     const sparse = {
       name: "Mystery MCP",
@@ -47,6 +59,19 @@ describe("marketplace content layer", () => {
 
     assert.ok(compatibility.platforms.some((platform) => platform.slug === "claude"));
     assert.ok(compatibility.platforms.some((platform) => platform.slug === "vscode"));
+  });
+
+  it("detects newer hosted MCP client ecosystems from seed-style metadata", () => {
+    const compatibility = deriveCompatibilityProfile({
+      name: "Remote Workflow Hub",
+      kind: "mcp-server",
+      tags: ["chatgpt", "windsurf", "gemini", "remote-mcp"],
+      description: "Hosted remote MCP for ChatGPT, Windsurf, and Gemini clients.",
+    });
+
+    assert.ok(compatibility.platforms.some((platform) => platform.slug === "chatgpt"));
+    assert.ok(compatibility.platforms.some((platform) => platform.slug === "windsurf"));
+    assert.ok(compatibility.platforms.some((platform) => platform.slug === "gemini"));
   });
 
   it("scores complete, recent tools above archived sparse tools", () => {
@@ -114,5 +139,44 @@ describe("marketplace content layer", () => {
     assert.ok(entry, "external seed listing should be included in the primary catalog");
     assert.equal(entry?.sourceType, "external");
     assert.equal(entry?.pricing, "commercial");
+  });
+
+  it("includes real commercial and non-GitHub MCP products in the default seed catalog", () => {
+    const content = getMarketplaceContent();
+    const commercialSlugs = new Set(
+      content.catalog.primary
+        .filter((entry) => entry.sourceType === "external")
+        .map((entry) => entry.slug),
+    );
+
+    assert.ok(commercialSlugs.has("github-mcp-server"));
+    assert.ok(commercialSlugs.has("stripe-mcp"));
+    assert.ok(commercialSlugs.has("zapier-mcp"));
+    assert.ok(commercialSlugs.has("notion-mcp"));
+    assert.ok(content.stats.commercialListings >= 4);
+  });
+
+  it("rewards wider supported-client coverage in marketplace scoring", () => {
+    const base = deriveQualityScore({
+      name: "Single Client MCP",
+      kind: "mcp-server",
+      description: "Managed MCP server.",
+      homepage: "https://example.com",
+      docsUrl: "https://example.com/docs",
+      updatedAt: new Date().toISOString(),
+      tags: ["mcp", "claude"],
+    });
+
+    const broad = deriveQualityScore({
+      name: "Multi Client MCP",
+      kind: "mcp-server",
+      description: "Managed MCP server.",
+      homepage: "https://example.com",
+      docsUrl: "https://example.com/docs",
+      updatedAt: new Date().toISOString(),
+      tags: ["mcp", "claude", "chatgpt", "cursor", "windsurf"],
+    });
+
+    assert.ok(broad.score > base.score);
   });
 });

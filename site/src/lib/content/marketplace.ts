@@ -27,6 +27,7 @@ export interface QualityScoreBreakdown {
   breakdown: {
     docs: number;
     adoption: number;
+    compatibility: number;
     freshness: number;
     popularity: number;
     trust: number;
@@ -210,10 +211,15 @@ function getReferenceText(raw: RawProject) {
 }
 
 export function derivePricingModel(raw: RawProject): PricingModel {
+  const explicit = cleanText(raw.pricing).toLowerCase();
   const text = getReferenceText(raw);
   const install = cleanText(raw.install).toLowerCase();
   const homepage = cleanText(raw.homepage);
   const repoUrl = getRepoUrl(raw);
+
+  if (explicit === "open-source" || explicit === "free" || explicit === "commercial") {
+    return explicit as PricingModel;
+  }
 
   if (/\b(enterprise|commercial|paid|pricing|contact sales)\b/.test(`${text} ${install}`)) {
     return "commercial";
@@ -257,7 +263,10 @@ export function deriveCompatibilityProfile(raw: RawProject): CompatibilityProfil
 
   if (cleanText(raw.kind) === "mcp-server" || /\bmcp\b/.test(text)) slugs.push("any-mcp-client");
   if (/\bclaude|anthropic\b/.test(text)) slugs.push("claude");
+  if (/\bchatgpt|openai\b/.test(text)) slugs.push("chatgpt");
   if (/\bcursor\b/.test(text)) slugs.push("cursor");
+  if (/\bwindsurf\b/.test(text)) slugs.push("windsurf");
+  if (/\bgemini|google ai\b/.test(text)) slugs.push("gemini");
   if (cleanText(raw.kind) === "vscode-extension" || /\bvscode|vs code\b/.test(text)) slugs.push("vscode");
   if (cleanText(raw.kind) === "desktop-app" || /\bdesktop|winui|maui\b/.test(text)) slugs.push("desktop");
   if (cleanText(raw.kind) === "cli" || /\bterminal|shell|command-line|cli\b/.test(text)) slugs.push("terminal");
@@ -322,13 +331,15 @@ export function deriveQualityScore(raw: RawProject): QualityScoreBreakdown {
   const proof = proofByRepo.get(cleanText(raw.repo));
   const release = releaseByRepo.get(cleanText(raw.repo));
   const freshness = getFreshnessScore(cleanText(raw.updatedAt));
+  const compatibility = deriveCompatibilityProfile(raw);
   const docs = (docsUrl ? 12 : 0) + (homepage ? 8 : 0) + (cleanText(raw.description).length >= 24 ? 6 : 0);
   const adoption = (cleanText(raw.install) ? 12 : 0) + (Array.isArray(raw.goodFor) && raw.goodFor.length > 0 ? 8 : 0);
+  const compatibilityScore = Math.min(10, compatibility.platforms.length * 2);
   const popularity = Math.min(16, Math.round((Number(raw.stars || 0) / 120) * 16));
   const trust = (proof?.proofs?.length ? 8 : 0) + (raw.registered ? 6 : 0) + (release ? 4 : 0);
   const media = cleanText(raw.screenshot) ? 8 : 0;
   const penalty = (raw.deprecated ? 18 : 0) + ((cleanText(raw.description).length < 12 ? 12 : 0));
-  const score = Math.max(0, Math.min(100, docs + adoption + freshness.score + popularity + trust + media - penalty + 24));
+  const score = Math.max(0, Math.min(100, docs + adoption + compatibilityScore + freshness.score + popularity + trust + media - penalty + 24));
   const verified = score >= 70 && meetsPrimaryListingBar(raw);
 
   return {
@@ -338,6 +349,7 @@ export function deriveQualityScore(raw: RawProject): QualityScoreBreakdown {
     breakdown: {
       docs,
       adoption,
+      compatibility: compatibilityScore,
       freshness: freshness.score,
       popularity,
       trust,

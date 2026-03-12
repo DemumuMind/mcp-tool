@@ -1,1 +1,140 @@
-[]
+[
+  {
+    "slug": "github-mcp-server",
+    "name": "GitHub MCP Server",
+    "kind": "mcp-server",
+    "description": "Official GitHub MCP server for repository, issue, pull request, and code workflow access from MCP clients.",
+    "tagline": "Official GitHub workflow context for MCP clients.",
+    "homepage": "https://docs.github.com/en/copilot/how-tos/context/model-context-protocol/using-the-github-mcp-server",
+    "docsUrl": "https://docs.github.com/en/copilot/how-tos/context/model-context-protocol/using-the-github-mcp-server",
+    "pricing": "free",
+    "tags": ["mcp", "github", "claude", "cursor", "vscode", "remote-mcp"],
+    "language": "Hosted",
+    "category": "mcp-core",
+    "updatedAt": "2026-03-12T00:00:00.000Z",
+    "goodFor": [
+      "Repository and pull request workflows directly from MCP clients",
+      "Issue triage and code-context access without leaving the client",
+      "Hosted GitHub-native MCP access for development assistants"
+    ],
+    "notFor": [
+      "Self-hosted GitHub data access without GitHub services",
+      "Offline-only workflows"
+    ]
+  },
+  {
+    "slug": "stripe-mcp",
+    "name": "Stripe MCP",
+    "kind": "mcp-server",
+    "description": "Official Stripe MCP for payments, product, customer, and docs workflows inside supported MCP clients.",
+    "tagline": "Stripe payment and docs workflows through MCP.",
+    "homepage": "https://docs.stripe.com/mcp",
+    "docsUrl": "https://docs.stripe.com/mcp",
+    "pricing": "commercial",
+    "tags": ["mcp", "payments", "stripe", "claude", "cursor", "windsurf", "remote-mcp"],
+    "language": "Hosted",
+    "category": "infrastructure",
+    "updatedAt": "2026-03-12T00:00:00.000Z",
+    "goodFor": [
+      "Payments and billing workflows inside coding assistants",
+      "Stripe docs and API context in MCP-aware clients",
+      "Hosted financial operations context without a local server"
+    ],
+    "notFor": [
+      "Offline payment tooling",
+      "Non-Stripe financial stacks"
+    ]
+  },
+  {
+    "slug": "zapier-mcp",
+    "name": "Zapier MCP",
+    "kind": "mcp-server",
+    "description": "Official Zapier MCP server for connecting MCP clients to Zapier automation and app actions.",
+    "tagline": "Zapier automation and app actions via MCP.",
+    "homepage": "https://zapier.com/mcp",
+    "docsUrl": "https://zapier.com/mcp",
+    "pricing": "commercial",
+    "tags": ["mcp", "automation", "zapier", "chatgpt", "claude", "cursor", "remote-mcp"],
+    "language": "Hosted",
+    "category": "infrastructure",
+    "updatedAt": "2026-03-12T00:00:00.000Z",
+    "goodFor": [
+      "Cross-app automation through MCP clients",
+      "Hosted access to Zapier actions and app ecosystem",
+      "Connecting assistant workflows to operational SaaS tools"
+    ],
+    "notFor": [
+      "Local-only automation stacks",
+      "Highly custom self-hosted orchestration"
+    ]
+  },
+  {
+    "slug": "notion-mcp",
+    "name": "Notion MCP",
+    "kind": "mcp-server",
+    "description": "Official Notion MCP server for searching and using workspace knowledge from compatible MCP clients.",
+    "tagline": "Workspace knowledge and content retrieval via Notion MCP.",
+    "homepage": "https://www.notion.com/help/notion-mcp",
+    "docsUrl": "https://www.notion.com/help/notion-mcp",
+    "pricing": "commercial",
+    "tags": ["mcp", "knowledge-base", "notion", "chatgpt", "claude", "cursor", "remote-mcp"],
+    "language": "Hosted",
+    "category": "devtools",
+    "updatedAt": "2026-03-12T00:00:00.000Z",
+    "goodFor": [
+      "Workspace search and retrieval from MCP-aware assistants",
+      "Knowledge-grounded writing and planning workflows",
+      "Hosted MCP access to internal documentation and notes"
+    ],
+    "notFor": [
+      "Offline-only knowledge workflows",
+      "Teams not using Notion as a content system"
+    ]
+  },
+  {
+    "slug": "cloudflare-docs-mcp",
+    "name": "Cloudflare Docs MCP Server",
+    "kind": "mcp-server",
+    "description": "Official Cloudflare documentation MCP server for querying product docs from modern MCP clients.",
+    "tagline": "Cloudflare product docs and guidance via hosted MCP.",
+    "homepage": "https://developers.cloudflare.com/agents/model-context-protocol/mcp-server/",
+    "docsUrl": "https://developers.cloudflare.com/agents/model-context-protocol/mcp-server/",
+    "pricing": "free",
+    "tags": ["mcp", "cloudflare", "documentation", "chatgpt", "claude", "gemini", "remote-mcp"],
+    "language": "Hosted",
+    "category": "web",
+    "updatedAt": "2026-03-12T00:00:00.000Z",
+    "goodFor": [
+      "Cloudflare documentation lookup inside MCP clients",
+      "Faster product research for web and infrastructure teams",
+      "Hosted docs retrieval without running a local MCP server"
+    ],
+    "notFor": [
+      "Non-Cloudflare product stacks",
+      "Offline documentation access"
+    ]
+  },
+  {
+    "slug": "linear-mcp",
+    "name": "Linear MCP Server",
+    "kind": "mcp-server",
+    "description": "Official Linear MCP server for finding, creating, and updating issues, projects, and related Linear objects from MCP clients.",
+    "tagline": "Official Linear workflows and issue context via remote MCP.",
+    "homepage": "https://linear.app/docs/mcp",
+    "docsUrl": "https://linear.app/docs/mcp",
+    "pricing": "commercial",
+    "tags": ["mcp", "linear", "project-management", "claude", "cursor", "chatgpt", "remote-mcp"],
+    "language": "Hosted",
+    "category": "devtools",
+    "updatedAt": "2026-03-12T00:00:00.000Z",
+    "goodFor": [
+      "Issue, project, and planning workflows directly inside MCP-aware clients",
+      "Hosted access to Linear objects from coding and research assistants",
+      "Cross-tool planning with Claude, Cursor, and ChatGPT workflows"
+    ],
+    "notFor": [
+      "Teams not using Linear for work tracking",
+      "Offline-only planning workflows"
+    ]
+  }
+]
