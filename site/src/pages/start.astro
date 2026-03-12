@@ -1,112 +1,36 @@
 ---
-import PageHero from "../components/PageHero.astro";
 import Base from "../layouts/Base.astro";
-import projects from "../data/projects.json";
+import PageHero from "../components/PageHero.astro";
 import { withBase } from "../lib/site-paths";
-
-const availableRepos = new Set((projects as any[]).map((project: any) => project.repo));
-
-const stacks = [
-  {
-    question: "I want to find and use MCP tools",
-    tools: [
-      { name: "Tool Compass", repo: "tool-compass", why: "Find tools by describing what you need" },
-      { name: "Tool Scan", repo: "tool-scan", why: "Audit and inspect MCP tools before running them" },
-      { name: "File Compass", repo: "file-compass", why: "Semantic search across your codebase" },
-    ],
-  },
-  {
-    question: "I want to build MCP tools",
-    tools: [
-      { name: "Brain-Dev", repo: "brain-dev", why: "Code analysis patterns to learn from" },
-      { name: "Tool Scan", repo: "tool-scan", why: "Security-test your tool before shipping" },
-    ],
-  },
-  {
-    question: "I want to add voice to Claude Code",
-    tools: [
-      { name: "Soundboard Plugin", repo: "soundboard-plugin", why: "Drop-in TTS for Claude Code" },
-      { name: "MCP Voice Soundboard", repo: "mcp-voice-soundboard", why: "MCP-native voice server" },
-      { name: "Voice Soundboard", repo: "voice-soundboard", why: "Underlying TTS library" },
-    ],
-  },
-  {
-    question: "I want to train or fine-tune models locally",
-    tools: [
-      { name: "Backpropagate", repo: "backpropagate", why: "Headless fine-tuning with smart defaults" },
-      { name: "Comfy-Headless", repo: "comfy-headless", why: "Batch image generation without the UI" },
-      { name: "Aspire AI", repo: "aspire-ai", why: "Adversarial training engine" },
-    ],
-  },
-  {
-    question: "I want to audit MCP security",
-    tools: [
-      { name: "Tool Scan", repo: "tool-scan", why: "Security scanner for MCP tools" },
-      { name: "MCP Stress Test", repo: "mcp-stress-test", why: "Red team toolkit" },
-      { name: "Stresskit MCP", repo: "stresskit-mcp", why: "Load testing for MCP servers" },
-    ],
-  },
-];
-
-const visibleStacks = stacks
-  .map((stack) => ({
-    ...stack,
-    tools: stack.tools.filter((tool) => availableRepos.has(tool.repo)),
-  }))
-  .filter((stack) => stack.tools.length > 0);
 ---
 
-<Base title="Get Started - DemumuMind" description="Find the right tools for what you're trying to do." currentPath="/start/">
-  <div class="start-page">
+<Base title="Start - DemumuMind MCP" description="Secondary guided entrypoint into the MCP marketplace." currentPath="/start/">
+  <div class="page-content">
     <PageHero
-      eyebrow="Guided paths"
-      title="Start with a use case, not a logo wall."
-      lede="Each stack below groups tools that make sense together so you can move from curiosity to a working setup faster."
-      meta={["Curated bundles", "Registry-linked", "Local-first workflows"]}
-      proofItems={["Use-case first", "Curated stacks", "Trust-aware starting points"]}
-      asideTitle="Best first move"
-      asideBody="Pick the job you need done first. The stack pages below are ordered to reduce browsing friction and avoid a generic logo wall."
-    />
+      eyebrow="Marketplace guide"
+      title="Start from the marketplace, then narrow fast."
+      lede="This page is now a lightweight secondary guide. The real product surface is the marketplace itself: browse, categories, platforms, and dossiers."
+      meta={["Marketplace guide", "Secondary surface", "Use-case first"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/categories/")} class="btn btn-secondary">Open categories</a>
+      </Fragment>
+    </PageHero>
 
-    {visibleStacks.length > 0 ? (
-      <div class="stack-list">
-        {visibleStacks.map((stack) => (
-          <details class="stack-card">
-            <summary class="stack-question">{stack.question}</summary>
-            <div class="stack-tools">
-              {stack.tools.map((tool) => (
-                <a href={withBase(`/tools/${tool.repo}/`)} class="stack-tool">
-                  <span class="stack-tool-name">{tool.name}</span>
-                  <span class="stack-tool-why">{tool.why}</span>
-                </a>
-              ))}
-            </div>
-          </details>
-        ))}
-      </div>
-    ) : (
-      <div class="empty-state">
-        <p>The curated start stacks are temporarily unavailable in this build. Browse the catalog or registry instead.</p>
-      </div>
-    )}
-
-    <div class="start-fallback">
-      <p>
-        Need the full surface instead? <a href={withBase("/tools/")}>Browse every tool</a> or ask in{" "}
-        <a href="https://github.com/orgs/DemumuMind/discussions" rel="noopener">Discussions</a>.
-      </p>
+    <div class="platform-hub-grid">
+      <a href={withBase("/tools/?platform=claude")} class="collection-item">
+        <span class="collection-item-name">Start with a client</span>
+        <span class="collection-item-desc">Use platform hubs if your workflow begins from Claude, Cursor, VS Code, ChatGPT, or Gemini.</span>
+      </a>
+      <a href={withBase("/categories/")} class="collection-item">
+        <span class="collection-item-name">Start with a category</span>
+        <span class="collection-item-desc">Use categories if you already know whether you need servers, infrastructure, voice, web, or developer tools.</span>
+      </a>
+      <a href={withBase("/collections/")} class="collection-item">
+        <span class="collection-item-name">Start with a collection</span>
+        <span class="collection-item-desc">Collections are the guided paths when you want a curated stack instead of a full marketplace browse.</span>
+      </a>
     </div>
   </div>
 </Base>
-
-<style>
-  .start-page {
-    display: grid;
-    gap: 1.5rem;
-  }
-
-  .start-fallback {
-    color: var(--color-text-muted);
-    font-size: 0.92rem;
-  }
-</style>

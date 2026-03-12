@@ -39,7 +39,13 @@ function inferRouteFamily(currentPath: string): Props["routeFamily"] {
     currentPath.startsWith("/about/") ||
     currentPath.startsWith("/request-category/") ||
     currentPath.startsWith("/submit/") ||
-    currentPath.startsWith("/stats/")
+    currentPath.startsWith("/stats/") ||
+    currentPath.startsWith("/trust/") ||
+    currentPath.startsWith("/press/") ||
+    currentPath.startsWith("/releases/") ||
+    currentPath.startsWith("/start/") ||
+    currentPath.startsWith("/support/") ||
+    currentPath.startsWith("/newsletter/")
   ) {
     return "reference";
   }
