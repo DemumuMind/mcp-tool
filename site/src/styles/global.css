@@ -1617,6 +1617,52 @@ tbody tr:hover {
   margin-top: 1.25rem;
 }
 
+.saved-view-panel,
+.saved-view-actions,
+.active-filter-strip,
+.compare-grid,
+.marketplace-related-stack__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.saved-view-panel {
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.active-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.85rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(108, 224, 255, 0.08);
+  border: 1px solid rgba(108, 224, 255, 0.18);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.marketplace-related-stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.marketplace-related-stack__footer {
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media (max-width: 1100px) {
   .site-nav__inner,
   .site-footer__inner {
@@ -1624,7 +1670,8 @@ tbody tr:hover {
   }
 
   .marketplace-hero,
-  .section-split {
+  .section-split,
+  .compare-grid {
     grid-template-columns: 1fr;
   }
 

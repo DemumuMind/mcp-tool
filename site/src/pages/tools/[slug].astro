@@ -1,7 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import MarketplaceCard from "../../components/MarketplaceCard.astro";
-import { getMarketplaceContent, getToolDossier } from "../../lib/content/marketplace.ts";
+import { getMarketplaceContent, getRelatedTools, getToolDossier } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
@@ -10,36 +10,12 @@ export function getStaticPaths() {
   }));
 }
 
-const content = getMarketplaceContent();
 const tool = getToolDossier(Astro.params.slug || "");
-
 if (!tool) {
   throw new Error(`Unknown tool dossier: ${Astro.params.slug}`);
 }
 
-const genericPlatformSlugs = new Set(["any-mcp-client", "terminal", "desktop"]);
-const toolTags = new Set(tool.tags);
-const toolPlatforms = new Set(
-  tool.compatibility.platforms
-    .map((platform) => platform.slug)
-    .filter((slug) => !genericPlatformSlugs.has(slug)),
-);
-
-const related = content.catalog.primary
-  .filter((entry) => entry.slug !== tool.slug)
-  .map((entry) => {
-    const sharedTags = entry.tags.filter((tag) => toolTags.has(tag)).length;
-    const sharedSpecificPlatforms = entry.compatibility.platforms.filter((platform) =>
-      toolPlatforms.has(platform.slug),
-    ).length;
-    const categoryMatch = entry.primaryCategory === tool.primaryCategory ? 1 : 0;
-    const score = categoryMatch * 4 + sharedTags * 2 + sharedSpecificPlatforms * 3;
-    return { entry, score };
-  })
-  .filter((candidate) => candidate.score >= 4)
-  .sort((a, b) => b.score - a.score || b.entry.quality.score - a.entry.quality.score)
-  .slice(0, 3)
-  .map((candidate) => candidate.entry);
+const related = getRelatedTools(tool.slug);
 ---
 
 <Base title={`${tool.name} - DemumuMind MCP`} description={tool.description} currentPath={`/tools/${tool.slug}/`}>
@@ -201,7 +177,15 @@ const related = content.catalog.primary
           </div>
         </div>
         <div class="featured-tools-grid">
-          {related.map((entry) => <MarketplaceCard entry={entry} compact />)}
+          {related.map((match) => (
+            <div class="marketplace-related-stack">
+              <MarketplaceCard entry={match.entry} compact />
+              <div class="marketplace-related-stack__footer">
+                <span class="results-count">{match.reason}</span>
+                <a href={withBase(match.compareHref)} class="btn btn-secondary">Compare</a>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     )}

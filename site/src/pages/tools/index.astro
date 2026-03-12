@@ -16,13 +16,13 @@ function getDaysSince(dateValue: string) {
 
 <Base
   title="Browse Tools - DemumuMind MCP"
-  description="Browse a compatibility-aware MCP marketplace with shareable filters and dossier pages."
+  description="Browse a compatibility-aware MCP marketplace with shareable filters, saved views, and dossier pages."
   currentPath="/tools/"
 >
   <PageHero
     eyebrow="Browse tools"
     title="Search the MCP marketplace with builder-grade filters."
-    lede="Use one browse surface for search, categories, compatibility, pricing, freshness, and verified signals."
+    lede="Use one browse surface for search, categories, compatibility, pricing, freshness, verified signals, and compare-ready discovery."
     meta={[
       `${content.catalog.primary.length} primary listings`,
       `${content.stats.verifiedListings} verified`,
@@ -55,20 +55,33 @@ function getDaysSince(dateValue: string) {
       </select>
       <select id="filter-freshness" class="filter-select">
         <option value="">Any freshness</option>
-        <option value="new">New</option>
-        <option value="recent">Recent</option>
+        <option value="new">New this month</option>
+        <option value="recent">Updated this quarter</option>
       </select>
       <select id="filter-sort" class="filter-select">
-        <option value="quality">Quality</option>
-        <option value="newest">Newest</option>
-        <option value="stars">Stars</option>
-        <option value="name">Name</option>
+        <option value="quality">Best quality</option>
+        <option value="compatibility">Broad client support</option>
+        <option value="newest">Recently updated</option>
+        <option value="stars">Popularity</option>
+        <option value="name">Name A-Z</option>
       </select>
       <label class="toggle-label">
         <input id="filter-verified" type="checkbox" />
         <span>Verified only</span>
       </label>
     </div>
+  </section>
+
+  <section class="saved-view-panel">
+    <div class="saved-view-actions">
+      <span class="results-count">Saved views</span>
+      <button class="btn btn-secondary" type="button" data-save-view="builders">Save builders view</button>
+      <button class="btn btn-secondary" type="button" data-load-view="builders">Load builders view</button>
+      <button class="btn btn-secondary" type="button" data-save-view="hosted">Save hosted view</button>
+      <button class="btn btn-secondary" type="button" data-load-view="hosted">Load hosted view</button>
+      <button class="btn btn-secondary" type="button" id="clear-saved-views">Clear saved views</button>
+    </div>
+    <div class="active-filter-strip" id="active-filter-strip"></div>
   </section>
 
   <div class="results-count" id="results-count"></div>
@@ -80,6 +93,7 @@ function getDaysSince(dateValue: string) {
         data-summary={`${entry.summary} ${entry.description} ${entry.tags.join(" ")}`.toLowerCase()}
         data-category={entry.primaryCategory}
         data-platform={entry.compatibility.platforms.map((platform) => platform.slug).join(" ")}
+        data-platform-count={entry.compatibility.platforms.length}
         data-kind={entry.kind}
         data-pricing={entry.pricing}
         data-verified={entry.quality.verified ? "1" : "0"}
@@ -100,11 +114,13 @@ function getDaysSince(dateValue: string) {
 
   <script is:inline>
     const pageSize = 12;
+    const savedViewsKey = "demumumind-mcp-saved-views";
     const grid = document.getElementById("browse-grid");
     const resultsCount = document.getElementById("results-count");
     const paginationPrev = document.getElementById("pagination-prev");
     const paginationNext = document.getElementById("pagination-next");
     const paginationLabel = document.getElementById("pagination-label");
+    const activeFilterStrip = document.getElementById("active-filter-strip");
     const items = Array.from(grid.querySelectorAll(".browse-grid__item"));
     const controls = {
       q: document.getElementById("filter-q"),
@@ -159,9 +175,48 @@ function getDaysSince(dateValue: string) {
       controls.verified.checked = state.verified;
     }
 
-    function render(pageOverride) {
+    function renderActiveFilters(state) {
+      activeFilterStrip.replaceChildren();
+      const labels = [];
+      if (state.q) labels.push(`Search: ${state.q}`);
+      if (state.category) labels.push(`Category: ${state.category}`);
+      if (state.platform) labels.push(`Platform: ${state.platform}`);
+      if (state.type) labels.push(`Type: ${state.type}`);
+      if (state.pricing) labels.push(`Pricing: ${state.pricing}`);
+      if (state.freshness) labels.push(`Freshness: ${state.freshness}`);
+      if (state.verified) labels.push("Verified only");
+
+      if (labels.length === 0) {
+        const empty = document.createElement("span");
+        empty.className = "active-filter-chip";
+        empty.textContent = "No active filters";
+        activeFilterStrip.appendChild(empty);
+        return;
+      }
+
+      for (const label of labels) {
+        const pill = document.createElement("span");
+        pill.className = "active-filter-chip";
+        pill.textContent = label;
+        activeFilterStrip.appendChild(pill);
+      }
+    }
+
+    function readSavedViews() {
+      try {
+        return JSON.parse(localStorage.getItem(savedViewsKey) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function writeSavedViews(savedViews) {
+      localStorage.setItem(savedViewsKey, JSON.stringify(savedViews));
+    }
+
+    function collectState(pageOverride) {
       const requestedPage = pageOverride ?? readState().page ?? 1;
-      const state = {
+      return {
         q: controls.q.value.trim().toLowerCase(),
         category: controls.category.value,
         platform: controls.platform.value,
@@ -172,6 +227,11 @@ function getDaysSince(dateValue: string) {
         sort: controls.sort.value,
         page: Math.max(1, requestedPage),
       };
+    }
+
+    function render(pageOverride) {
+      const state = collectState(pageOverride);
+      renderActiveFilters(state);
 
       const visible = items.filter((item) => {
         const matchesQuery =
@@ -189,6 +249,8 @@ function getDaysSince(dateValue: string) {
 
       visible.sort((a, b) => {
         switch (state.sort) {
+          case "compatibility":
+            return Number(b.dataset.platformCount) - Number(a.dataset.platformCount) || Number(b.dataset.quality) - Number(a.dataset.quality);
           case "newest":
             return b.dataset.updated.localeCompare(a.dataset.updated);
           case "stars":
@@ -228,6 +290,28 @@ function getDaysSince(dateValue: string) {
     Object.values(controls).forEach((control) => {
       control.addEventListener(control.type === "checkbox" ? "change" : "input", () => render(1));
       if (control.tagName === "SELECT") control.addEventListener("change", () => render(1));
+    });
+
+    document.querySelectorAll("[data-save-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const savedViews = readSavedViews();
+        savedViews[button.dataset.saveView] = collectState(1);
+        writeSavedViews(savedViews);
+      });
+    });
+
+    document.querySelectorAll("[data-load-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const savedViews = readSavedViews();
+        const state = savedViews[button.dataset.loadView];
+        if (!state) return;
+        applyStateToControls(state);
+        render(state.page || 1);
+      });
+    });
+
+    document.getElementById("clear-saved-views").addEventListener("click", () => {
+      localStorage.removeItem(savedViewsKey);
     });
 
     paginationPrev.addEventListener("click", () => render(readState().page - 1));
