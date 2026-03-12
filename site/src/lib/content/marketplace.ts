@@ -424,6 +424,7 @@ function getDaysSince(dateValue: string) {
 }
 
 const genericPlatformSlugs = new Set(["any-mcp-client", "terminal", "desktop"]);
+const BASE_SCORE_OFFSET = 12;
 
 function getLatestActivityDate(...candidates: Array<string | undefined>) {
   const timestamps = candidates
@@ -569,7 +570,7 @@ export function deriveQualityScore(raw: RawProject): QualityScoreBreakdown {
   const trust = getTrustScore(raw, proof, release, docsUrl, homepage) + getSourceTypeTrustScore(raw, docsUrl, homepage);
   const media = cleanText(raw.screenshot) ? 8 : 0;
   const penalty = getPenaltyScore(raw, docsUrl, homepage);
-  const score = Math.max(0, Math.min(100, docs + adoption + compatibilityScore + freshness.score + releaseCadence + popularity + trust + media - penalty + 12));
+  const score = Math.max(0, Math.min(100, docs + adoption + compatibilityScore + freshness.score + releaseCadence + popularity + trust + media - penalty + BASE_SCORE_OFFSET));
   const verified = score >= 72 && meetsPrimaryListingBar(raw);
 
   return {
@@ -608,6 +609,7 @@ function buildCatalogEntry(raw: RawProject): CatalogEntry {
   const categoryMeta = getCategoryMeta(categorySlug);
   const compatibility = deriveCompatibilityProfile(raw);
   const quality = deriveQualityScore({ ...raw, homepage, docsUrl });
+  const proof = proofByRepo.get(repo);
   const release = releaseByRepo.get(repo);
   const freshness = getFreshnessScore(cleanText(raw.updatedAt), cleanText(release?.publishedAt));
   const releasePublishedAt = cleanText(release?.publishedAt) || undefined;
@@ -655,7 +657,7 @@ function buildCatalogEntry(raw: RawProject): CatalogEntry {
     notFor: Array.isArray(raw.notFor) ? raw.notFor.filter(Boolean).slice(0, 4) : [],
     releaseTag: cleanText(release?.tag) || undefined,
     releasePublishedAt,
-    proofSignals: Array.isArray(proofByRepo.get(repo)?.proofs) ? proofByRepo.get(repo).proofs : [],
+    proofSignals: Array.isArray(proof?.proofs) ? proof.proofs : [],
     compatibility,
     quality,
     trendScore,
@@ -832,7 +834,8 @@ export function buildMarketplaceContent(
 ): MarketplaceContent {
   const allEntries = [...projectItems, ...externalSeedItems].map((project) => buildCatalogEntry(project)).sort(sortByQuality);
   const primaryCatalog = allEntries.filter((entry) => entry.meetsListingBar).sort(sortByQuality);
-  const secondaryCatalog = allEntries.filter((entry) => !primaryCatalog.some((primary) => primary.slug === entry.slug));
+  const primarySlugs = new Set(primaryCatalog.map((entry) => entry.slug));
+  const secondaryCatalog = allEntries.filter((entry) => !primarySlugs.has(entry.slug));
   const categories = buildCategoryModels(primaryCatalog);
   const platforms = buildPlatformModels(primaryCatalog);
   const collectionModels = buildCollectionModels(primaryCatalog);

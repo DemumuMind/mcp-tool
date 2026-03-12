@@ -20,18 +20,10 @@ export async function fetchWithRetry(input, options = {}) {
   while (attempt <= retries) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    let response;
 
     try {
-      const response = await fetchImpl(input, { ...init, signal: controller.signal });
-      clearTimeout(timeoutId);
-
-      if (retryableStatusCodes.has(response.status) && attempt < retries) {
-        await sleep(retryDelayMs * (2 ** attempt));
-        attempt++;
-        continue;
-      }
-
-      return response;
+      response = await fetchImpl(input, { ...init, signal: controller.signal });
     } catch (error) {
       clearTimeout(timeoutId);
       lastError = error;
@@ -42,7 +34,21 @@ export async function fetchWithRetry(input, options = {}) {
 
       await sleep(retryDelayMs * (2 ** attempt));
       attempt++;
+      continue;
     }
+
+    clearTimeout(timeoutId);
+
+    if (retryableStatusCodes.has(response.status) && attempt < retries) {
+      if (response.body?.cancel) {
+        await response.body.cancel();
+      }
+      await sleep(retryDelayMs * (2 ** attempt));
+      attempt++;
+      continue;
+    }
+
+    return response;
   }
 
   throw lastError;

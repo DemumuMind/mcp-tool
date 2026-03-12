@@ -73,6 +73,121 @@ describe("fetchWithRetry", () => {
     assert.equal(attempts, 1);
   });
 
+  it("cancels response body before retrying a retryable status", async () => {
+    let cancelCalled = false;
+
+    let call = 0;
+    async function mockFetch() {
+      call++;
+      if (call === 1) {
+        return {
+          status: 503,
+          body: { cancel: async () => { cancelCalled = true; } },
+        };
+      }
+      return { status: 200, text: async () => "ok" };
+    }
+
+    const response = await fetchWithRetry("http://fake", {
+      retries: 2,
+      retryDelayMs: 1,
+      timeoutMs: 5000,
+      fetchImpl: mockFetch,
+    });
+
+    assert.equal(response.status, 200);
+    assert.equal(cancelCalled, true, "response.body.cancel() should be called before retry");
+    assert.equal(call, 2);
+  });
+
+  it("tolerates missing response.body when retrying", async () => {
+    let call = 0;
+    async function mockFetch() {
+      call++;
+      if (call === 1) {
+        return { status: 502, body: null };
+      }
+      return { status: 200, text: async () => "recovered" };
+    }
+
+    const response = await fetchWithRetry("http://fake", {
+      retries: 2,
+      retryDelayMs: 1,
+      timeoutMs: 5000,
+      fetchImpl: mockFetch,
+    });
+
+    assert.equal(response.status, 200);
+    assert.equal(call, 2);
+  });
+
+  it("surfaces response body cleanup failures instead of retrying as transport errors", async () => {
+    let call = 0;
+    const cleanupError = new Error("stream cleanup failed");
+
+    async function mockFetch() {
+      call++;
+      if (call === 1) {
+        return {
+          status: 503,
+          body: {
+            cancel: async () => {
+              throw cleanupError;
+            },
+          },
+        };
+      }
+      return { status: 200, text: async () => "unexpected" };
+    }
+
+    await assert.rejects(
+      () =>
+        fetchWithRetry("http://fake", {
+          retries: 2,
+          retryDelayMs: 1,
+          timeoutMs: 5000,
+          fetchImpl: mockFetch,
+        }),
+      cleanupError,
+    );
+    assert.equal(call, 1);
+  });
+
+  it("surfaces cleanup failures from a real Response stream without retrying", async () => {
+    let call = 0;
+    const cleanupError = new Error("real stream cleanup failed");
+
+    async function mockFetch() {
+      call++;
+      if (call > 1) {
+        return new Response("unexpected retry", { status: 200 });
+      }
+
+      const body = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode("retry"));
+        },
+        cancel() {
+          throw cleanupError;
+        },
+      });
+
+      return new Response(body, { status: 503 });
+    }
+
+    await assert.rejects(
+      () =>
+        fetchWithRetry("http://fake", {
+          retries: 2,
+          retryDelayMs: 1,
+          timeoutMs: 5000,
+          fetchImpl: mockFetch,
+        }),
+      cleanupError,
+    );
+    assert.equal(call, 1);
+  });
+
   it("times out a slow request and retries the next attempt", async () => {
     await startServer((req, res) => {
       attempts++;

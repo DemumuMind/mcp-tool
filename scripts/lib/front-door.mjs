@@ -33,8 +33,37 @@ export function loadRegistry(rootPath) {
         throw new Error(`Registry not found at ${REGISTRY_PATH}`);
     }
 
-    const registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));
-    const overrides = JSON.parse(fs.existsSync(OVERRIDES_PATH) ? fs.readFileSync(OVERRIDES_PATH, 'utf-8') : '{}');
+    let registryText;
+    try {
+        registryText = fs.readFileSync(REGISTRY_PATH, 'utf-8');
+    } catch (err) {
+        throw new Error(`Failed to read registry at ${REGISTRY_PATH}: ${err.message}`);
+    }
+
+    let registry;
+    try {
+        registry = JSON.parse(registryText);
+    } catch (err) {
+        throw new Error(`Failed to parse registry at ${REGISTRY_PATH}: ${err.message}`);
+    }
+
+    let overrides = {};
+    if (!fs.existsSync(OVERRIDES_PATH)) {
+        return { registry, overrides };
+    }
+
+    let overridesText;
+    try {
+        overridesText = fs.readFileSync(OVERRIDES_PATH, 'utf-8');
+    } catch (err) {
+        throw new Error(`Failed to read overrides at ${OVERRIDES_PATH}: ${err.message}`);
+    }
+
+    try {
+        overrides = JSON.parse(overridesText);
+    } catch (err) {
+        throw new Error(`Failed to parse overrides at ${OVERRIDES_PATH}: ${err.message}`);
+    }
 
     return { registry, overrides };
 }
