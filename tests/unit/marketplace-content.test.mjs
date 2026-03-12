@@ -5,6 +5,7 @@ import {
   derivePricingModel,
   deriveQualityScore,
   buildMarketplaceContent,
+  getTrendScore,
   meetsPrimaryListingBar,
   getMarketplaceContent,
 } from "../../site/src/lib/content/marketplace.ts";
@@ -178,5 +179,69 @@ describe("marketplace content layer", () => {
     });
 
     assert.ok(broad.score > base.score);
+  });
+
+  it("treats adoption readiness as a separate ranking advantage", () => {
+    const docsOnly = deriveQualityScore({
+      name: "Docs Only MCP",
+      kind: "mcp-server",
+      description: "Managed MCP server.",
+      homepage: "https://example.com",
+      docsUrl: "https://example.com/docs",
+      updatedAt: new Date().toISOString(),
+    });
+
+    const adoptable = deriveQualityScore({
+      name: "Adoptable MCP",
+      kind: "mcp-server",
+      description: "Managed MCP server.",
+      homepage: "https://example.com",
+      docsUrl: "https://example.com/docs",
+      install: "npm install adoptable-mcp",
+      goodFor: ["Production workflows", "Fast pilot rollouts"],
+      updatedAt: new Date().toISOString(),
+    });
+
+    assert.ok(adoptable.breakdown.adoption > docsOnly.breakdown.adoption);
+    assert.ok(adoptable.score > docsOnly.score);
+  });
+
+  it("uses freshness and release momentum in trend scoring, not just stars", () => {
+    const now = new Date().toISOString();
+    const hot = getTrendScore({
+      stars: 2,
+      updatedAt: now,
+      releasePublishedAt: now,
+      compatibility: {
+        platforms: [{ slug: "claude", title: "Claude", description: "" }],
+        transports: ["STDIO"],
+        runtimeSignals: ["Node.js"],
+      },
+      quality: {
+        score: 86,
+        verified: true,
+      },
+      featured: false,
+      registered: true,
+    });
+
+    const stale = getTrendScore({
+      stars: 2,
+      updatedAt: "2024-01-01T00:00:00.000Z",
+      releasePublishedAt: "2024-01-01T00:00:00.000Z",
+      compatibility: {
+        platforms: [{ slug: "terminal", title: "Terminal", description: "" }],
+        transports: [],
+        runtimeSignals: [],
+      },
+      quality: {
+        score: 86,
+        verified: true,
+      },
+      featured: false,
+      registered: false,
+    });
+
+    assert.ok(hot > stale);
   });
 });

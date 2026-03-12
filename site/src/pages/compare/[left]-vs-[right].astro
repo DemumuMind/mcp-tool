@@ -1,34 +1,40 @@
 ---
 import Base from "../../layouts/Base.astro";
 import MarketplaceCard from "../../components/MarketplaceCard.astro";
-import { buildComparisonModel, getMarketplaceContent, getRelatedTools } from "../../lib/content/marketplace.ts";
+import { buildCanonicalCompareHref, buildComparisonModel, getComparisonPairs } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
-  return getMarketplaceContent().catalog.primary.flatMap((entry) =>
-    getRelatedTools(entry.slug).map((match) => ({
+  return getComparisonPairs().map((pair) => ({
       params: {
-        left: entry.slug,
-        right: match.entry.slug,
+        left: pair.left.slug,
+        right: pair.right.slug,
       },
-    })),
-  );
+    }));
 }
 
 const comparison = buildComparisonModel(Astro.params.left || "", Astro.params.right || "");
+const canonicalHref = buildCanonicalCompareHref(comparison.left.slug, comparison.right.slug);
+const sharedCategory = comparison.left.primaryCategory === comparison.right.primaryCategory
+  ? comparison.left.primaryCategory
+  : "";
 ---
 
-<Base title={`${comparison.compareTitle} - DemumuMind MCP`} description={`Compare ${comparison.left.name} and ${comparison.right.name} across compatibility, adoption, and quality signals.`} currentPath={`/compare/${comparison.left.slug}-vs-${comparison.right.slug}/`}>
+<Base title={`${comparison.compareTitle} - DemumuMind MCP`} description={`Compare ${comparison.left.name} and ${comparison.right.name} across compatibility, adoption, and quality signals.`} currentPath={canonicalHref}>
   <div class="page-content">
     <section class="page-hero">
       <p class="eyebrow">Comparison</p>
       <h1 class="page-hero__title">{comparison.compareTitle}</h1>
       <p class="page-hero__lede">
-        Side-by-side comparison for adoption path, compatibility, and marketplace signals.
+        Side-by-side marketplace comparison for adoption path, compatibility, and operator-grade signals.
       </p>
+      <div class="compare-summary">
+        <p>{comparison.summary}</p>
+      </div>
       <div class="page-hero__actions">
         <a href={withBase(`/tools/${comparison.left.slug}/`)} class="btn btn-secondary">Open {comparison.left.name}</a>
         <a href={withBase(`/tools/${comparison.right.slug}/`)} class="btn btn-secondary">Open {comparison.right.name}</a>
+        {sharedCategory && <a href={withBase(`/tools/?category=${sharedCategory}`)} class="btn btn-secondary">Browse {comparison.left.primaryCategoryTitle}</a>}
       </div>
     </section>
 
@@ -36,6 +42,33 @@ const comparison = buildComparisonModel(Astro.params.left || "", Astro.params.ri
       <MarketplaceCard entry={comparison.left} />
       <MarketplaceCard entry={comparison.right} />
     </div>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Matchup board</p>
+          <h2 class="section-shell__title">Fast side-by-side scan</h2>
+        </div>
+      </div>
+      <div class="compare-scorecard">
+        {comparison.scorecard.map((row) => (
+          <article class="compare-scorecard__row">
+            <div class="compare-scorecard__metric">
+              <p class="compare-scorecard__label">{row.label}</p>
+              <p class="compare-scorecard__insight">{row.insight}</p>
+            </div>
+            <div class="compare-scorecard__value">
+              <span class="compare-scorecard__tool">{comparison.left.name}</span>
+              <strong>{row.left}</strong>
+            </div>
+            <div class="compare-scorecard__value">
+              <span class="compare-scorecard__tool">{comparison.right.name}</span>
+              <strong>{row.right}</strong>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
 
     <section class="section-split">
       <div class="section-shell">
@@ -66,12 +99,117 @@ const comparison = buildComparisonModel(Astro.params.left || "", Astro.params.ri
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Signals</p>
-          <h2 class="section-shell__title">Quality and freshness snapshot</h2>
+          <h2 class="section-shell__title">Quality, freshness, and trend snapshot</h2>
         </div>
       </div>
       <ul class="ops-list">
         {comparison.sections.signals.map((item) => <li>{item}</li>)}
       </ul>
     </section>
+
+    <section class="section-split">
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Choose {comparison.left.name}</p>
+            <h2 class="section-shell__title">When the left side wins</h2>
+          </div>
+        </div>
+        <ul class="ops-list">
+          {comparison.recommendations.left.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Choose {comparison.right.name}</p>
+            <h2 class="section-shell__title">When the right side wins</h2>
+          </div>
+        </div>
+        <ul class="ops-list">
+          {comparison.recommendations.right.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Decision guide</p>
+          <h2 class="section-shell__title">How to use this comparison</h2>
+        </div>
+      </div>
+      <ul class="ops-list">
+        <li>Use compatibility first if you already know your client, runtime, or transport requirements.</li>
+        <li>Use adoption notes when you care about setup speed, docs maturity, pricing posture, and direct install paths.</li>
+        <li>Use trend only as a secondary tiebreaker after compatibility and adoption fit are clear.</li>
+        <li>Use tool dossiers next if you need the full context before choosing one path.</li>
+      </ul>
+    </section>
   </div>
 </Base>
+
+<style>
+  .compare-summary {
+    max-width: 60rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    border-radius: 1.25rem;
+    background: color-mix(in srgb, var(--color-surface-soft, rgba(255, 255, 255, 0.04)) 88%, transparent);
+  }
+
+  .compare-summary p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .compare-scorecard {
+    display: grid;
+    gap: 0.875rem;
+  }
+
+  .compare-scorecard__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    background: color-mix(in srgb, var(--color-surface, rgba(255, 255, 255, 0.02)) 94%, transparent);
+  }
+
+  .compare-scorecard__metric,
+  .compare-scorecard__value {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+
+  .compare-scorecard__label,
+  .compare-scorecard__tool,
+  .compare-scorecard__insight {
+    margin: 0;
+  }
+
+  .compare-scorecard__label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-subtle);
+  }
+
+  .compare-scorecard__tool,
+  .compare-scorecard__insight {
+    color: var(--color-text-muted);
+  }
+
+  .compare-scorecard__value strong {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .compare-scorecard__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

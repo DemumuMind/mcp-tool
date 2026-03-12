@@ -1,9 +1,17 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
 import overrides from "../../data/overrides.json";
 import fs from "node:fs";
 import path from "node:path";
-import { getPressData, getProofData, getPublicAssetLinks, getSnapshotMeta, getToolBySlug, loadSnapshot } from "../../lib/marketir/loader.mjs";
+import {
+  getPressData,
+  getProofData,
+  getPublicAssetLinks,
+  getSnapshotMeta,
+  getToolBySlug,
+  loadSnapshot,
+} from "../../lib/marketir/loader.mjs";
 import { withBase } from "../../lib/site-paths";
 
 const overrideMap = overrides as Record<string, any>;
@@ -38,30 +46,53 @@ try {
 } catch {}
 
 const orgUrl = `https://github.com/DemumuMind/${slug}`;
+const pressKitLink = publicAssetLinks.find((link) => link.kind === "presskit");
+const supportedClaimCount = proofData?.proven?.length || 0;
+const quoteCount = press?.quotes?.length || 0;
+const assetCount = publicAssetLinks.length;
+const snapshotObservedAt = snapshot?.fetchedAt
+  ? new Date(snapshot.fetchedAt).toLocaleDateString("en-US", { dateStyle: "medium" })
+  : null;
 ---
 
-<Base title={`${tool.name} - Press`} description={press?.boilerplate?.projectDescription || tool.positioning?.oneLiner || ""} currentPath={`/press/${slug}/`}>
-  <div class="press-page">
-    <a href={withBase("/press/")} class="back-link">&larr; All press pages</a>
+<Base
+  title={`${tool.name} Press Reference - DemumuMind MCP`}
+  description={press?.boilerplate?.projectDescription || tool.positioning?.oneLiner || ""}
+  currentPath={`/press/${slug}/`}
+>
+  <div class="page-content press-page">
+    <a href={withBase("/press/")} class="back-link">&larr; All press references</a>
 
-    <section class="press-hero">
-      <div>
-        <p class="eyebrow">Verified story package</p>
-        <h1>{tool.name}</h1>
-        <p class="one-liner">{tool.positioning?.oneLiner}</p>
-        <div class="badges">
-          {override.stability && <span class={`badge badge-${override.stability}`}>{override.stability}</span>}
-          {override.kind && <span class="badge badge-kind">{override.kind}</span>}
+    <PageHero
+      eyebrow="Reference surface"
+      title={`${tool.name} press reference`}
+      lede="This page is a secondary briefing surface for editors, partners, and operators who already evaluated the listing in the marketplace. Start with the tool dossier, then use this page for narrative context, approved quotes, and reusable assets."
+      meta={[
+        supportedClaimCount > 0 ? `${supportedClaimCount} supported claims` : "Reference-ready claims",
+        quoteCount > 0 ? `${quoteCount} approved quotes` : "No quote bank",
+        assetCount > 0 ? `${assetCount} downloadable assets` : "No downloadable assets",
+      ]}
+      asideTitle="Primary discovery stays in the marketplace"
+      asideBody="Use tools, stats, categories, platforms, and methodology as the primary surfaces. This page packages supporting narrative after shortlisting."
+    >
+      <Fragment slot="actions">
+        <a href={withBase(`/tools/${slug}/`)} class="btn btn-primary">Open tool dossier</a>
+        <a href={withBase(`/proof/${slug}/`)} class="btn btn-secondary">Open proof reference</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+        {pressKitLink && <a href={pressKitLink.href} class="btn btn-secondary" rel="noopener">Press kit</a>}
+      </Fragment>
+    </PageHero>
+
+    <section class="section">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Reference path</p>
+          <h2 class="section-shell__title">Use this page after the dossier</h2>
         </div>
       </div>
-      <div class="press-hero__actions">
-        {publicAssetLinks.find((link) => link.kind === "presskit") && (
-          <a href={publicAssetLinks.find((link) => link.kind === "presskit").href} class="btn btn-primary" rel="noopener">Press kit</a>
-        )}
-        {publicAssetLinks.find((link) => link.kind === "machine-readable") && (
-          <a href={publicAssetLinks.find((link) => link.kind === "machine-readable").href} class="btn btn-secondary" rel="noopener">Machine-readable</a>
-        )}
-        <a href={withBase(`/proof/${slug}/`)} class="btn btn-secondary">Proof page</a>
+      <div class="rule-box">
+        <p>Start with the marketplace dossier for positioning, adoption, compatibility, and related alternatives.</p>
+        <p>Use proof, stats, and methodology if you need evidence, freshness, or ranking context before reusing any claim from this page.</p>
       </div>
     </section>
 
@@ -69,8 +100,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Narrative brief</p>
-            <h2 class="section-shell__title">About the project</h2>
+            <p class="section-kicker">Marketplace summary</p>
+            <h2 class="section-shell__title">Project context</h2>
           </div>
         </div>
         <div class="rule-box">
@@ -87,8 +118,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Press-safe proof</p>
-            <h2 class="section-shell__title">Verified claims</h2>
+            <p class="section-kicker">Evidence-backed briefing</p>
+            <h2 class="section-shell__title">Supported talking points</h2>
           </div>
         </div>
         <div class="claims-list">
@@ -120,7 +151,7 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Approved quote bank</p>
+            <p class="section-kicker">Approved language</p>
             <h2 class="section-shell__title">Quotes</h2>
           </div>
         </div>
@@ -139,8 +170,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Positioning</p>
-            <h2 class="section-shell__title">Comparables</h2>
+            <p class="section-kicker">Comparison context</p>
+            <h2 class="section-shell__title">How this listing is framed</h2>
           </div>
         </div>
         <div class="comparables-list">
@@ -158,8 +189,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Partner pack</p>
-            <h2 class="section-shell__title">Partner offers</h2>
+            <p class="section-kicker">Partner notes</p>
+            <h2 class="section-shell__title">Reusable offers and constraints</h2>
           </div>
         </div>
         <div class="offers-list">
@@ -178,8 +209,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Observed facts</p>
-            <h2 class="section-shell__title">GitHub facts</h2>
+            <p class="section-kicker">Observed repository signals</p>
+            <h2 class="section-shell__title">GitHub context</h2>
           </div>
         </div>
         <div class="facts-grid">
@@ -197,8 +228,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Contacts</p>
-            <h2 class="section-shell__title">Contact points</h2>
+            <p class="section-kicker">Contact points</p>
+            <h2 class="section-shell__title">Who to route to</h2>
           </div>
         </div>
         <div class="contacts-list">
@@ -219,16 +250,19 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
     <section class="section">
       <div class="section-shell__header">
         <div>
-          <p class="section-kicker">Resources</p>
-          <h2 class="section-shell__title">Distribution-ready assets</h2>
+          <p class="section-kicker">Linked surfaces</p>
+          <h2 class="section-shell__title">Open reference assets</h2>
         </div>
       </div>
       <div class="downloads">
+        <a href={withBase(`/tools/${slug}/`)} class="btn btn-secondary">Tool dossier</a>
+        <a href={withBase(`/proof/${slug}/`)} class="btn btn-secondary">Proof reference</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Marketplace stats</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Methodology</a>
         {publicAssetLinks.map((link) => (
           <a href={link.href} class="btn btn-secondary" rel="noopener">{link.label}</a>
         ))}
         <a href={orgUrl} class="btn btn-secondary" rel="noopener">GitHub</a>
-        <a href={withBase(`/tools/${slug}/`)} class="btn btn-secondary">Tool page</a>
       </div>
     </section>
 
@@ -236,8 +270,8 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Brand asset</p>
-            <h2 class="section-shell__title">Approved screenshot</h2>
+            <p class="section-kicker">Reference screenshot</p>
+            <h2 class="section-shell__title">Approved visual</h2>
           </div>
         </div>
         <div class="brand-assets">
@@ -250,9 +284,14 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
     )}
 
     <footer class="press-footer">
-      {snapshot && <p>{snapshotMeta.lockLabel}: {snapshot.lockSha256?.slice(0, 12)} | {snapshotMeta.snapshotLabel}: {new Date(snapshot.fetchedAt).toLocaleDateString("en-US", { dateStyle: "medium" })}</p>}
+      {snapshot && (
+        <p>
+          {snapshotMeta.lockLabel}: {snapshot.lockSha256?.slice(0, 12)}
+          {snapshotObservedAt && ` | ${snapshotMeta.snapshotLabel}: ${snapshotObservedAt}`}
+        </p>
+      )}
       {press?.boilerplate?.forbiddenPhrases?.length > 0 && (
-        <p class="forbidden">Avoid: {press.boilerplate.forbiddenPhrases.join(", ")}</p>
+        <p class="forbidden">Editorial notes: avoid {press.boilerplate.forbiddenPhrases.join(", ")}</p>
       )}
     </footer>
   </div>
@@ -273,43 +312,10 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
     text-decoration: none;
   }
 
-  .press-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1rem;
-    align-items: end;
-    padding: 1.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
-      var(--color-surface);
-  }
-
-  .press-hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 4vw, 4rem);
-    letter-spacing: -0.05em;
-  }
-
-  .one-liner {
-    margin-top: 0.8rem;
-    color: var(--color-text-muted);
-    font-size: 1rem;
-  }
-
-  .badges,
   .claim-evidence {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-  }
-
-  .press-hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: flex-end;
   }
 
   .quote p,
@@ -332,15 +338,5 @@ const orgUrl = `https://github.com/DemumuMind/${slug}`;
     gap: 0.35rem;
     padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  @media (max-width: 900px) {
-    .press-hero {
-      grid-template-columns: 1fr;
-    }
-
-    .press-hero__actions {
-      justify-content: flex-start;
-    }
   }
 </style>

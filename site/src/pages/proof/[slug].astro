@@ -1,12 +1,11 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHero from "../../components/PageHero.astro";
 import overrides from "../../data/overrides.json";
 import fs from "node:fs";
 import path from "node:path";
 import { getProofData, getSnapshotMeta, getToolBySlug, loadSnapshot } from "../../lib/marketir/loader.mjs";
 import { withBase } from "../../lib/site-paths";
-
-const overrideMap = overrides as Record<string, any>;
 
 export function getStaticPaths() {
   const overridesBySlug = overrides as Record<string, any>;
@@ -24,7 +23,6 @@ export function getStaticPaths() {
 }
 
 const { slug, tool } = Astro.props;
-const override = overrideMap[slug] || {};
 const proofData = getProofData(slug);
 const snapshot = loadSnapshot();
 const snapshotMeta = getSnapshotMeta(snapshot);
@@ -55,6 +53,9 @@ const factsObservedAt = facts?.fetchedAt
 const snapshotObservedAt = snapshot?.fetchedAt
   ? new Date(snapshot.fetchedAt).toLocaleDateString("en-US", { dateStyle: "medium" })
   : null;
+const supportedClaimCount = proofData?.proven?.length || 0;
+const openClaimCount = proofData?.aspirational?.length || 0;
+const limitCount = proofData?.antiClaims?.length || 0;
 
 function getTierLabel(score: number): string {
   if (score >= 80) return "GREEN";
@@ -63,39 +64,43 @@ function getTierLabel(score: number): string {
 }
 ---
 
-<Base title={`${tool.name} - Proof`} description={`Verified claims, evidence chains, and transparency data for ${tool.name}.`} currentPath={`/proof/${slug}/`}>
-  <div class="proof-page">
-    <a href={withBase("/proof/")} class="back-link">&larr; All proof pages</a>
+<Base
+  title={`${tool.name} Proof Reference - DemumuMind MCP`}
+  description={`Evidence, limits, and traceable reference data for ${tool.name}.`}
+  currentPath={`/proof/${slug}/`}
+>
+  <div class="page-content proof-page">
+    <a href={withBase("/proof/")} class="back-link">&larr; All proof references</a>
 
-    <section class="proof-hero">
-      <div>
-        <p class="eyebrow">Proof dossier</p>
-        <h1>{tool.name}</h1>
-        <p class="one-liner">{tool.positioning?.oneLiner}</p>
-        <div class="badges">
-          {override.stability && <span class={`badge badge-${override.stability}`}>{override.stability}</span>}
-          {override.kind && <span class="badge badge-kind">{override.kind}</span>}
+    <PageHero
+      eyebrow="Reference surface"
+      title={`${tool.name} proof reference`}
+      lede="This page is a secondary evidence dossier for the marketplace listing. Use it after the tool page when you need supported claims, declared limits, or linkable reference material."
+      meta={[
+        supportedClaimCount > 0 ? `${supportedClaimCount} supported claims` : "No supported claims yet",
+        openClaimCount > 0 ? `${openClaimCount} open claims` : "No open claims",
+        limitCount > 0 ? `${limitCount} declared limits` : "No declared limits",
+      ]}
+      asideTitle="Recommended path"
+      asideBody="Shortlist in browse, categories, platforms, or collections first. Then use this page with stats and methodology to validate how the listing is framed."
+    >
+      <Fragment slot="actions">
+        <a href={withBase(`/tools/${slug}/`)} class="btn btn-primary">Open tool dossier</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Open stats</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="section">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Reference path</p>
+          <h2 class="section-shell__title">How to use this dossier</h2>
         </div>
       </div>
-      <div class="proof-hero__meta">
-        {proofData?.proven?.length > 0 && (
-          <div class="meta-block">
-            <span class="meta-label">Proven</span>
-            <span class="meta-value">{proofData.proven.length}</span>
-          </div>
-        )}
-        {proofData?.aspirational?.length > 0 && (
-          <div class="meta-block">
-            <span class="meta-label">Aspirational</span>
-            <span class="meta-value">{proofData.aspirational.length}</span>
-          </div>
-        )}
-        {proofData?.antiClaims?.length > 0 && (
-          <div class="meta-block">
-            <span class="meta-label">Anti-claims</span>
-            <span class="meta-value">{proofData.antiClaims.length}</span>
-          </div>
-        )}
+      <div class="rule-box">
+        <p>Use the marketplace dossier for positioning, adoption, compatibility, and related alternatives.</p>
+        <p>Use this page when you need claim-level support, observed evidence, or explicit limits before citing the listing elsewhere.</p>
       </div>
     </section>
 
@@ -103,16 +108,16 @@ function getTierLabel(score: number): string {
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Verified record</p>
-            <h2 class="section-shell__title">Proven claims</h2>
+            <p class="section-kicker">Evidence-backed reference</p>
+            <h2 class="section-shell__title">Supported claims</h2>
           </div>
         </div>
         <div class="claims-list">
           {proofData.proven.map((claim: any) => (
             <article class="claim claim-proven">
               <div class="claim-top-row">
-                <span class="badge badge-stable">Proven</span>
-                <button class="claim-copy-btn" data-claim-text={claim.statement} type="button">Copy</button>
+                <span class="badge badge-stable">Supported</span>
+                <button class="claim-copy-btn" data-claim-text={claim.statement} type="button">Copy claim</button>
               </div>
               <div class="claim-statement">{claim.statement}</div>
               {claim.evidence?.length > 0 && (
@@ -140,15 +145,15 @@ function getTierLabel(score: number): string {
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Copy block</p>
-            <h2 class="section-shell__title">Proof bullets</h2>
+            <p class="section-kicker">Copy-ready reference</p>
+            <h2 class="section-shell__title">Briefing bullets</h2>
           </div>
         </div>
         <div class="bullets-container">
           <ul id="proof-bullets-list">
             {proofData.proven.slice(0, 5).map((claim: any) => <li>{claim.statement}</li>)}
           </ul>
-          <button class="copy-btn" id="copy-proof-bullets" type="button">Copy all</button>
+          <button class="copy-btn" id="copy-proof-bullets" type="button">Copy bullets</button>
         </div>
       </section>
     )}
@@ -157,14 +162,14 @@ function getTierLabel(score: number): string {
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Not yet proven</p>
-            <h2 class="section-shell__title">Aspirational claims</h2>
+            <p class="section-kicker">Open claims</p>
+            <h2 class="section-shell__title">Unverified roadmap notes</h2>
           </div>
         </div>
         <div class="claims-list">
           {proofData.aspirational.map((claim: any) => (
             <article class="claim">
-              <span class="badge badge-beta">Aspirational</span>
+              <span class="badge badge-beta">Open</span>
               <div class="claim-statement">{claim.statement}</div>
               {claim.notes && <div class="claim-notes">{claim.notes}</div>}
             </article>
@@ -178,7 +183,7 @@ function getTierLabel(score: number): string {
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">Declared limits</p>
-            <h2 class="section-shell__title">Anti-claims</h2>
+            <h2 class="section-shell__title">What this listing does not claim</h2>
           </div>
         </div>
         <div class="claims-list">
@@ -195,8 +200,8 @@ function getTierLabel(score: number): string {
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Observed facts</p>
-            <h2 class="section-shell__title">GitHub facts</h2>
+            <p class="section-kicker">Observed signals</p>
+            <h2 class="section-shell__title">Repository and release context</h2>
           </div>
         </div>
         <div class="facts-grid">
@@ -207,7 +212,7 @@ function getTierLabel(score: number): string {
           {facts.latestRelease && <div class="fact"><span class="fact-value">{facts.latestRelease.tag}</span><span class="fact-label">Latest release</span></div>}
           {facts.license && <div class="fact"><span class="fact-value">{facts.license}</span><span class="fact-label">License</span></div>}
         </div>
-        {factsObservedAt && <p class="observed">Observed {factsObservedAt}. Verify at source if you need authoritative data.</p>}
+        {factsObservedAt && <p class="observed">Observed {factsObservedAt}. Check the source if you need authoritative current values.</p>}
       </section>
     )}
 
@@ -215,7 +220,7 @@ function getTierLabel(score: number): string {
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Operational posture</p>
+            <p class="section-kicker">Operational reference</p>
             <h2 class="section-shell__title">Clearance status</h2>
           </div>
         </div>
@@ -230,8 +235,8 @@ function getTierLabel(score: number): string {
       <section class="section">
         <div class="section-shell__header">
           <div>
-            <p class="section-kicker">Distribution</p>
-            <h2 class="section-shell__title">Tracked links</h2>
+            <p class="section-kicker">Distribution context</p>
+            <h2 class="section-shell__title">Tracked outbound links</h2>
           </div>
         </div>
         <div class="links-table-wrap">
@@ -262,20 +267,21 @@ function getTierLabel(score: number): string {
     <section class="section">
       <div class="section-shell__header">
         <div>
-          <p class="section-kicker">Related surfaces</p>
+          <p class="section-kicker">Linked surfaces</p>
           <h2 class="section-shell__title">Open next</h2>
         </div>
       </div>
       <div class="related-links">
-        {tool.press && <a href={withBase(`/press/${slug}/`)} class="btn btn-secondary">Press page</a>}
-        <a href={withBase(`/tools/${slug}/`)} class="btn btn-secondary">Tool page</a>
+        <a href={withBase(`/tools/${slug}/`)} class="btn btn-secondary">Tool dossier</a>
+        {tool.press && <a href={withBase(`/press/${slug}/`)} class="btn btn-secondary">Press reference</a>}
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Methodology</a>
         <a href={orgUrl} class="btn btn-secondary" target="_blank" rel="noopener">GitHub</a>
       </div>
     </section>
 
     <footer class="proof-footer">
       <div class="updated-banner">
-        <span class="updated-label">Last observed</span>
+        <span class="updated-label">Reference snapshot</span>
         <div class="updated-dates">
           {snapshotObservedAt && <span>{snapshotMeta.snapshotLabel}: {snapshotObservedAt}</span>}
           {factsObservedAt && <span>GitHub facts: {factsObservedAt}</span>}
@@ -297,10 +303,10 @@ function getTierLabel(score: number): string {
         await navigator.clipboard.writeText(text);
         trackEvent("copy_proof_bullets", { slug });
         this.textContent = "Copied";
-        setTimeout(() => { this.textContent = "Copy all"; }, 1500);
+        setTimeout(() => { this.textContent = "Copy bullets"; }, 1500);
       } catch {
         this.textContent = "Failed";
-        setTimeout(() => { this.textContent = "Copy all"; }, 1500);
+        setTimeout(() => { this.textContent = "Copy bullets"; }, 1500);
       }
     });
 
@@ -313,10 +319,10 @@ function getTierLabel(score: number): string {
           await navigator.clipboard.writeText(text);
           trackEvent("copy_claim", { slug, claimIndex: currentIndex });
           this.textContent = "Copied";
-          setTimeout(() => { this.textContent = "Copy"; }, 1500);
+          setTimeout(() => { this.textContent = "Copy claim"; }, 1500);
         } catch {
           this.textContent = "Failed";
-          setTimeout(() => { this.textContent = "Copy"; }, 1500);
+          setTimeout(() => { this.textContent = "Copy claim"; }, 1500);
         }
       });
     });
@@ -338,40 +344,10 @@ function getTierLabel(score: number): string {
     text-decoration: none;
   }
 
-  .proof-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.6fr);
-    gap: 1rem;
-    padding: 1.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
-      var(--color-surface);
-  }
-
-  .proof-hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 4vw, 4rem);
-    letter-spacing: -0.05em;
-  }
-
-  .one-liner {
-    margin-top: 0.8rem;
-    color: var(--color-text-muted);
-    font-size: 1rem;
-  }
-
-  .badges,
   .claim-evidence {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-  }
-
-  .proof-hero__meta {
-    display: grid;
-    gap: 0.75rem;
   }
 
   .claim-top-row {
@@ -441,11 +417,5 @@ function getTierLabel(score: number): string {
   .updated-dates {
     display: grid;
     gap: 0.2rem;
-  }
-
-  @media (max-width: 900px) {
-    .proof-hero {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
