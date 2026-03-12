@@ -12,6 +12,7 @@ const COMPARE_INDEX = path.join(REPO_ROOT, "site", "src", "pages", "compare.astr
 const COMPARE_PAGE_ROUTE = path.join(REPO_ROOT, "site", "src", "pages", "compare", "page", "[page].astro");
 const PRESETS_INDEX = path.join(REPO_ROOT, "site", "src", "pages", "tools", "presets", "index.astro");
 const PRESETS_ROUTE = path.join(REPO_ROOT, "site", "src", "pages", "tools", "presets", "[slug].astro");
+const BASE_LAYOUT = path.join(REPO_ROOT, "site", "src", "layouts", "Base.astro");
 
 describe("Marketplace route expansion contract", () => {
   it("adds compare hub routes for SEO and pagination", () => {
@@ -22,5 +23,11 @@ describe("Marketplace route expansion contract", () => {
   it("adds browse preset landing pages", () => {
     assert.equal(fs.existsSync(PRESETS_INDEX), true);
     assert.equal(fs.existsSync(PRESETS_ROUTE), true);
+  });
+
+  it("classifies compare routes under the catalog shell family", () => {
+    const source = fs.readFileSync(BASE_LAYOUT, "utf8");
+
+    assert.match(source, /currentPath\.startsWith\("\/compare\/"\)/);
   });
 });
