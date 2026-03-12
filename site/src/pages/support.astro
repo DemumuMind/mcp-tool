@@ -13,8 +13,10 @@ import { withBase } from "../lib/site-paths";
       meta={["Marketplace support", "Docs first", "Submission-aware"]}
     >
       <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
         <a href={withBase("/docs/")} class="btn btn-primary">Open docs</a>
         <a href={withBase("/submit/")} class="btn btn-secondary">Submit a tool</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Open stats</a>
       </Fragment>
     </PageHero>
 

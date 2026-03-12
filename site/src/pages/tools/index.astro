@@ -2,10 +2,13 @@
 import Base from "../../layouts/Base.astro";
 import PageHero from "../../components/PageHero.astro";
 import MarketplaceCard from "../../components/MarketplaceCard.astro";
-import { getCompatibilitySortScore, getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { getBrowsePresetModels, getCompatibilitySortScore, getMarketplaceContent } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
 
 const content = getMarketplaceContent();
 const kindOptions = [...new Set(content.catalog.primary.map((entry) => entry.kind))].sort();
+const presetModels = getBrowsePresetModels();
+const quickViewStates = Object.fromEntries(presetModels.map((preset) => [preset.slug, preset.state]));
 
 function getDaysSince(dateValue: string) {
   const timestamp = dateValue ? new Date(dateValue).getTime() : 0;
@@ -73,10 +76,10 @@ function getDaysSince(dateValue: string) {
     </div>
     <div class="preset-strip">
       <span class="results-count">Quick presets</span>
-      <button class="btn btn-secondary" type="button" data-quick-view="verified-new">Verified + New</button>
-      <button class="btn btn-secondary" type="button" data-quick-view="hosted">Hosted MCP</button>
-      <button class="btn btn-secondary" type="button" data-quick-view="multi-client">Multi-client</button>
-      <button class="btn btn-secondary" type="button" data-quick-view="builders">Builder stack</button>
+      {presetModels.map((preset) => (
+        <button class="btn btn-secondary" type="button" data-quick-view={preset.slug}>{preset.title}</button>
+      ))}
+      <a href={withBase("/tools/presets/")} class="btn btn-secondary">Preset pages</a>
     </div>
   </section>
 
@@ -92,6 +95,23 @@ function getDaysSince(dateValue: string) {
     </div>
     <div class="saved-view-status results-count" id="saved-view-status">No saved view activity yet.</div>
     <div class="active-filter-strip" id="active-filter-strip"></div>
+  </section>
+
+  <section class="section-shell">
+    <div class="section-shell__header">
+      <div>
+        <p class="section-kicker">Preset pages</p>
+        <h2 class="section-shell__title">Shareable browse entry points</h2>
+      </div>
+    </div>
+    <div class="platform-hub-grid">
+      {presetModels.map((preset) => (
+        <a href={withBase(`/tools/presets/${preset.slug}/`)} class="collection-item">
+          <span class="collection-item-name">{preset.title}</span>
+          <span class="collection-item-desc">{preset.summary}</span>
+        </a>
+      ))}
+    </div>
   </section>
 
   <div class="results-count" id="results-count"></div>
@@ -127,12 +147,7 @@ function getDaysSince(dateValue: string) {
   <script is:inline>
     const pageSize = 12;
     const savedViewsKey = "demumumind-mcp-saved-views";
-    const quickViews = {
-      "verified-new": { verified: true, freshness: "new", sort: "newest" },
-      hosted: { source: "external", sort: "quality" },
-      "multi-client": { sort: "compatibility" },
-      builders: { pricing: "open-source", verified: true, sort: "quality" },
-    };
+    const quickViews = ${JSON.stringify(quickViewStates)};
     const filterLabels = {
       q: "Search",
       category: "Category",

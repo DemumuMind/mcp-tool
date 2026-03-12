@@ -1,0 +1,64 @@
+---
+import Base from "../../../layouts/Base.astro";
+import PageHero from "../../../components/PageHero.astro";
+import MarketplaceCard from "../../../components/MarketplaceCard.astro";
+import { applyBrowseState, getBrowsePresetModel, getBrowsePresetModels, getMarketplaceContent } from "../../../lib/content/marketplace.ts";
+import { withBase } from "../../../lib/site-paths";
+
+export function getStaticPaths() {
+  return getBrowsePresetModels().map((preset) => ({
+    params: { slug: preset.slug },
+  }));
+}
+
+const preset = getBrowsePresetModel(Astro.params.slug || "");
+if (!preset) {
+  throw new Error(`Unknown browse preset: ${Astro.params.slug}`);
+}
+
+const tools = applyBrowseState(getMarketplaceContent().catalog.primary, preset.state).slice(0, 18);
+---
+
+<Base
+  title={`${preset.title} - Browse Preset - DemumuMind MCP`}
+  description={preset.description}
+  currentPath={`/tools/presets/${preset.slug}/`}
+>
+  <div class="page-content">
+    <PageHero
+      eyebrow={preset.eyebrow}
+      title={preset.title}
+      lede={preset.description}
+      meta={[`${preset.count} matching listings`, `Average score ${preset.averageScore}`, "Shareable browse mode"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase(preset.browseHref)} class="btn btn-primary">Open filtered browse</a>
+        <a href={withBase("/tools/presets/")} class="btn btn-secondary">All preset pages</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Why this preset exists</p>
+          <h2 class="section-shell__title">Use this as a fast starting point</h2>
+        </div>
+      </div>
+      <ul class="ops-list">
+        {preset.rationale.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Featured listings</p>
+          <h2 class="section-shell__title">What this preset surfaces first</h2>
+        </div>
+      </div>
+      <div class="featured-tools-grid">
+        {tools.map((tool) => <MarketplaceCard entry={tool} compact />)}
+      </div>
+    </section>
+  </div>
+</Base>

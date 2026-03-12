@@ -1,0 +1,69 @@
+---
+import Base from "../../../layouts/Base.astro";
+import PageHero from "../../../components/PageHero.astro";
+import { getBrowsePresetModels } from "../../../lib/content/marketplace.ts";
+import { withBase } from "../../../lib/site-paths";
+
+const presets = getBrowsePresetModels();
+---
+
+<Base
+  title="Browse Presets - DemumuMind MCP"
+  description="Preset landing pages for common MCP marketplace discovery modes."
+  currentPath="/tools/presets/"
+>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Preset pages"
+      title="Jump into a curated browse mode."
+      lede="Preset pages package a repeatable discovery angle, then hand off to the full filtered marketplace when you need depth."
+      meta={[`${presets.length} preset pages`, "Shareable entry points", "Marketplace-linked"]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse all tools</a>
+        <a href={withBase("/compare/")} class="btn btn-secondary">Open compare hub</a>
+      </Fragment>
+    </PageHero>
+
+    <div class="compare-lane-grid">
+      {presets.map((preset) => (
+        <article class="compare-lane-card">
+          <p class="section-kicker">{preset.eyebrow}</p>
+          <h2><a href={withBase(`/tools/presets/${preset.slug}/`)}>{preset.title}</a></h2>
+          <p>{preset.description}</p>
+          <div class="stats-grid">
+            <div class="metric-card">
+              <span class="metric-card__label">Listings</span>
+              <strong class="metric-card__value">{preset.count}</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-card__label">Average score</span>
+              <strong class="metric-card__value">{preset.averageScore}</strong>
+            </div>
+          </div>
+          <div class="button-row">
+            <a href={withBase(`/tools/presets/${preset.slug}/`)} class="btn btn-secondary">Open preset page</a>
+            <a href={withBase(preset.browseHref)} class="btn btn-secondary">Open filtered browse</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .compare-lane-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1rem;
+  }
+
+  .compare-lane-card {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    border-radius: 1.25rem;
+    background: color-mix(in srgb, var(--color-surface, rgba(255, 255, 255, 0.02)) 94%, transparent);
+  }
+</style>

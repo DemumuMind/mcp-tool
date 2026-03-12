@@ -1,25 +1,45 @@
 ---
 import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
+import { withBase } from "../../lib/site-paths";
 ---
 
 <Base
-  title="Name Clearance Engine - DemumuMind"
-  description="Check namespace availability across npm, PyPI, GitHub, crates.io, Docker Hub, and domain registries before committing to a name."
+  title="Clearance Reference - DemumuMind MCP"
+  description="Secondary reference for namespace clearance before shipping MCP brands, products, and packages."
   currentPath="/clearance/"
+  routeFamily="reference"
 >
   <div class="clearance-page">
     <PageHero
-      eyebrow="Signal scan"
-      title="Check a name before you ship it."
-      lede="Deterministic namespace clearance across package registries, code hosts, and domains before a brand becomes a migration problem."
+      eyebrow="Reference surface"
+      title="Namespace clearance reference before a brand becomes a migration problem"
+      lede="This page now acts as a supporting reference for naming and reservation checks. Discovery should still begin in the marketplace; use clearance when you are already narrowing a product, package, or tool identity."
       meta={["GREEN / YELLOW / RED output", "Local-first", "Reservation links included"]}
+      asideTitle="Where it fits"
+      asideBody="Use clearance after tool/category/platform discovery, when you need brand and package confidence before launch or rename decisions."
     >
       <Fragment slot="actions">
-        <a href="https://github.com/DemumuMind/clearance-opinion-engine" class="btn btn-primary" rel="noopener">GitHub</a>
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+        <a href="https://github.com/DemumuMind/clearance-opinion-engine" class="btn btn-secondary" rel="noopener">GitHub</a>
         <a href="https://www.npmjs.com/package/@demumumind/clearance-opinion-engine" class="btn btn-secondary" rel="noopener">npm package</a>
       </Fragment>
     </PageHero>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">How to use this page</p>
+          <h2 class="section-shell__title">Validate naming risk after you shortlist the product</h2>
+        </div>
+      </div>
+      <ul class="ops-list">
+        <li>Use browse and dossiers first to understand the product, market lane, and adoption context.</li>
+        <li>Use this page when you need namespace availability before shipping a new tool, package, or rename.</li>
+        <li>Use methodology and stats if you need the broader marketplace framing around naming and launch discipline.</li>
+      </ul>
+    </section>
 
     <section class="section-shell">
       <div class="section-shell__header">

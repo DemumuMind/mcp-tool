@@ -3,9 +3,13 @@ import assert from "node:assert/strict";
 import {
   buildCanonicalCompareHref,
   buildComparisonModel,
+  getComparisonHubGroups,
   getComparisonPairs,
+  getFeaturedComparisonPairs,
   getCompatibilitySortScore,
   getRelatedTools,
+  isCanonicalComparisonPair,
+  normalizeComparisonPair,
 } from "../../site/src/lib/content/marketplace.ts";
 
 describe("marketplace comparisons", () => {
@@ -44,6 +48,38 @@ describe("marketplace comparisons", () => {
       assert.ok(pair.left.slug < pair.right.slug, "pairs should be lexically canonicalized");
       assert.equal(mirroredKeys.has(`${pair.right.slug}|${pair.left.slug}`), false);
     }
+  });
+
+  it("normalizes and recognizes canonical comparison pair order", () => {
+    assert.deepEqual(
+      normalizeComparisonPair("comfy-headless", "backpropagate"),
+      ["backpropagate", "comfy-headless"],
+    );
+    assert.equal(isCanonicalComparisonPair("backpropagate", "comfy-headless"), true);
+    assert.equal(isCanonicalComparisonPair("comfy-headless", "backpropagate"), false);
+  });
+
+  it("caps compare generation by total pair count and per-tool exposure", () => {
+    const pairs = getComparisonPairs({ maxPairs: 12, maxPairsPerTool: 2, minPairScore: 4 });
+    const counts = new Map();
+
+    assert.ok(pairs.length <= 12);
+    for (const pair of pairs) {
+      counts.set(pair.left.slug, (counts.get(pair.left.slug) || 0) + 1);
+      counts.set(pair.right.slug, (counts.get(pair.right.slug) || 0) + 1);
+    }
+
+    assert.ok([...counts.values()].every((count) => count <= 2));
+  });
+
+  it("builds featured comparison pairs and grouped compare hubs", () => {
+    const featured = getFeaturedComparisonPairs(10);
+    const groups = getComparisonHubGroups(6);
+
+    assert.ok(featured.length > 0);
+    assert.ok(featured.length <= 10);
+    assert.ok(groups.length > 0);
+    assert.ok(groups.every((group) => group.pairs.length > 0));
   });
 
   it("filters related tools more aggressively than generic platform overlap", () => {

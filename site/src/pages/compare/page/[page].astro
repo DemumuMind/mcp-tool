@@ -1,0 +1,81 @@
+---
+import Base from "../../../layouts/Base.astro";
+import PageHero from "../../../components/PageHero.astro";
+import { COMPARE_PAGE_SIZE, getCompareHubModel } from "../../../lib/content/marketplace.ts";
+import { withBase } from "../../../lib/site-paths";
+
+export function getStaticPaths() {
+  const firstPage = getCompareHubModel(1, COMPARE_PAGE_SIZE);
+  return Array.from({ length: Math.max(0, firstPage.totalPages - 1) }, (_, index) => ({
+    params: { page: String(index + 2) },
+  }));
+}
+
+const page = Number(Astro.params.page || "2");
+const hub = getCompareHubModel(page, COMPARE_PAGE_SIZE);
+---
+
+<Base
+  title={`Compare MCP Tools - Page ${hub.page} - DemumuMind MCP`}
+  description={`Page ${hub.page} of curated MCP comparison routes.`}
+  currentPath={`/compare/page/${hub.page}/`}
+>
+  <div class="page-content">
+    <PageHero
+      eyebrow="Compare archive"
+      title={`Compare archive page ${hub.page}`}
+      lede="Paginated compare routes keep the archive discoverable without exploding the public surface."
+      meta={[`${hub.totalPairs} total compare pages`, `Page ${hub.page} of ${hub.totalPages}`, `${hub.pagePairs.length} entries on this page`]}
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/compare/")} class="btn btn-primary">Back to compare hub</a>
+        <a href={withBase("/tools/")} class="btn btn-secondary">Browse tools</a>
+      </Fragment>
+    </PageHero>
+
+    <div class="compare-hub-grid">
+      {hub.pagePairs.map((pair) => (
+        <article class="compare-hub-card">
+          <div class="compare-hub-card__meta">
+            <span class="tag">{pair.left.primaryCategoryTitle}</span>
+            <span class="results-count">{pair.reason}</span>
+          </div>
+          <h3><a href={withBase(pair.href)}>{pair.left.name} vs {pair.right.name}</a></h3>
+          <p>
+            {pair.left.name} ({pair.left.quality.score}) vs {pair.right.name} ({pair.right.quality.score})
+          </p>
+          <a href={withBase(pair.href)} class="btn btn-secondary">Open comparison</a>
+        </article>
+      ))}
+    </div>
+
+    <div class="button-row">
+      {hub.page > 1 && <a href={withBase(hub.page === 2 ? "/compare/" : `/compare/page/${hub.page - 1}/`)} class="btn btn-secondary">Previous page</a>}
+      {hub.page < hub.totalPages && <a href={withBase(`/compare/page/${hub.page + 1}/`)} class="btn btn-secondary">Next page</a>}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .compare-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1rem;
+  }
+
+  .compare-hub-card {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-border, rgba(255, 255, 255, 0.12)) 78%, transparent);
+    border-radius: 1.25rem;
+    background: color-mix(in srgb, var(--color-surface, rgba(255, 255, 255, 0.02)) 94%, transparent);
+  }
+
+  .compare-hub-card__meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+</style>

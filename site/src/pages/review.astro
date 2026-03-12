@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import overrides from '../data/overrides.json';
 import projects from '../data/projects.json';
 import releases from '../data/releases.json';
+import { withBase } from "../lib/site-paths";
 
 // Get entries needing review
 const overrideEntries = Object.entries(overrides as Record<string, any>);
@@ -41,21 +42,44 @@ function isTaglineOk(t: string) { return t && t.length <= 90; }
 ---
 
 <Base
-  title="Override Review — DemumuMind"
-  description="Review draft overrides awaiting human approval."
+  title="Override Review Reference - DemumuMind MCP"
+  description="Secondary editorial QA reference for marketplace overrides awaiting graduation."
   currentPath="/review/"
+  routeFamily="reference"
 >
   <div class="review-page">
     <PageHero
-      eyebrow="Editorial QA"
-      title="Review what graduates."
-      lede="Draft overrides stay here until a human confirms the metadata, copy, and completeness are ready to stop being machine-edited."
+      eyebrow="Reference surface"
+      title="Editorial QA reference for override graduation"
+      lede="This page remains a review console, but it now acts as a supporting editorial reference. Primary discovery still belongs to browse, dossiers, stats, and methodology."
       meta={[
         `${needsReview.length} awaiting review`,
         `${graduated.length} graduated`,
         "Override audit console",
       ]}
-    />
+      asideTitle="Use this after marketplace review"
+      asideBody="Open the actual tool dossier first if you need product context. Use this page when you need to inspect override completeness before freezing editorial metadata."
+    >
+      <Fragment slot="actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/stats/")} class="btn btn-secondary">Open stats</a>
+        <a href={withBase("/methodology/")} class="btn btn-secondary">Open methodology</a>
+      </Fragment>
+    </PageHero>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Reference path</p>
+          <h2 class="section-shell__title">Review here, but validate in the marketplace</h2>
+        </div>
+      </div>
+      <ul class="ops-list">
+        <li>Use tool dossiers for public-facing positioning, adoption, compatibility, and alternatives.</li>
+        <li>Use this page when you need to inspect override completeness and graduation readiness.</li>
+        <li>Use stats and methodology if you need marketplace-wide context before graduating editorial metadata.</li>
+      </ul>
+    </section>
 
     {needsReview.length > 0 && (
       <section class="review-section">
@@ -159,7 +183,7 @@ function isTaglineOk(t: string) { return t && t.length <= 90; }
                 {/* Links */}
                 <div class="review-links">
                   <a href={`https://github.com/DemumuMind/${repo}`} target="_blank" rel="noopener">GitHub</a>
-                  {project && <a href={`/tools/${repo}/`}>Tool page</a>}
+                  {project && <a href={withBase(`/tools/${repo}/`)}>Tool dossier</a>}
                   {release && <a href={release.url} target="_blank" rel="noopener">Latest release</a>}
                 </div>
               </div>
@@ -181,7 +205,7 @@ function isTaglineOk(t: string) { return t && t.length <= 90; }
           return (
             <div class="graduated-row">
               {project
-                ? <a href={`/tools/${repo}/`} class="grad-name">{project.name || repo}</a>
+                ? <a href={withBase(`/tools/${repo}/`)} class="grad-name">{project.name || repo}</a>
                 : <span class="grad-name">{repo}</span>
               }
               <span class={`badge badge-${entry.stability || 'beta'}`}>{entry.stability || '?'}</span>
