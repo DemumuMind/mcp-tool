@@ -41,9 +41,7 @@ const hub = getCompareHubModel(page, COMPARE_PAGE_SIZE);
             <span class="results-count">{pair.reason}</span>
           </div>
           <h3><a href={withBase(pair.href)}>{pair.left.name} vs {pair.right.name}</a></h3>
-          <p>
-            {pair.left.name} ({pair.left.quality.score}) vs {pair.right.name} ({pair.right.quality.score})
-          </p>
+          <p>{pair.left.quality.score} vs {pair.right.quality.score}</p>
           <a href={withBase(pair.href)} class="btn btn-secondary">Open comparison</a>
         </article>
       ))}
