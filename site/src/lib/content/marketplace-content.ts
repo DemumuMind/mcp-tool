@@ -46,6 +46,10 @@ export const PLATFORM_META = {
     title: "Claude Ecosystem",
     description: "Tools that explicitly mention Claude, Claude Code, or Claude-adjacent workflows.",
   },
+  chatgpt: {
+    title: "ChatGPT",
+    description: "Hosted MCP products that explicitly support ChatGPT or OpenAI-connected workflows.",
+  },
   vscode: {
     title: "VS Code",
     description: "Extensions and tooling built for VS Code-based MCP workflows.",
@@ -53,6 +57,14 @@ export const PLATFORM_META = {
   cursor: {
     title: "Cursor",
     description: "MCP surfaces that explicitly support Cursor or Cursor-style IDE flows.",
+  },
+  windsurf: {
+    title: "Windsurf",
+    description: "MCP products that explicitly target Windsurf agent and IDE workflows.",
+  },
+  gemini: {
+    title: "Gemini",
+    description: "MCP products that advertise Gemini support or Gemini-oriented agent workflows.",
   },
   desktop: {
     title: "Desktop Apps",
