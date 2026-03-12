@@ -134,6 +134,24 @@ export interface StatsSnapshot {
   };
 }
 
+export interface RelatedToolMatch {
+  entry: CatalogEntry;
+  score: number;
+  reason: string;
+  compareHref: string;
+}
+
+export interface ComparisonModel {
+  left: CatalogEntry;
+  right: CatalogEntry;
+  compareTitle: string;
+  sections: {
+    compatibility: string[];
+    adoption: string[];
+    signals: string[];
+  };
+}
+
 export interface MarketplaceContent {
   catalog: {
     all: CatalogEntry[];
@@ -558,4 +576,85 @@ export function getCollectionModel(slug: string) {
 
 export function getDocEntry(slug: string) {
   return marketplaceContent.docs.find((doc) => doc.slug === slug);
+}
+
+const genericPlatformSlugs = new Set(["any-mcp-client", "terminal", "desktop"]);
+
+function buildCompareHref(leftSlug: string, rightSlug: string) {
+  return `/compare/${leftSlug}-vs-${rightSlug}/`;
+}
+
+export function getRelatedTools(slug: string): RelatedToolMatch[] {
+  const tool = getToolDossier(slug);
+  if (!tool) return [];
+
+  const toolTags = new Set(tool.tags);
+  const specificPlatforms = new Set(
+    tool.compatibility.platforms
+      .map((platform) => platform.slug)
+      .filter((platform) => !genericPlatformSlugs.has(platform)),
+  );
+
+  return marketplaceContent.catalog.primary
+    .filter((entry) => entry.slug !== tool.slug)
+    .map((entry) => {
+      const sharedTags = entry.tags.filter((tag) => toolTags.has(tag));
+      const sharedSpecificPlatforms = entry.compatibility.platforms.filter((platform) => specificPlatforms.has(platform.slug));
+      const categoryMatch = entry.primaryCategory === tool.primaryCategory;
+      const score = (categoryMatch ? 4 : 0) + sharedTags.length * 2 + sharedSpecificPlatforms.length * 3;
+      let reason = "";
+
+      if (categoryMatch && sharedTags.length > 0) reason = "Same category and shared workflow tags";
+      else if (categoryMatch) reason = "Same primary category";
+      else if (sharedSpecificPlatforms.length > 0) reason = "Shared explicit client compatibility";
+      else if (sharedTags.length > 0) reason = "Shared workflow tags";
+
+      return {
+        entry,
+        score,
+        reason,
+        compareHref: buildCompareHref(tool.slug, entry.slug),
+      };
+    })
+    .filter((candidate) => candidate.score >= 4)
+    .sort((a, b) => b.score - a.score || b.entry.quality.score - a.entry.quality.score)
+    .slice(0, 4);
+}
+
+export function buildComparisonModel(leftSlug: string, rightSlug: string): ComparisonModel {
+  const left = getToolDossier(leftSlug);
+  const right = getToolDossier(rightSlug);
+
+  if (!left || !right) {
+    throw new Error(`Unknown comparison pair: ${leftSlug} vs ${rightSlug}`);
+  }
+
+  const leftPlatforms = left.compatibility.platforms.map((platform) => platform.title).join(", ") || "No explicit platform hints";
+  const rightPlatforms = right.compatibility.platforms.map((platform) => platform.title).join(", ") || "No explicit platform hints";
+
+  return {
+    left,
+    right,
+    compareTitle: `${left.name} vs ${right.name}`,
+    sections: {
+      compatibility: [
+        `${left.name}: ${leftPlatforms}`,
+        `${right.name}: ${rightPlatforms}`,
+        `${left.name} transports: ${left.compatibility.transports.join(", ") || "No explicit transport hints"}`,
+        `${right.name} transports: ${right.compatibility.transports.join(", ") || "No explicit transport hints"}`,
+      ],
+      adoption: [
+        `${left.name} install: ${left.install || "Docs / hosted access"}`,
+        `${right.name} install: ${right.install || "Docs / hosted access"}`,
+        `${left.name} pricing: ${left.pricing}`,
+        `${right.name} pricing: ${right.pricing}`,
+      ],
+      signals: [
+        `${left.name} quality: ${left.quality.score} (${left.quality.label})`,
+        `${right.name} quality: ${right.quality.score} (${right.quality.label})`,
+        `${left.name} freshness: ${left.freshnessLabel}`,
+        `${right.name} freshness: ${right.freshnessLabel}`,
+      ],
+    },
+  };
 }

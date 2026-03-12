@@ -1,0 +1,77 @@
+---
+import Base from "../../layouts/Base.astro";
+import MarketplaceCard from "../../components/MarketplaceCard.astro";
+import { buildComparisonModel, getMarketplaceContent, getRelatedTools } from "../../lib/content/marketplace.ts";
+import { withBase } from "../../lib/site-paths";
+
+export function getStaticPaths() {
+  return getMarketplaceContent().catalog.primary.flatMap((entry) =>
+    getRelatedTools(entry.slug).map((match) => ({
+      params: {
+        left: entry.slug,
+        right: match.entry.slug,
+      },
+    })),
+  );
+}
+
+const comparison = buildComparisonModel(Astro.params.left || "", Astro.params.right || "");
+---
+
+<Base title={`${comparison.compareTitle} - DemumuMind MCP`} description={`Compare ${comparison.left.name} and ${comparison.right.name} across compatibility, adoption, and quality signals.`} currentPath={`/compare/${comparison.left.slug}-vs-${comparison.right.slug}/`}>
+  <div class="page-content">
+    <section class="page-hero">
+      <p class="eyebrow">Comparison</p>
+      <h1 class="page-hero__title">{comparison.compareTitle}</h1>
+      <p class="page-hero__lede">
+        Side-by-side comparison for adoption path, compatibility, and marketplace signals.
+      </p>
+      <div class="page-hero__actions">
+        <a href={withBase(`/tools/${comparison.left.slug}/`)} class="btn btn-secondary">Open {comparison.left.name}</a>
+        <a href={withBase(`/tools/${comparison.right.slug}/`)} class="btn btn-secondary">Open {comparison.right.name}</a>
+      </div>
+    </section>
+
+    <div class="compare-grid">
+      <MarketplaceCard entry={comparison.left} />
+      <MarketplaceCard entry={comparison.right} />
+    </div>
+
+    <section class="section-split">
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Compatibility</p>
+            <h2 class="section-shell__title">Client and runtime fit</h2>
+          </div>
+        </div>
+        <ul class="ops-list">
+          {comparison.sections.compatibility.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+      <div class="section-shell">
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Adoption</p>
+            <h2 class="section-shell__title">Setup and pricing</h2>
+          </div>
+        </div>
+        <ul class="ops-list">
+          {comparison.sections.adoption.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Signals</p>
+          <h2 class="section-shell__title">Quality and freshness snapshot</h2>
+        </div>
+      </div>
+      <ul class="ops-list">
+        {comparison.sections.signals.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+  </div>
+</Base>
