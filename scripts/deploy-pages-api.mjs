@@ -54,15 +54,12 @@ async function getOidcToken() {
 }
 
 async function findArtifactUrl() {
-  const repo = required("GITHUB_REPOSITORY");
-  const runId = required("GITHUB_RUN_ID");
-  const artifactName = process.env.PAGES_ARTIFACT_NAME || "github-pages";
-  const data = await githubJson(`https://api.github.com/repos/${repo}/actions/runs/${runId}/artifacts?per_page=100`);
-  const artifact = (data.artifacts || []).find((entry) => entry.name === artifactName && !entry.expired);
-  if (!artifact?.url) {
-    throw new Error(`Unable to find non-expired artifact named "${artifactName}" in run ${runId}`);
+  const directUrl = process.env.PAGES_ARTIFACT_URL;
+  if (directUrl) {
+    return directUrl;
   }
-  return artifact.url;
+
+  throw new Error("Missing required environment variable: PAGES_ARTIFACT_URL");
 }
 
 async function createDeployment({ artifactUrl, oidcToken }) {
