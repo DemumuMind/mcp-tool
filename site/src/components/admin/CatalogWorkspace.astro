@@ -1,0 +1,356 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface ToolItem {
+  slug: string;
+  name: string;
+  tagline?: string;
+  category?: string;
+  featured?: boolean;
+  publicProof?: boolean;
+  tags?: string[];
+  lifecycle?: string;
+  draftStatus?: string;
+  draftReason?: string;
+}
+
+interface DraftItem {
+  id: string;
+  slug: string;
+  name?: string;
+  status?: string;
+  tagline?: string;
+  category?: string;
+  reason?: string;
+  tags?: string[];
+  featured?: boolean;
+  publicProof?: boolean;
+}
+
+interface Props {
+  tools: ToolItem[];
+  drafts: DraftItem[];
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { tools = [], drafts = [], csrfToken, adminUser } = Astro.props;
+const canEdit = Boolean(adminUser && hasCapability(adminUser.role, "catalog.edit"));
+const editorId = "catalog-editor";
+---
+
+<section class="catalog-workspace reveal-stage">
+  <article class="catalog-card catalog-card--editor">
+    <header class="catalog-card__header">
+      <div>
+        <span class="catalog-card__kicker">CatalogWorkspace</span>
+        <h2>Stage catalog metadata</h2>
+      </div>
+      <StatusPill label={canEdit ? "Editable" : "Read-only"} tone={canEdit ? "success" : "warning"} />
+    </header>
+
+    <form
+      id={editorId}
+      class="catalog-form"
+      method="post"
+      action={withBase("/api/admin/tools/")}
+      data-admin-json-form
+      data-csrf={csrfToken || ""}
+      data-omit-empty-fields="true"
+      data-success-message="Catalog draft saved. Refreshing workspace..."
+      data-testid="catalog-editor"
+    >
+      <input type="hidden" name="id" value="" />
+      <label>
+        Slug
+        <input type="text" name="slug" placeholder="tool-compass" required disabled={!canEdit} />
+      </label>
+      <label>
+        Name
+        <input type="text" name="name" placeholder="Tool Compass" disabled={!canEdit} />
+      </label>
+      <label class="catalog-form__wide">
+        Tagline
+        <textarea name="tagline" rows="3" placeholder="Sharper public copy for the staged export." disabled={!canEdit} />
+      </label>
+      <label>
+        Category
+        <input type="text" name="category" placeholder="devtools" disabled={!canEdit} />
+      </label>
+      <label>
+        Tags
+        <input type="text" name="tags" placeholder="search, ops, receipts" disabled={!canEdit} />
+      </label>
+      <label>
+        Featured
+        <select name="featured" disabled={!canEdit}>
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </label>
+      <label>
+        Public proof
+        <select name="publicProof" disabled={!canEdit}>
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </label>
+      <label>
+        Draft state
+        <select name="submitForReview" disabled={!canEdit}>
+          <option value="false">Keep as draft</option>
+          <option value="true">Submit for review</option>
+        </select>
+      </label>
+      <label class="catalog-form__wide">
+        Reason
+        <textarea name="reason" rows="3" placeholder="Why this metadata change should ship now." disabled={!canEdit} />
+      </label>
+      <div class="catalog-form__footer">
+        <div class="catalog-form__actions">
+          <button type="submit" disabled={!canEdit}>Save staged draft</button>
+          <button type="button" class="catalog-form__secondary" data-admin-reset-form={`#${editorId}`} disabled={!canEdit}>New draft</button>
+        </div>
+        <p data-admin-form-status class="catalog-form__status"></p>
+      </div>
+    </form>
+  </article>
+
+  <div class="catalog-stack">
+    <article class="catalog-card">
+      <header class="catalog-card__header">
+        <div>
+          <span class="catalog-card__kicker">Live tools</span>
+          <h2>Public-facing inventory</h2>
+        </div>
+        <StatusPill label={`${tools.length} tools`} tone="system" />
+      </header>
+
+      <div class="catalog-list">
+        {tools.slice(0, 8).map((tool) => (
+          <div class="catalog-item">
+            <div class="catalog-item__header">
+              <div>
+                <strong>{tool.name}</strong>
+                <span>{tool.slug}</span>
+              </div>
+              <div class="catalog-item__pills">
+                <StatusPill label={tool.draftStatus || tool.lifecycle || "published"} tone={tool.draftStatus ? "warning" : "success"} />
+                {tool.featured && <StatusPill label="featured" tone="system" />}
+              </div>
+            </div>
+            <p>{tool.tagline || "No tagline staged yet."}</p>
+            <div class="catalog-item__meta">
+              <span>{tool.category || "uncategorized"}</span>
+              <span>{tool.publicProof ? "proof-ready" : "proof pending"}</span>
+              <span>{tool.tags?.join(", ") || "no tags"}</span>
+            </div>
+            {tool.draftReason && <p class="catalog-item__reason">{tool.draftReason}</p>}
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <article class="catalog-card">
+      <header class="catalog-card__header">
+        <div>
+          <span class="catalog-card__kicker">Draft queue</span>
+          <h2>Staged changes awaiting export</h2>
+        </div>
+        <StatusPill label={`${drafts.length} drafts`} tone={drafts.length ? "warning" : "success"} />
+      </header>
+
+      <div class="catalog-list">
+        {drafts.length === 0 ? (
+          <p class="catalog-empty">No staged catalog drafts yet.</p>
+        ) : (
+          drafts.slice(0, 8).map((draft) => (
+            <div class="catalog-item">
+              <div class="catalog-item__header">
+                <div>
+                  <strong>{draft.slug}</strong>
+                  <span>{draft.category || "uncategorized"}</span>
+                </div>
+                <StatusPill label={draft.status || "draft"} tone={draft.status === "in_review" ? "warning" : "system"} />
+              </div>
+              <p>{draft.tagline || "No staged tagline."}</p>
+                    <div class="catalog-item__meta">
+                      <span>{draft.tags?.join(", ") || "no tags"}</span>
+                      <span>{draft.reason || "No rationale recorded."}</span>
+                    </div>
+                    <button
+                      type="button"
+                      class="catalog-item__action"
+                      data-admin-populate-form={`#${editorId}`}
+                      data-admin-payload={JSON.stringify({
+                        id: draft.id,
+                        slug: draft.slug,
+                        name: draft.name || "",
+                        tagline: draft.tagline || "",
+                        category: draft.category || "",
+                        tags: draft.tags || [],
+                        featured: draft.featured ?? false,
+                        publicProof: draft.publicProof ?? false,
+                        submitForReview: draft.status === "in_review",
+                        reason: draft.reason || "",
+                      })}
+                      disabled={!canEdit}
+                    >
+                      Edit draft
+                    </button>
+                  </div>
+                ))
+              )}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .catalog-workspace,
+  .catalog-stack,
+  .catalog-list,
+  .catalog-form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .catalog-workspace {
+    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.45fr);
+    align-items: start;
+  }
+
+  .catalog-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .catalog-card__header,
+  .catalog-item__header,
+  .catalog-item__pills,
+  .catalog-form__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .catalog-card__kicker,
+  .catalog-item__reason,
+  .catalog-item__meta {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .catalog-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalog-form__wide,
+  .catalog-form__footer {
+    grid-column: 1 / -1;
+  }
+
+  .catalog-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .catalog-form label {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.92rem;
+  }
+
+  .catalog-form input,
+  .catalog-form select,
+  .catalog-form textarea,
+  .catalog-form button {
+    min-height: 2.9rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .catalog-form textarea {
+    min-height: 5rem;
+    resize: vertical;
+  }
+
+  .catalog-form button {
+    min-width: 12rem;
+    border-radius: 999px;
+    border-color: rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .catalog-form__secondary,
+  .catalog-item__action {
+    min-width: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .catalog-form button[disabled],
+  .catalog-form input[disabled],
+  .catalog-form select[disabled],
+  .catalog-form textarea[disabled],
+  .catalog-item__action[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .catalog-item,
+  .catalog-empty {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.95rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .catalog-item span,
+  .catalog-item p,
+  .catalog-empty,
+  .catalog-form__status {
+    color: var(--color-text-muted);
+  }
+
+  .catalog-form__status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1080px) {
+    .catalog-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .catalog-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

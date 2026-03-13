@@ -1,0 +1,24 @@
+---
+export const prerender = false;
+
+import TelemetryWorkspace from "../../../components/admin/TelemetryWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("telemetry");
+const state = await loadAdminState();
+const moduleData = await getModuleData("telemetry", state);
+---
+
+<AdminLayout title="Admin Telemetry" currentPath="/admin/telemetry/">
+  <SectionPage page={page} />
+  <TelemetryWorkspace
+    snapshots={moduleData.snapshots}
+    rollup={moduleData.rollup}
+    notifications={moduleData.notifications || []}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

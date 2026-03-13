@@ -1,0 +1,296 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface SubmissionItem {
+  id: string;
+  slug: string;
+  status: string;
+  priority?: string;
+  lane?: string;
+  pitch?: string;
+  reason?: string;
+  assigneeId?: string;
+  reviewNotes?: string;
+}
+
+interface QueueHealth {
+  submissions?: number;
+  throughput?: number;
+  stuckCount?: number;
+}
+
+interface Props {
+  submissions: SubmissionItem[];
+  queueHealth: QueueHealth;
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { submissions = [], queueHealth = {}, csrfToken, adminUser } = Astro.props;
+const canMutateSubmissions = Boolean(adminUser && hasCapability(adminUser.role, "submissions.edit"));
+---
+
+<section class="submission-workspace reveal-stage">
+  <article class="submission-card submission-card--summary">
+    <div>
+      <span class="submission-card__kicker">Queue controls</span>
+      <h2>Live intake workflow</h2>
+    </div>
+    <div class="submission-summary-grid">
+      <div>
+        <strong>{submissions.length}</strong>
+        <span>Tracked submissions</span>
+      </div>
+      <div>
+        <strong>{queueHealth.stuckCount || 0}</strong>
+        <span>Stuck above SLA</span>
+      </div>
+      <div>
+        <strong>{queueHealth.throughput || 0}</strong>
+        <span>Recent throughput</span>
+      </div>
+    </div>
+  </article>
+
+  <div class="submission-board">
+    {submissions.length === 0 ? (
+      <article class="submission-card">
+        <p class="submission-empty">No intake items are active right now.</p>
+      </article>
+    ) : (
+      submissions.slice(0, 8).map((submission) => (
+        <article class="submission-card" data-testid={`submission-card-${submission.slug}`}>
+          <div class="submission-card__header">
+            <div>
+              <span class="submission-card__kicker">{submission.lane || "intake"}</span>
+              <h3>{submission.slug}</h3>
+            </div>
+            <div class="submission-card__pills">
+              <StatusPill label={submission.status} tone={submission.status === "accepted" ? "success" : submission.status === "needs-info" ? "warning" : "system"} />
+              <StatusPill label={submission.priority || "medium"} tone={submission.priority === "high" ? "danger" : "warning"} />
+            </div>
+          </div>
+
+          <p class="submission-copy">{submission.pitch || submission.reason || "Review this intake item and move it through the queue."}</p>
+          {submission.reviewNotes && <p class="submission-note">{submission.reviewNotes}</p>}
+
+          <div class="submission-actions">
+            <form
+              class="submission-actions__form"
+              method="post"
+              action={withBase("/api/admin/commands/")}
+              data-admin-command-form
+              data-csrf={csrfToken || ""}
+              data-testid={`submission-escalate-${submission.id}`}
+            >
+              <input type="hidden" name="command" value="queue.escalate" />
+              <input type="hidden" name="entityType" value="submission" />
+              <input type="hidden" name="entityId" value={submission.id} />
+              <textarea
+                name="reason"
+                rows="2"
+                required
+                placeholder="Why this submission needs escalated attention"
+                disabled={!canMutateSubmissions}
+              />
+              <div class="submission-actions__footer">
+                <button type="submit" disabled={!canMutateSubmissions}>Escalate</button>
+                <p class="submission-status" data-admin-form-status></p>
+              </div>
+            </form>
+
+            <form
+              class="submission-actions__form"
+              method="post"
+              action={withBase("/api/admin/commands/")}
+              data-admin-command-form
+              data-csrf={csrfToken || ""}
+              data-testid={`submission-request-info-${submission.id}`}
+            >
+              <input type="hidden" name="command" value="submission.request_info" />
+              <input type="hidden" name="entityType" value="submission" />
+              <input type="hidden" name="entityId" value={submission.id} />
+              <textarea
+                name="reason"
+                rows="2"
+                required
+                placeholder="What evidence or clarification is still missing"
+                disabled={!canMutateSubmissions}
+              />
+              <div class="submission-actions__footer">
+                <button type="submit" disabled={!canMutateSubmissions}>Request info</button>
+                <p class="submission-status" data-admin-form-status></p>
+              </div>
+            </form>
+
+            <form
+              class="submission-actions__form"
+              method="post"
+              action={withBase("/api/admin/commands/")}
+              data-admin-command-form
+              data-csrf={csrfToken || ""}
+              data-testid={`submission-accept-${submission.id}`}
+            >
+              <input type="hidden" name="command" value="submission.accept" />
+              <input type="hidden" name="entityType" value="submission" />
+              <input type="hidden" name="entityId" value={submission.id} />
+              <textarea
+                name="reason"
+                rows="2"
+                required
+                placeholder="Why this submission is ready to advance"
+                disabled={!canMutateSubmissions}
+              />
+              <div class="submission-actions__footer">
+                <button type="submit" disabled={!canMutateSubmissions}>Accept</button>
+                <p class="submission-status" data-admin-form-status></p>
+              </div>
+            </form>
+          </div>
+        </article>
+      ))
+    )}
+  </div>
+</section>
+
+<style>
+  .submission-workspace {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .submission-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .submission-card--summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .submission-summary-grid,
+  .submission-board,
+  .submission-actions {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .submission-summary-grid {
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+  }
+
+  .submission-summary-grid strong,
+  .submission-card__header h3 {
+    font-size: 1.25rem;
+    letter-spacing: -0.04em;
+  }
+
+  .submission-summary-grid span,
+  .submission-card__kicker,
+  .submission-note {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .submission-card__header,
+  .submission-card__pills,
+  .submission-actions__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .submission-copy,
+  .submission-empty {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .submission-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .submission-actions__form {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.85rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .submission-actions__form textarea {
+    width: 100%;
+    min-height: 4.3rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+    resize: vertical;
+  }
+
+  .submission-actions__form button {
+    min-height: 2.7rem;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .submission-actions__form button[disabled],
+  .submission-actions__form textarea[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .submission-status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.86rem;
+  }
+
+  .submission-status[data-tone="danger"] {
+    color: var(--color-danger);
+  }
+
+  .submission-status[data-tone="success"] {
+    color: var(--color-success);
+  }
+
+  .submission-status[data-tone="system"] {
+    color: var(--color-system);
+  }
+
+  @media (max-width: 1120px) {
+    .submission-actions {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 780px) {
+    .submission-card--summary {
+      grid-template-columns: 1fr;
+    }
+
+    .submission-summary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

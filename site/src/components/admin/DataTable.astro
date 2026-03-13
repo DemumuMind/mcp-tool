@@ -1,0 +1,107 @@
+---
+import type { AdminTable } from "./content";
+
+interface Props {
+  table: AdminTable;
+}
+
+const { table } = Astro.props;
+---
+
+<section class="admin-table-shell reveal-stage">
+  <div class="admin-table-shell__header">
+    <div>
+      <span class="admin-table-shell__kicker">Operator table</span>
+      <h2>{table.title}</h2>
+    </div>
+    <p>{table.caption}</p>
+  </div>
+  <div class="admin-table-shell__wrap">
+    <table>
+      <thead>
+        <tr>
+          {table.columns.map((column) => (
+            <th>{column}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {table.rows.map((row) => (
+          <tr>
+            {row.map((cell) => (
+              <td>{cell}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .admin-table-shell {
+    display: grid;
+    gap: 1rem;
+    padding: 1.05rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)),
+      rgba(12, 16, 21, 0.9);
+  }
+
+  .admin-table-shell__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .admin-table-shell__header h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.04em;
+  }
+
+  .admin-table-shell__header p,
+  td {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+  }
+
+  .admin-table-shell__kicker {
+    color: var(--color-system);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .admin-table-shell__wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.85rem 0.7rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  th {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+</style>

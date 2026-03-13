@@ -1,0 +1,373 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface PromotionItem {
+  id?: string;
+  week?: string;
+  status?: string;
+  slugs?: string[];
+  promotionType?: string;
+  notes?: string;
+}
+
+interface CampaignItem {
+  id: string;
+  week: string;
+  status?: string;
+  slugs?: string[];
+  channels?: string[];
+  notes?: string;
+}
+
+interface ExportItem {
+  id?: string;
+  artifactType?: string;
+  status?: string;
+  receiptId?: string | null;
+}
+
+interface Props {
+  promotions: PromotionItem[];
+  campaigns: CampaignItem[];
+  worthy: [string, { worthy?: boolean; score?: number }][],
+  exports: ExportItem[];
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { promotions = [], campaigns = [], worthy = [], exports = [], csrfToken, adminUser } = Astro.props;
+const canManage = Boolean(adminUser && hasCapability(adminUser.role, "promotions.manage"));
+const canExport = Boolean(adminUser && hasCapability(adminUser.role, "exports.manage"));
+const editorId = "promotions-editor";
+---
+
+<section class="promotions-workspace reveal-stage">
+  <article class="promotions-card promotions-card--planner">
+    <header class="promotions-card__header">
+      <div>
+        <span class="promotions-card__kicker">CampaignPlanner</span>
+        <h2>Shape the next promotion window</h2>
+      </div>
+      <StatusPill label={canManage ? "Operator controls" : "Read-only"} tone={canManage ? "success" : "warning"} />
+    </header>
+
+    <form
+      id={editorId}
+      class="promotions-form"
+      method="post"
+      action={withBase("/api/admin/promotions/")}
+      data-admin-json-form
+      data-csrf={csrfToken || ""}
+      data-omit-empty-fields="true"
+      data-success-message="Campaign saved. Refreshing workspace..."
+      data-testid="campaign-editor"
+    >
+      <input type="hidden" name="id" value="" />
+      <label>
+        Week
+        <input type="text" name="week" placeholder="2026-W11" required disabled={!canManage} />
+      </label>
+      <label>
+        Status
+        <select name="status" disabled={!canManage}>
+          <option value="draft">Draft</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="approved">Approved</option>
+          <option value="published">Published</option>
+        </select>
+      </label>
+      <label class="promotions-form__wide">
+        Slugs
+        <textarea name="slugs" rows="3" placeholder="tool-compass, registry-stats" disabled={!canManage} />
+      </label>
+      <label class="promotions-form__wide">
+        Channels
+        <textarea name="channels" rows="3" placeholder="presskit, homepage, compare-strip" disabled={!canManage} />
+      </label>
+      <label class="promotions-form__wide">
+        Notes
+        <textarea name="notes" rows="3" placeholder="Why this bundle is worth shipping now." disabled={!canManage} />
+      </label>
+      <div class="promotions-form__footer">
+        <div class="promotions-form__actions">
+          <button type="submit" disabled={!canManage}>Save campaign</button>
+          <button type="button" class="promotions-form__secondary" data-admin-reset-form={`#${editorId}`} disabled={!canManage}>New campaign</button>
+        </div>
+        <p class="promotions-form__status" data-admin-form-status></p>
+      </div>
+    </form>
+
+    <form
+      class="promotions-command"
+      method="post"
+      action={withBase("/api/admin/commands/")}
+      data-admin-command-form
+      data-csrf={csrfToken || ""}
+      data-testid="promotion-rerun-export"
+    >
+      <input type="hidden" name="command" value="rerun_export" />
+      <input type="hidden" name="entityType" value="campaign" />
+      <input type="hidden" name="entityId" value={campaigns[0]?.id || promotions[0]?.week || "manual"} />
+      <textarea name="reason" rows="2" placeholder="Why the promotion export should be rebuilt now." disabled={!canExport} />
+      <div class="promotions-form__footer">
+        <button type="submit" disabled={!canExport}>Rerun export</button>
+        <p class="promotions-form__status" data-admin-form-status></p>
+      </div>
+    </form>
+  </article>
+
+  <div class="promotions-stack">
+    <article class="promotions-card">
+      <header class="promotions-card__header">
+        <div>
+          <span class="promotions-card__kicker">PromotionWorkbench</span>
+          <h2>Campaign queue</h2>
+        </div>
+        <StatusPill label={`${campaigns.length} campaigns`} tone="system" />
+      </header>
+
+      <div class="promotions-list">
+        {campaigns.slice(0, 6).map((campaign) => (
+          <div class="promotions-item" data-testid={`campaign-item-${campaign.id}`}>
+            <div class="promotions-item__header">
+              <div>
+                <strong>{campaign.week}</strong>
+                <span>{campaign.id}</span>
+              </div>
+              <StatusPill label={campaign.status || "draft"} tone={campaign.status === "published" ? "success" : "warning"} />
+            </div>
+            <p>{campaign.notes || "No campaign notes recorded."}</p>
+            <div class="promotions-item__meta">
+              <span>{campaign.channels?.join(", ") || "no channels"}</span>
+              <span>{campaign.slugs?.join(", ") || "no slugs"}</span>
+            </div>
+            <button
+              type="button"
+              class="promotions-item__action"
+              data-admin-populate-form={`#${editorId}`}
+              data-admin-payload={JSON.stringify({
+                id: campaign.id,
+                week: campaign.week,
+                status: campaign.status || "draft",
+                slugs: campaign.slugs || [],
+                channels: campaign.channels || [],
+                notes: campaign.notes || "",
+              })}
+              disabled={!canManage}
+            >
+              Edit campaign
+            </button>
+          </div>
+        ))}
+
+        {promotions.slice(0, 3).map((promotion) => (
+          <div class="promotions-item">
+            <div class="promotions-item__header">
+              <div>
+                <strong>{promotion.week || "Current queue"}</strong>
+                <span>{promotion.promotionType || "own"}</span>
+              </div>
+              <StatusPill label={promotion.status || "draft"} tone="system" />
+            </div>
+            <p>{promotion.notes || "Public promo queue projection."}</p>
+            <div class="promotions-item__meta">
+              <span>{promotion.slugs?.join(", ") || "no slugs"}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <article class="promotions-card">
+      <header class="promotions-card__header">
+        <div>
+          <span class="promotions-card__kicker">Worthy signals</span>
+          <h2>Promotion candidates and receipts</h2>
+        </div>
+        <StatusPill label={`${worthy.length} tracked`} tone="warning" />
+      </header>
+
+      <div class="promotions-split">
+        <div class="promotions-list">
+          {worthy.slice(0, 8).map(([slug, entry]) => (
+            <div class="promotions-item">
+              <div class="promotions-item__header">
+                <div>
+                  <strong>{slug}</strong>
+                  <span>score {entry?.score ?? "n/a"}</span>
+                </div>
+                <StatusPill label={entry?.worthy ? "worthy" : "watch"} tone={entry?.worthy ? "success" : "warning"} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="promotions-list">
+          {exports.slice(0, 6).map((entry) => (
+            <div class="promotions-item">
+              <div class="promotions-item__header">
+                <div>
+                  <strong>{entry.artifactType || "artifact"}</strong>
+                  <span>{entry.receiptId || entry.id || "pending"}</span>
+                </div>
+                <StatusPill label={entry.status || "pending"} tone={entry.status === "verified" ? "success" : "warning"} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .promotions-workspace,
+  .promotions-stack,
+  .promotions-list,
+  .promotions-form,
+  .promotions-split {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .promotions-workspace {
+    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.35fr);
+    align-items: start;
+  }
+
+  .promotions-card,
+  .promotions-item,
+  .promotions-command {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .promotions-item,
+  .promotions-command {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .promotions-card__header,
+  .promotions-item__header,
+  .promotions-form__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .promotions-card__kicker,
+  .promotions-item span,
+  .promotions-item__meta {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .promotions-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .promotions-form__wide,
+  .promotions-form__footer {
+    grid-column: 1 / -1;
+  }
+
+  .promotions-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .promotions-form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .promotions-form input,
+  .promotions-form select,
+  .promotions-form textarea,
+  .promotions-form button,
+  .promotions-command textarea,
+  .promotions-command button {
+    min-height: 2.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .promotions-form textarea,
+  .promotions-command textarea {
+    min-height: 4.5rem;
+    resize: vertical;
+  }
+
+  .promotions-form button,
+  .promotions-command button {
+    border-radius: 999px;
+    border-color: rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .promotions-form__secondary,
+  .promotions-item__action {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .promotions-form button[disabled],
+  .promotions-form input[disabled],
+  .promotions-form select[disabled],
+  .promotions-form textarea[disabled],
+  .promotions-command button[disabled],
+  .promotions-command textarea[disabled],
+  .promotions-item__action[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .promotions-item p,
+  .promotions-form__status {
+    color: var(--color-text-muted);
+  }
+
+  .promotions-form__status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1080px) {
+    .promotions-workspace {
+      grid-template-columns: 1fr;
+    }
+
+    .promotions-split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .promotions-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

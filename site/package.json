@@ -8,11 +8,18 @@
     "preview": "astro preview",
     "astro": "astro"
   },
+  "overrides": {
+    "devalue": "^5.6.4"
+  },
   "dependencies": {
+    "@astrojs/node": "^9.5.5",
     "@astrojs/sitemap": "^3.7.0",
     "@fontsource/cormorant-garamond": "^5.2.11",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "@fontsource/instrument-sans": "^5.2.8",
-    "astro": "^5.17.1"
+    "astro": "^5.18.1",
+    "pg": "^8.20.0",
+    "proper-lockfile": "^4.1.2",
+    "sql.js": "^1.14.1"
   }
 }

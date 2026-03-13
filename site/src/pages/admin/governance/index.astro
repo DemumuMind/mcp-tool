@@ -1,0 +1,27 @@
+---
+export const prerender = false;
+
+import GovernanceWorkspace from "../../../components/admin/GovernanceWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { buildAdminSnapshot, buildPublicArtifactPreview, getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("governance");
+const state = await loadAdminState();
+const snapshot = buildAdminSnapshot(state);
+const moduleData = await getModuleData("governance", state);
+const preview = buildPublicArtifactPreview(state);
+---
+
+<AdminLayout title="Admin Governance" currentPath="/admin/governance/">
+  <SectionPage page={page} />
+  <GovernanceWorkspace
+    approvals={moduleData.approvals}
+    commands={snapshot.commandCenter}
+    exports={moduleData.exports}
+    preview={preview}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

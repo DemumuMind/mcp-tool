@@ -1059,6 +1059,32 @@ export function getComparisonPairs(options: ComparisonPairOptions = {}): Compari
   return selected;
 }
 
+let publishedComparisonHrefSet: Set<string> | null = null;
+let publishedComparisonPairs: ComparisonPair[] | null = null;
+
+function getPublishedComparisonPairs() {
+  if (!publishedComparisonPairs) {
+    publishedComparisonPairs = getComparisonPairs({ maxPairs: MAX_COMPARE_PAIRS });
+  }
+
+  return publishedComparisonPairs;
+}
+
+function getPublishedComparisonHrefSet() {
+  if (!publishedComparisonHrefSet) {
+    publishedComparisonHrefSet = new Set(
+      getPublishedComparisonPairs().map((pair) => pair.href),
+    );
+  }
+
+  return publishedComparisonHrefSet;
+}
+
+export function getPublishedCompareHref(leftSlug: string, rightSlug: string) {
+  const canonicalHref = buildCanonicalCompareHref(leftSlug, rightSlug);
+  return getPublishedComparisonHrefSet().has(canonicalHref) ? canonicalHref : "/compare/";
+}
+
 export function getFeaturedComparisonPairs(limit = 24) {
   return getComparisonPairs({
     maxPairs: limit,
@@ -1152,11 +1178,7 @@ export function buildComparisonModel(leftSlug: string, rightSlug: string): Compa
     right.compatibility.platforms[0] ? `Choose ${right.name} if you already target ${right.compatibility.platforms[0].title}.` : `Choose ${right.name} if you want a lighter-weight compatibility surface.`,
     right.install ? `Choose ${right.name} if you want a direct install path.` : `Choose ${right.name} if docs-led or hosted onboarding is acceptable.`,
   ];
-  const lanePairs = getComparisonPairs({
-    maxPairs: 12,
-    maxPairsPerTool: 6,
-    minPairScore: 5,
-  })
+  const lanePairs = getPublishedComparisonPairs()
     .filter((pair) => pair.href !== buildCanonicalCompareHref(left.slug, right.slug))
     .filter(
       (pair) =>

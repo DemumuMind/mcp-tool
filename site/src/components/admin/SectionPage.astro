@@ -1,0 +1,54 @@
+---
+import AdminHero from "./AdminHero.astro";
+import DataTable from "./DataTable.astro";
+import FeedList from "./FeedList.astro";
+import MetricStrip from "./MetricStrip.astro";
+import ModuleGrid from "./ModuleGrid.astro";
+import PanelCluster from "./PanelCluster.astro";
+import type { AdminPageContent } from "./content";
+
+interface ModuleCard {
+  title: string;
+  href: string;
+  code: string;
+  detail: string;
+}
+
+interface Props {
+  page: AdminPageContent;
+  modules?: ModuleCard[];
+}
+
+const { page, modules = [] } = Astro.props;
+---
+
+<div class="admin-page-flow">
+  <AdminHero badge={page.badge} eyebrow={page.eyebrow} title={page.title} lede={page.lede} meta={page.meta} />
+  <MetricStrip items={page.metrics} />
+  {modules.length > 0 && <ModuleGrid title="Domain surfaces" kicker="Jump directly into a workspace" items={modules} />}
+  <div class="admin-page-flow__split">
+    <FeedList title="Action queue" kicker="Do next" items={page.actionItems} />
+    <FeedList title="Watch list" kicker="Risk radar" items={page.incidentItems} />
+  </div>
+  <PanelCluster items={page.panels} />
+  <DataTable table={page.table} />
+</div>
+
+<style>
+  .admin-page-flow {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .admin-page-flow__split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 920px) {
+    .admin-page-flow__split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

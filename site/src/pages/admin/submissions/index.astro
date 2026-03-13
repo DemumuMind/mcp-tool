@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import SubmissionWorkspace from "../../../components/admin/SubmissionWorkspace.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("submissions");
+const state = await loadAdminState();
+const moduleData = await getModuleData("submissions", state);
+---
+
+<AdminLayout title="Admin Submissions" currentPath="/admin/submissions/">
+  <SectionPage page={page} />
+  <SubmissionWorkspace
+    submissions={moduleData.submissions}
+    queueHealth={moduleData.queueHealth}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
 import { kit } from "../../lib/kit";
@@ -8,6 +10,9 @@ import { withBase } from "../../lib/site-paths";
 
 const title = `Submission Queue - ${kit.site.title || "DemumuMind"}`;
 const description = "Track the status of tool submissions for promotion and experimentation.";
+const adminSubmissionsUrl = String(import.meta.env.PUBLIC_ADMIN_URL || "").trim().replace(/\/$/, "")
+  ? `${String(import.meta.env.PUBLIC_ADMIN_URL || "").trim().replace(/\/$/, "")}/submissions/`
+  : "";
 
 let submissions = [];
 const submissionsPath = path.join(process.cwd(), "src/data/submissions.json");
@@ -244,6 +249,13 @@ function renderCompactRows(items) {
         </p>
         <p>
           Learn the intake contract on <a href={withBase("/submit/")}>Get Featured</a>.
+        </p>
+        <p>
+          {adminSubmissionsUrl ? (
+            <>Internal operators should use the <a href={adminSubmissionsUrl}>admin submissions workspace</a> for assignment, SLA escalation, and approval-gated decisions.</>
+          ) : (
+            <>Internal operator actions run on the private admin host. Configure <code>PUBLIC_ADMIN_URL</code> to expose a direct submissions workspace link from this public queue page.</>
+          )}
         </p>
       </div>
     </section>

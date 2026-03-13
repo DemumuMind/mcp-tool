@@ -1,0 +1,185 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface AdminUserEntry {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status?: string;
+}
+
+interface Props {
+  users: AdminUserEntry[];
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { users = [], csrfToken, adminUser } = Astro.props;
+const canManageUsers = Boolean(adminUser && hasCapability(adminUser.role, "settings.manageUsers"));
+---
+
+<section class="access-workspace reveal-stage">
+  <article class="access-card">
+    <header class="access-card__header">
+      <div>
+        <span class="access-card__kicker">Access management</span>
+        <h2>Rotate internal credentials</h2>
+      </div>
+      <StatusPill label={canManageUsers ? "Owner controls" : "Read-only"} tone={canManageUsers ? "success" : "warning"} />
+    </header>
+
+    <p class="access-card__copy">
+      Stored credentials back the signed admin session flow. Owners can rotate passwords here; first-run bootstrap can
+      also be done through <code>npm run admin:set-password -- --email owner@demumumind.internal</code>.
+    </p>
+
+    <div class="access-list">
+      {users.map((user) => (
+        <form
+          class="access-user"
+          method="post"
+          action={withBase("/api/admin/users/credentials/")}
+          data-admin-credential-form
+          data-csrf={csrfToken || ""}
+          data-testid={`access-user-${user.role.toLowerCase()}`}
+        >
+          <input type="hidden" name="email" value={user.email} />
+          <div class="access-user__header">
+            <div>
+              <strong>{user.name}</strong>
+              <span>{user.email}</span>
+            </div>
+            <div class="access-user__meta">
+              <StatusPill label={user.role} tone="system" />
+              <StatusPill label={user.status || "active"} tone={user.status === "active" ? "success" : "warning"} />
+            </div>
+          </div>
+          <label>
+            New password
+            <input
+              type="password"
+              name="password"
+              placeholder="At least 8 characters"
+              minlength="8"
+              required
+              disabled={!canManageUsers}
+            />
+          </label>
+          <div class="access-user__footer">
+            <button type="submit" disabled={!canManageUsers}>Rotate password</button>
+            <p class="access-status" data-admin-form-status></p>
+          </div>
+        </form>
+      ))}
+    </div>
+  </article>
+</section>
+
+<style>
+  .access-workspace,
+  .access-card,
+  .access-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .access-card {
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .access-card__header,
+  .access-user__header,
+  .access-user__footer,
+  .access-user__meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .access-card__kicker {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .access-card__copy,
+  .access-user__header span {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .access-card__copy code {
+    color: var(--color-system);
+    font-family: var(--font-mono);
+  }
+
+  .access-user {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0.95rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .access-user label {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .access-user input {
+    min-height: 2.9rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .access-user button {
+    min-height: 2.7rem;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .access-user button[disabled],
+  .access-user input[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .access-status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.86rem;
+  }
+
+  .access-status[data-tone="danger"] {
+    color: var(--color-danger);
+  }
+
+  .access-status[data-tone="success"] {
+    color: var(--color-success);
+  }
+
+  .access-status[data-tone="system"] {
+    color: var(--color-system);
+  }
+</style>

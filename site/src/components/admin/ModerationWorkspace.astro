@@ -1,0 +1,376 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface OverrideItem {
+  id: string;
+  slug: string;
+  status?: string;
+  severity?: string;
+  notes?: string;
+  reason?: string;
+  policy?: string;
+}
+
+interface ReviewItem {
+  id: string;
+  title?: string;
+  status?: string;
+  reviewerId?: string;
+  summary?: string;
+}
+
+interface ApprovalItem {
+  id: string;
+  title?: string;
+  status?: string;
+  reason?: string;
+}
+
+interface Props {
+  overrides: OverrideItem[];
+  reviews: ReviewItem[];
+  approvals?: ApprovalItem[];
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { overrides = [], reviews = [], approvals = [], csrfToken, adminUser } = Astro.props;
+const canEdit = Boolean(adminUser && hasCapability(adminUser.role, "moderation.edit"));
+const canApprove = Boolean(adminUser && hasCapability(adminUser.role, "approvals.review"));
+const editorId = "moderation-editor";
+---
+
+<section class="moderation-workspace reveal-stage">
+  <article class="moderation-card moderation-card--editor">
+    <header class="moderation-card__header">
+      <div>
+        <span class="moderation-card__kicker">ModerationWorkspace</span>
+        <h2>Stage override review work</h2>
+      </div>
+      <StatusPill label={canEdit ? "Editable" : "Read-only"} tone={canEdit ? "success" : "warning"} />
+    </header>
+
+    <form
+      id={editorId}
+      class="moderation-form"
+      method="post"
+      action={withBase("/api/admin/overrides/")}
+      data-admin-json-form
+      data-csrf={csrfToken || ""}
+      data-omit-empty-fields="true"
+      data-success-message="Override work item saved. Refreshing workspace..."
+      data-testid="override-editor"
+    >
+      <input type="hidden" name="id" value="" />
+      <label>
+        Slug
+        <input type="text" name="slug" placeholder="ledger-suite" required disabled={!canEdit} />
+      </label>
+      <label>
+        Policy
+        <select name="policy" disabled={!canEdit}>
+          <option value="metadata">Metadata</option>
+          <option value="content_safety">Content safety</option>
+          <option value="verification">Verification</option>
+          <option value="promotion">Promotion</option>
+        </select>
+      </label>
+      <label>
+        Severity
+        <select name="severity" disabled={!canEdit}>
+          <option value="warning">Warning</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+      </label>
+      <label>
+        Status
+        <select name="status" disabled={!canEdit}>
+          <option value="draft">Draft</option>
+          <option value="in_review">In review</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </label>
+      <label class="moderation-form__wide">
+        Notes
+        <textarea name="notes" rows="3" placeholder="Sanitization, policy, and safety notes for reviewers." disabled={!canEdit} />
+      </label>
+      <label class="moderation-form__wide">
+        Reason
+        <textarea name="reason" rows="3" placeholder="Why this override requires moderation attention." disabled={!canEdit} />
+      </label>
+      <div class="moderation-form__footer">
+        <div class="moderation-form__actions">
+          <button type="submit" disabled={!canEdit}>Save override item</button>
+          <button type="button" class="moderation-form__secondary" data-admin-reset-form={`#${editorId}`} disabled={!canEdit}>New item</button>
+        </div>
+        <p class="moderation-form__status" data-admin-form-status></p>
+      </div>
+    </form>
+  </article>
+
+  <div class="moderation-stack">
+    <article class="moderation-card">
+      <header class="moderation-card__header">
+        <div>
+          <span class="moderation-card__kicker">OverrideWorkbench</span>
+          <h2>Open moderation queue</h2>
+        </div>
+        <StatusPill label={`${overrides.length} items`} tone={overrides.length ? "warning" : "success"} />
+      </header>
+
+      <div class="moderation-list">
+        {overrides.length === 0 ? (
+          <p class="moderation-empty">No override work items are staged.</p>
+        ) : (
+          overrides.slice(0, 8).map((item) => (
+            <div class="moderation-item" data-testid={`override-item-${item.id}`}>
+              <div class="moderation-item__header">
+                <div>
+                  <strong>{item.slug}</strong>
+                  <span>{item.policy || "metadata"}</span>
+                </div>
+                <div class="moderation-item__pills">
+                  <StatusPill label={item.status || "draft"} tone={item.status === "approved" ? "success" : "warning"} />
+                  <StatusPill label={item.severity || "warning"} tone={item.severity === "critical" ? "danger" : "warning"} />
+                </div>
+              </div>
+              <p>{item.notes || item.reason || "No moderation note recorded yet."}</p>
+              <button
+                type="button"
+                class="moderation-item__action"
+                data-admin-populate-form={`#${editorId}`}
+                data-admin-payload={JSON.stringify({
+                  id: item.id,
+                  slug: item.slug,
+                  policy: item.policy || "metadata",
+                  severity: item.severity || "warning",
+                  status: item.status || "draft",
+                  notes: item.notes || "",
+                  reason: item.reason || "",
+                })}
+                disabled={!canEdit}
+              >
+                Edit item
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+    </article>
+
+    <article class="moderation-card">
+      <header class="moderation-card__header">
+        <div>
+          <span class="moderation-card__kicker">ReviewDesk</span>
+          <h2>Reviews and approvals</h2>
+        </div>
+        <StatusPill label={`${reviews.length} reviews`} tone="system" />
+      </header>
+
+      <div class="moderation-list">
+        {reviews.slice(0, 6).map((review) => (
+          <form
+            class="moderation-item"
+            method="post"
+            action={withBase("/api/admin/commands/")}
+            data-admin-command-form
+            data-csrf={csrfToken || ""}
+            data-testid={`review-item-${review.id}`}
+          >
+            <input type="hidden" name="command" value="review.reopen" />
+            <input type="hidden" name="entityType" value="review" />
+            <input type="hidden" name="entityId" value={review.id} />
+            <div class="moderation-item__header">
+              <div>
+                <strong>{review.title || review.id}</strong>
+                <span>{review.reviewerId || "reviewer unassigned"}</span>
+              </div>
+              <StatusPill label={review.status || "pending"} tone={review.status === "approved" ? "success" : "warning"} />
+            </div>
+            <p>{review.summary || "Review detail unavailable."}</p>
+            <textarea name="reason" rows="2" placeholder="Why this review should be reopened." disabled={!canEdit} />
+            <div class="moderation-form__footer">
+              <button type="submit" disabled={!canEdit}>Reopen review</button>
+              <p class="moderation-form__status" data-admin-form-status></p>
+            </div>
+          </form>
+        ))}
+
+        {approvals.slice(0, 4).map((approval) => (
+          <form
+            class="moderation-item"
+            method="post"
+            action={withBase("/api/admin/commands/")}
+            data-admin-command-form
+            data-csrf={csrfToken || ""}
+            data-testid={`override-approval-${approval.id}`}
+          >
+            <input type="hidden" name="command" value="approval.approve" />
+            <input type="hidden" name="entityType" value="approval" />
+            <input type="hidden" name="entityId" value={approval.id} />
+            <div class="moderation-item__header">
+              <div>
+                <strong>{approval.title || approval.id}</strong>
+                <span>{approval.reason || "Awaiting reviewer sign-off."}</span>
+              </div>
+              <StatusPill label={approval.status || "pending"} tone="warning" />
+            </div>
+            <textarea name="reason" rows="2" placeholder="Decision note" disabled={!canApprove} />
+            <div class="moderation-form__footer">
+              <button type="submit" disabled={!canApprove}>Approve override</button>
+              <p class="moderation-form__status" data-admin-form-status></p>
+            </div>
+          </form>
+        ))}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .moderation-workspace,
+  .moderation-stack,
+  .moderation-list,
+  .moderation-form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .moderation-workspace {
+    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.35fr);
+    align-items: start;
+  }
+
+  .moderation-card,
+  .moderation-item {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .moderation-item {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .moderation-card__header,
+  .moderation-item__header,
+  .moderation-item__pills,
+  .moderation-form__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .moderation-card__kicker,
+  .moderation-item span {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .moderation-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .moderation-form__wide,
+  .moderation-form__footer {
+    grid-column: 1 / -1;
+  }
+
+  .moderation-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .moderation-form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .moderation-form input,
+  .moderation-form select,
+  .moderation-form textarea,
+  .moderation-form button,
+  .moderation-item textarea,
+  .moderation-item button {
+    min-height: 2.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .moderation-form textarea,
+  .moderation-item textarea {
+    min-height: 4.5rem;
+    resize: vertical;
+  }
+
+  .moderation-form button,
+  .moderation-item button {
+    border-radius: 999px;
+    border-color: rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .moderation-form__secondary,
+  .moderation-item__action {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .moderation-form button[disabled],
+  .moderation-form input[disabled],
+  .moderation-form select[disabled],
+  .moderation-form textarea[disabled],
+  .moderation-item button[disabled],
+  .moderation-item textarea[disabled],
+  .moderation-item__action[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .moderation-item p,
+  .moderation-empty,
+  .moderation-form__status {
+    color: var(--color-text-muted);
+  }
+
+  .moderation-form__status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1080px) {
+    .moderation-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .moderation-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

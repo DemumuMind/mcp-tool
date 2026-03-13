@@ -1,7 +1,9 @@
 ---
+export const prerender = true;
+
 import Base from "../../layouts/Base.astro";
 import MarketplaceCard from "../../components/MarketplaceCard.astro";
-import { getMarketplaceContent, getRelatedTools, getToolDossier } from "../../lib/content/marketplace.ts";
+import { getMarketplaceContent, getPublishedCompareHref, getRelatedTools, getToolDossier } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
@@ -182,7 +184,7 @@ const related = getRelatedTools(tool.slug);
               <MarketplaceCard entry={match.entry} compact />
               <div class="marketplace-related-stack__footer">
                 <span class="results-count">{match.reason}</span>
-                <a href={withBase(match.compareHref)} class="btn btn-secondary">Compare</a>
+                <a href={withBase(getPublishedCompareHref(tool.slug, match.entry.slug))} class="btn btn-secondary">Compare</a>
               </div>
             </div>
           ))}

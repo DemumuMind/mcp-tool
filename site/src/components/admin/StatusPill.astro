@@ -1,0 +1,51 @@
+---
+interface Props {
+  label: string;
+  tone?: "default" | "danger" | "warning" | "success" | "system";
+}
+
+const { label, tone = "default" } = Astro.props;
+---
+
+<span class:list={["admin-pill", `admin-pill--${tone}`]}>{label}</span>
+
+<style>
+  .admin-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.85rem;
+    padding: 0.18rem 0.72rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .admin-pill--danger {
+    border-color: rgba(220, 106, 88, 0.24);
+    background: rgba(220, 106, 88, 0.12);
+    color: var(--color-danger);
+  }
+
+  .admin-pill--warning {
+    border-color: rgba(217, 107, 59, 0.24);
+    background: rgba(217, 107, 59, 0.12);
+    color: var(--color-warning);
+  }
+
+  .admin-pill--success {
+    border-color: rgba(120, 197, 140, 0.24);
+    background: rgba(120, 197, 140, 0.12);
+    color: var(--color-success);
+  }
+
+  .admin-pill--system {
+    border-color: rgba(122, 141, 255, 0.24);
+    background: rgba(122, 141, 255, 0.12);
+    color: var(--color-system);
+  }
+</style>

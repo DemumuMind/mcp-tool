@@ -12,9 +12,13 @@
     "test": "node --test tests/unit/*.test.mjs",
     "test:invariants": "node --test tests/invariants/*.test.mjs",
     "test:all": "node --test tests/unit/*.test.mjs tests/invariants/*.test.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "e2e:install": "playwright install chromium",
     "kit:init": "node scripts/kit-bootstrap.mjs",
     "kit:selftest": "node scripts/kit-selftest.mjs",
     "kit:migrate": "node scripts/kit-migrate.mjs",
+    "admin:set-password": "node scripts/admin-set-password.mjs",
     "readiness": "node scripts/promotion-readiness.mjs",
     "daily:note": "node scripts/gen-daily-note.mjs",
     "daily:dynamic": "node scripts/gen-daily-dynamic.mjs",
@@ -22,5 +26,9 @@
   },
   "dependencies": {
     "yazl": "^3.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "pg-mem": "^3.0.14"
   }
 }

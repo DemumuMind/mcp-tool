@@ -1,0 +1,119 @@
+---
+import { withBase } from "../../lib/site-paths";
+
+interface ModuleCard {
+  title: string;
+  href: string;
+  code: string;
+  detail: string;
+}
+
+interface Props {
+  title: string;
+  kicker: string;
+  items: ModuleCard[];
+}
+
+const { title, kicker, items } = Astro.props;
+---
+
+<section class="admin-module-grid-shell reveal-stage">
+  <div class="admin-module-grid-shell__header">
+    <span class="admin-module-grid-shell__kicker">{kicker}</span>
+    <h2>{title}</h2>
+  </div>
+  <div class="admin-module-grid">
+    {items.map((item) => (
+      <a class="admin-module-card" href={withBase(item.href)}>
+        <div class="admin-module-card__header">
+          <span class="admin-module-card__code">{item.code}</span>
+          <h3>{item.title}</h3>
+        </div>
+        <p>{item.detail}</p>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .admin-module-grid-shell {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .admin-module-grid-shell__header {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .admin-module-grid-shell__kicker {
+    color: var(--color-signal);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .admin-module-grid-shell h2 {
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+  }
+
+  .admin-module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .admin-module-card {
+    display: grid;
+    gap: 0.8rem;
+    min-height: 100%;
+    padding: 1rem;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)),
+      rgba(12, 16, 21, 0.9);
+    text-decoration: none;
+    transition: transform 140ms ease, border-color 140ms ease;
+  }
+
+  .admin-module-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(108, 224, 255, 0.2);
+  }
+
+  .admin-module-card__header {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+  }
+
+  .admin-module-card__code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    min-height: 2rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-system);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .admin-module-card h3 {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .admin-module-card p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+</style>

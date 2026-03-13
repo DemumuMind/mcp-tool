@@ -1,0 +1,24 @@
+---
+export const prerender = false;
+
+import ModerationWorkspace from "../../../components/admin/ModerationWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("moderation");
+const state = await loadAdminState();
+const moduleData = await getModuleData("moderation", state);
+---
+
+<AdminLayout title="Admin Moderation" currentPath="/admin/moderation/">
+  <SectionPage page={page} />
+  <ModerationWorkspace
+    overrides={moduleData.overrides}
+    reviews={moduleData.reviews}
+    approvals={moduleData.approvals || []}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

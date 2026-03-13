@@ -1,0 +1,334 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface CommandItem {
+  action: string;
+  label: string;
+  description: string;
+  risk: string;
+}
+
+interface ApprovalItem {
+  id: string;
+  title: string;
+  status: string;
+  priority?: string;
+  requiredRoles?: string[];
+  reason?: string;
+}
+
+interface ExportItem {
+  id?: string;
+  artifactType?: string;
+  status?: string;
+  createdAt?: string;
+  receiptId?: string;
+}
+
+interface PreviewArtifact {
+  fileName: string;
+  count: number;
+  checksum: string;
+}
+
+interface Props {
+  approvals: ApprovalItem[];
+  commands: CommandItem[];
+  exports: ExportItem[];
+  preview: { artifacts: PreviewArtifact[]; receipt: { id: string; status: string } };
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const {
+  approvals = [],
+  commands = [],
+  exports = [],
+  preview,
+  csrfToken,
+  adminUser,
+} = Astro.props;
+
+const canApprove = Boolean(adminUser && hasCapability(adminUser.role, "approvals.review"));
+const canManageEnvironment = Boolean(adminUser && hasCapability(adminUser.role, "settings.manageEnvironment"));
+const canManageExports = Boolean(adminUser && hasCapability(adminUser.role, "exports.manage"));
+const canManageGovernance = Boolean(adminUser && hasCapability(adminUser.role, "governance.manage"));
+
+function isCommandEnabled(action: string) {
+  if (action === "freeze_promotion") return canManageEnvironment;
+  if (action === "rerun_export") return canManageExports;
+  if (action === "rollback_release") return canManageGovernance;
+  if (action === "escalate_queue") return Boolean(adminUser && hasCapability(adminUser.role, "submissions.edit"));
+  return false;
+}
+---
+
+<section class="governance-workspace reveal-stage">
+  <div class="governance-workspace__column">
+    <article class="governance-card">
+      <header class="governance-card__header">
+        <div>
+          <span class="governance-card__kicker">Approval inbox</span>
+          <h2>Pending structured approvals</h2>
+        </div>
+        <StatusPill label={`${approvals.filter((item) => item.status === "pending").length} pending`} tone="danger" />
+      </header>
+
+      <div class="governance-list">
+        {approvals.length === 0 ? (
+          <p class="governance-empty">No pending approvals. The release lane is clear.</p>
+        ) : (
+          approvals.map((approval) => (
+            <form
+              class="governance-item"
+              method="post"
+              action={withBase("/api/admin/commands/")}
+              data-admin-command-form
+              data-csrf={csrfToken || ""}
+              data-testid={`approval-item-${approval.id}`}
+            >
+              <input type="hidden" name="command" value="approval.approve" />
+              <input type="hidden" name="entityType" value="approval" />
+              <input type="hidden" name="entityId" value={approval.id} />
+              <div class="governance-item__meta">
+                <strong>{approval.title}</strong>
+                <span>{approval.requiredRoles?.join(" + ") || "Approval chain"}</span>
+              </div>
+              <p>{approval.reason || "Review the diff, confirm the gate, and record a reasoned decision."}</p>
+              <textarea
+                name="reason"
+                rows="2"
+                required
+                placeholder="Decision note recorded in audit trail"
+                disabled={!canApprove}
+              />
+              <div class="governance-item__footer">
+                <StatusPill label={approval.priority || approval.status} tone={approval.priority === "critical" ? "danger" : "warning"} />
+                <button type="submit" disabled={!canApprove}>Approve</button>
+              </div>
+              <p class="governance-status" data-admin-form-status></p>
+            </form>
+          ))
+        )}
+      </div>
+    </article>
+  </div>
+
+  <div class="governance-workspace__column">
+    <article class="governance-card">
+      <header class="governance-card__header">
+        <div>
+          <span class="governance-card__kicker">Command center</span>
+          <h2>Critical operator actions</h2>
+        </div>
+        <StatusPill label={`${commands.length} actions`} tone="system" />
+      </header>
+
+      <div class="governance-list">
+        {commands.map((command) => (
+          <form
+            class="governance-item governance-item--command"
+            method="post"
+            action={withBase("/api/admin/commands/")}
+            data-admin-command-form
+            data-csrf={csrfToken || ""}
+            data-testid={`command-item-${command.action}`}
+          >
+            <input type="hidden" name="command" value={command.action} />
+            <input type="hidden" name="entityType" value="system" />
+            <input type="hidden" name="entityId" value={command.action} />
+            <div class="governance-item__meta">
+              <strong>{command.label}</strong>
+              <StatusPill label={command.risk} tone={command.risk === "high" ? "danger" : "warning"} />
+            </div>
+            <p>{command.description}</p>
+            <textarea
+              name="reason"
+              rows="2"
+              required
+              placeholder="Explain why this action is safe now"
+              disabled={!isCommandEnabled(command.action)}
+            />
+            <div class="governance-item__footer">
+              <span class="governance-note">{isCommandEnabled(command.action) ? "Will be audited with idempotency + CSRF." : "Current role cannot run this action."}</span>
+              <button type="submit" disabled={!isCommandEnabled(command.action)}>Run action</button>
+            </div>
+            <p class="governance-status" data-admin-form-status></p>
+          </form>
+        ))}
+      </div>
+    </article>
+
+    <article class="governance-card">
+      <header class="governance-card__header">
+        <div>
+          <span class="governance-card__kicker">Export preview</span>
+          <h2>Publish receipt staging</h2>
+        </div>
+        <StatusPill label={preview.receipt.status} tone="warning" />
+      </header>
+
+      <div class="governance-preview">
+        {preview.artifacts.map((artifact) => (
+          <div class="governance-preview__item">
+            <strong>{artifact.fileName}</strong>
+            <span>{artifact.count} rows</span>
+            <code>{artifact.checksum}</code>
+          </div>
+        ))}
+      </div>
+
+      <div class="governance-receipts">
+        <h3>Recent export receipts</h3>
+        {exports.length === 0 ? (
+          <p class="governance-empty">No verified export receipts yet.</p>
+        ) : (
+          exports.slice(0, 4).map((entry) => (
+            <div class="governance-receipts__item">
+              <strong>{entry.artifactType || "artifact"}</strong>
+              <span>{entry.status || "unknown"}</span>
+              <code>{entry.receiptId || entry.id || "pending"}</code>
+            </div>
+          ))
+        )}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .governance-workspace {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .governance-workspace__column {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .governance-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .governance-card__header,
+  .governance-item__meta,
+  .governance-item__footer,
+  .governance-receipts__item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .governance-card__kicker,
+  .governance-note {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .governance-card h2,
+  .governance-receipts h3 {
+    letter-spacing: -0.04em;
+  }
+
+  .governance-list {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .governance-item,
+  .governance-preview__item,
+  .governance-receipts__item {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.95rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .governance-item p,
+  .governance-empty,
+  .governance-note {
+    color: var(--color-text-muted);
+  }
+
+  .governance-item textarea {
+    width: 100%;
+    min-height: 4.4rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+    resize: vertical;
+  }
+
+  .governance-item button {
+    min-height: 2.8rem;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .governance-item button[disabled],
+  .governance-item textarea[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .governance-preview,
+  .governance-receipts {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .governance-preview__item code,
+  .governance-receipts__item code {
+    color: var(--color-system);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .governance-status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  .governance-status[data-tone="danger"] {
+    color: var(--color-danger);
+  }
+
+  .governance-status[data-tone="success"] {
+    color: var(--color-success);
+  }
+
+  .governance-status[data-tone="system"] {
+    color: var(--color-system);
+  }
+
+  @media (max-width: 980px) {
+    .governance-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

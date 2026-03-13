@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+
+import QualityWorkspace from "../../../components/admin/QualityWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("quality");
+const state = await loadAdminState();
+const moduleData = await getModuleData("quality", state);
+---
+
+<AdminLayout title="Admin Quality" currentPath="/admin/quality/">
+  <SectionPage page={page} />
+  <QualityWorkspace
+    findings={moduleData.findings}
+    notifications={moduleData.notifications || []}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>
