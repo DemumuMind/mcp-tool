@@ -49,16 +49,16 @@ function isTaglineOk(t: string) { return t && t.length <= 90; }
 >
   <div class="review-page">
     <PageHero
-      eyebrow="Reference surface"
-      title="Editorial QA reference for override graduation"
-      lede="This page remains a review console, but it now acts as a supporting editorial reference. Primary discovery still belongs to browse, dossiers, stats, and methodology."
+      eyebrow="Editorial review"
+      title="Override QA before metadata goes live."
+      lede="This page is the review console for override metadata. Public discovery still belongs to browse, tool pages, stats, and methodology."
       meta={[
         `${needsReview.length} awaiting review`,
         `${graduated.length} graduated`,
         "Override audit console",
       ]}
-      asideTitle="Use this after marketplace review"
-      asideBody="Open the actual tool dossier first if you need product context. Use this page when you need to inspect override completeness before freezing editorial metadata."
+      asideTitle="Use this after reading the tool page"
+      asideBody="Open the actual tool page first if you need product context. Use this page when you need to inspect override completeness before freezing metadata."
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -71,7 +71,7 @@ function isTaglineOk(t: string) { return t && t.length <= 90; }
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Reference path</p>
-          <h2 class="section-shell__title">Review here, but validate in the marketplace</h2>
+          <h2 class="section-shell__title">Review here, but validate against the live marketplace</h2>
         </div>
       </div>
       <ul class="ops-list">

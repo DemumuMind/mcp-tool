@@ -6,6 +6,7 @@ import { getBrowsePresetModels, getCompatibilitySortScore, getMarketplaceContent
 import { withBase } from "../../lib/site-paths";
 
 const content = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 const kindOptions = [...new Set(content.catalog.primary.map((entry) => entry.kind))].sort();
 const presetModels = getBrowsePresetModels();
 const quickViewStates = Object.fromEntries(presetModels.map((preset) => [preset.slug, preset.state]));
@@ -19,17 +20,17 @@ function getDaysSince(dateValue: string) {
 
 <Base
   title="Browse Tools - DemumuMind MCP"
-  description="Browse a compatibility-aware MCP marketplace with shareable filters, saved views, and dossier pages."
+  description="Search and filter MCP tools by category, platform, pricing, freshness, and overall quality."
   currentPath="/tools/"
 >
   <PageHero
     eyebrow="Browse tools"
-    title="Search the MCP marketplace with builder-grade filters."
-    lede="Use one browse surface for search, categories, compatibility, pricing, freshness, verified signals, and compare-ready discovery."
+    title="Search the MCP marketplace with filters that make sense."
+    lede="Use one page to narrow tools by category, platform, pricing, freshness, and quality, then open the detail page when something looks promising."
     meta={[
-      `${content.catalog.primary.length} primary listings`,
-      `${content.stats.verifiedListings} verified`,
-      `${content.platforms.length} platform hubs`,
+      `${formatNumber(content.catalog.primary.length)} listed tools`,
+      `${formatNumber(content.stats.verifiedListings)} verified tools`,
+      `${formatNumber(content.platforms.length)} platform hubs`,
     ]}
   />
 
@@ -101,7 +102,7 @@ function getDaysSince(dateValue: string) {
     <div class="section-shell__header">
       <div>
         <p class="section-kicker">Preset pages</p>
-        <h2 class="section-shell__title">Shareable browse entry points</h2>
+        <h2 class="section-shell__title">Ready-made ways to browse</h2>
       </div>
     </div>
     <div class="platform-hub-grid">
@@ -144,10 +145,10 @@ function getDaysSince(dateValue: string) {
     <button id="pagination-next" class="btn btn-secondary" type="button">Next</button>
   </div>
 
-  <script is:inline>
+  <script define:vars={{ quickViewStates }} is:inline>
     const pageSize = 12;
     const savedViewsKey = "demumumind-mcp-saved-views";
-    const quickViews = ${JSON.stringify(quickViewStates)};
+    const quickViews = quickViewStates;
     const filterLabels = {
       q: "Search",
       category: "Category",
@@ -276,7 +277,7 @@ function getDaysSince(dateValue: string) {
         pill.type = "button";
         pill.dataset.clearKey = label.key;
         pill.setAttribute("aria-label", `Clear ${filterLabels[label.key]} filter`);
-        pill.textContent = `${filterLabels[label.key]}: ${label.text} ×`;
+        pill.textContent = `${filterLabels[label.key]}: ${label.text} x`;
         activeFilterStrip.appendChild(pill);
       }
     }
@@ -366,8 +367,8 @@ function getDaysSince(dateValue: string) {
         grid.appendChild(item);
       }
 
-      resultsCount.textContent = `${visible.length} tools found · sorted by ${sortLabels[state.sort]}`;
-      paginationLabel.textContent = `Page ${page} of ${totalPages}`;
+      resultsCount.textContent = `${visible.length.toLocaleString("en-US")} tools shown - sorted by ${sortLabels[state.sort]}`;
+      paginationLabel.textContent = `Page ${page.toLocaleString("en-US")} of ${totalPages.toLocaleString("en-US")}`;
       paginationPrev.disabled = page <= 1;
       paginationNext.disabled = page >= totalPages;
       writeState({ ...state, page });
@@ -479,3 +480,4 @@ function getDaysSince(dateValue: string) {
     cursor: pointer;
   }
 </style>
+

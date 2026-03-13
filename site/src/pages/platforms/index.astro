@@ -5,15 +5,16 @@ import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 const content = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base title="Platforms - DemumuMind MCP" description="Browse the MCP marketplace by clients, runtimes, and compatibility hubs." currentPath="/platforms/">
   <div class="page-content">
     <PageHero
       eyebrow="Platforms"
-      title="Compatibility hubs for real adoption paths."
-      lede="Move from a client or runtime shape into the right MCP listings without rebuilding the filter stack manually."
-      meta={[`${content.platforms.length} platform hubs`, "Compatibility-first", "SEO-ready landing pages"]}
+      title="Browse by client or runtime."
+      lede="Start from the environment you already use, then jump straight into the MCP tools that fit it."
+      meta={[`${formatNumber(content.platforms.length)} platform hubs`, "Compatibility views", "Faster filtering"]}
     />
 
     <div class="platform-hub-grid">
@@ -21,7 +22,7 @@ const content = getMarketplaceContent();
         <a href={withBase(`/platforms/${platform.slug}/`)} class="collection-item">
           <span class="collection-item-name">{platform.title}</span>
           <span class="collection-item-desc">{platform.description}</span>
-          <span class="collection-item-count">{platform.count} tools</span>
+          <span class="collection-item-count">{formatNumber(platform.count)} matching tools</span>
         </a>
       ))}
     </div>

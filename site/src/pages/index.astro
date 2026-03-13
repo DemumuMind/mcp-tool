@@ -5,6 +5,7 @@ import { getMarketplaceContent } from "../lib/content/marketplace.ts";
 import { withBase } from "../lib/site-paths";
 
 const content = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 const heroSuggestions = [
   ...content.catalog.primary.slice(0, 10).map((entry) => entry.name),
   ...content.categories.slice(0, 6).map((category) => category.title),
@@ -14,16 +15,16 @@ const heroSuggestions = [
 
 <Base
   title="DemumuMind MCP"
-  description="Discover MCP servers, apps, and tooling through a broad marketplace with builder-depth quality, compatibility, and adoption signals."
+  description="Find MCP tools, compare your options, and review compatibility and quality signals in one place."
   currentPath="/"
 >
   <div class="home-flow">
     <section class="marketplace-hero">
       <div class="marketplace-hero__copy">
-        <p class="eyebrow">DemumuMind MCP marketplace</p>
-        <h1 class="marketplace-hero__title">Find and adopt MCP tools without losing the builder context.</h1>
+        <p class="eyebrow">DemumuMind MCP tool shop</p>
+        <h1 class="marketplace-hero__title">Find MCP tools that fit your stack.</h1>
         <p class="marketplace-hero__lede">
-          Browse a wide MCP marketplace with compatibility-aware discovery, transparent scoring, algorithmic verified signals, and dossier pages that collapse evaluation time.
+          Search a curated marketplace of MCP servers, apps, and utilities with clearer compatibility notes, quality signals, and comparison pages for faster decisions.
         </p>
 
         <form class="search-omnibox" id="home-search-form" action={withBase("/tools/")}>
@@ -35,7 +36,7 @@ const heroSuggestions = [
             placeholder="Search MCP tools, categories, docs, or platforms"
             autocomplete="off"
           />
-          <button type="submit" class="btn btn-primary">Search marketplace</button>
+          <button type="submit" class="btn btn-primary">Explore tools</button>
         </form>
         <datalist id="home-search-suggestions">
           {heroSuggestions.map((item) => <option value={item} />)}
@@ -50,19 +51,19 @@ const heroSuggestions = [
 
       <div class="marketplace-hero__aside">
         <div class="metric-card">
-          <span class="metric-card__label">Marketplace size</span>
-          <strong class="metric-card__value">{content.stats.totalListings}</strong>
-          <p>Primary listings that satisfy the quality bar.</p>
+          <span class="metric-card__label">Listed tools</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.totalListings)}</strong>
+          <p>Public MCP tools and apps you can browse right now.</p>
         </div>
         <div class="metric-card">
-          <span class="metric-card__label">Verified</span>
-          <strong class="metric-card__value">{content.stats.verifiedListings}</strong>
-          <p>Automatic verified listings with stronger docs, adoption, and freshness posture.</p>
+          <span class="metric-card__label">Verified tools</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.verifiedListings)}</strong>
+          <p>Listings with clearer docs, fresher releases, and stronger public signals.</p>
         </div>
         <div class="metric-card">
-          <span class="metric-card__label">Categories</span>
-          <strong class="metric-card__value">{content.categories.length}</strong>
-          <p>Auto-generated taxonomy with curated collection overlays.</p>
+          <span class="metric-card__label">Browse paths</span>
+          <strong class="metric-card__value">{formatNumber(content.categories.length)}</strong>
+          <p>Category hubs that help you narrow the catalog by workflow.</p>
         </div>
       </div>
     </section>
@@ -71,7 +72,7 @@ const heroSuggestions = [
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Featured</p>
-          <h2 class="section-shell__title">Curated entry points</h2>
+          <h2 class="section-shell__title">Strong places to start</h2>
         </div>
         <a href={withBase("/tools/")} class="see-all">Browse all</a>
       </div>
@@ -85,7 +86,7 @@ const heroSuggestions = [
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">Trending</p>
-            <h2 class="section-shell__title">Fast-moving surfaces</h2>
+            <h2 class="section-shell__title">Tools getting attention</h2>
           </div>
         </div>
         <div class="featured-tools-grid">
@@ -97,7 +98,7 @@ const heroSuggestions = [
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">New</p>
-            <h2 class="section-shell__title">Recently refreshed</h2>
+            <h2 class="section-shell__title">Recently updated</h2>
           </div>
         </div>
         <div class="featured-tools-grid">
@@ -110,7 +111,7 @@ const heroSuggestions = [
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Categories</p>
-          <h2 class="section-shell__title">Popular MCP lanes</h2>
+          <h2 class="section-shell__title">Browse by category</h2>
         </div>
         <a href={withBase("/categories/")} class="see-all">All categories</a>
       </div>
@@ -119,7 +120,7 @@ const heroSuggestions = [
           <a href={withBase(`/categories/${category.slug}/`)} class="collection-item">
             <span class="collection-item-name">{category.title}</span>
             <span class="collection-item-desc">{category.description}</span>
-            <span class="collection-item-count">{category.count} listings</span>
+            <span class="collection-item-count">{formatNumber(category.count)} listed tools</span>
           </a>
         ))}
       </div>
@@ -129,7 +130,7 @@ const heroSuggestions = [
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Platform hubs</p>
-          <h2 class="section-shell__title">Browse by client or runtime shape</h2>
+          <h2 class="section-shell__title">Browse by client or runtime</h2>
         </div>
         <a href={withBase("/platforms/")} class="see-all">All platforms</a>
       </div>
@@ -138,7 +139,7 @@ const heroSuggestions = [
           <a href={withBase(`/platforms/${platform.slug}/`)} class="collection-item">
             <span class="collection-item-name">{platform.title}</span>
             <span class="collection-item-desc">{platform.description}</span>
-            <span class="collection-item-count">{platform.count} tools</span>
+            <span class="collection-item-count">{formatNumber(platform.count)} matching tools</span>
           </a>
         ))}
       </div>
@@ -148,7 +149,7 @@ const heroSuggestions = [
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Collections</p>
-          <h2 class="section-shell__title">Curated onboarding paths</h2>
+          <h2 class="section-shell__title">Hand-picked tool sets</h2>
         </div>
         <a href={withBase("/collections/")} class="see-all">All collections</a>
       </div>
@@ -157,7 +158,7 @@ const heroSuggestions = [
           <a href={withBase(`/collections/${collection.slug}/`)} class="collection-item">
             <span class="collection-item-name">{collection.title}</span>
             <span class="collection-item-desc">{collection.description}</span>
-            <span class="collection-item-count">{collection.count} tools</span>
+            <span class="collection-item-count">{formatNumber(collection.count)} tools in set</span>
           </a>
         ))}
       </div>
@@ -168,7 +169,7 @@ const heroSuggestions = [
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">Docs</p>
-            <h2 class="section-shell__title">Use the marketplace better</h2>
+            <h2 class="section-shell__title">How to use the catalog well</h2>
           </div>
           <a href={withBase("/docs/")} class="see-all">Docs hub</a>
         </div>
@@ -186,7 +187,7 @@ const heroSuggestions = [
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">FAQ</p>
-            <h2 class="section-shell__title">Common marketplace questions</h2>
+            <h2 class="section-shell__title">Common questions</h2>
           </div>
           <a href={withBase("/faq/")} class="see-all">Open FAQ</a>
         </div>
@@ -205,25 +206,25 @@ const heroSuggestions = [
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Stats</p>
-          <h2 class="section-shell__title">Marketplace health at a glance</h2>
+          <h2 class="section-shell__title">Catalog health at a glance</h2>
         </div>
         <a href={withBase("/stats/")} class="see-all">Open stats</a>
       </div>
       <div class="stats-grid">
         <div class="metric-card">
-          <span class="metric-card__label">Average quality</span>
-          <strong class="metric-card__value">{content.stats.averageScore}</strong>
-          <p>Weighted by docs, adoption, freshness, popularity, and trust signals.</p>
+          <span class="metric-card__label">Average score</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.averageScore)}</strong>
+          <p>Average marketplace score across documentation, freshness, adoption, and trust cues.</p>
         </div>
         <div class="metric-card">
-          <span class="metric-card__label">Open source</span>
-          <strong class="metric-card__value">{content.stats.openSourceListings}</strong>
-          <p>Public GitHub-backed listings in the primary catalog.</p>
+          <span class="metric-card__label">Open-source tools</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.openSourceListings)}</strong>
+          <p>Listings backed by public repositories and visible development history.</p>
         </div>
         <div class="metric-card">
-          <span class="metric-card__label">Commercial</span>
-          <strong class="metric-card__value">{content.stats.commercialListings}</strong>
-          <p>Listings that rely on official site/docs as their canonical source.</p>
+          <span class="metric-card__label">Commercial tools</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.commercialListings)}</strong>
+          <p>Listings sourced from official product pages and vendor documentation.</p>
         </div>
       </div>
     </section>

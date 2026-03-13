@@ -17,16 +17,16 @@ const cleanupData = cleanup as any;
 >
   <div class="page-content">
     <PageHero
-      eyebrow="Reference surface"
-      title="Registry reference for marketplace metadata"
-      lede="The registry remains the canonical metadata layer, but it is now a supporting reference surface. Discovery and adoption should still begin in browse, categories, platforms, and tool dossiers."
+      eyebrow="Registry"
+      title="Reference page for marketplace metadata."
+      lede="The registry is the canonical metadata layer, but discovery and adoption should still begin in browse, categories, platforms, and tool pages."
       meta={[
         `${health.registryToolCount || 0} registry tools`,
         `${health.orgOnlyRepos || 0} org-only repos`,
         `${cleanupData.totalIssues || 0} cleanup issues`,
       ]}
       asideTitle="Use this after discovery"
-      asideBody="Open this page when you need registry contract details, listing workflow context, or cleanup visibility after shortlisting tools in the marketplace."
+      asideBody="Open this page when you need registry rules, listing workflow context, or cleanup visibility after shortlisting tools."
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -39,7 +39,7 @@ const cleanupData = cleanup as any;
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">How to use this page</p>
-          <h2 class="section-shell__title">Registry data is support context, not the first touchpoint</h2>
+          <h2 class="section-shell__title">Registry data is support context, not the first stop</h2>
         </div>
       </div>
       <ul class="ops-list">

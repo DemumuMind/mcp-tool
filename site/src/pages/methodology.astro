@@ -6,6 +6,7 @@ import { withBase } from "../lib/site-paths";
 
 const content = getMarketplaceContent();
 const stats = content.stats;
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base
@@ -16,9 +17,9 @@ const stats = content.stats;
   <div class="page-content">
     <PageHero
       eyebrow="Methodology"
-      title="Explain the logic, then show the listings."
-      lede="DemumuMind MCP uses explicit factors for ranking, automatic verified, and primary catalog eligibility. This page explains those factors and the limits of the model."
-      meta={[`Avg. score ${stats.averageScore}`, `${stats.verifiedListings} verified listings`, "Auto-publish pipeline"]}
+      title="How ranking and verified status actually work."
+      lede="DemumuMind MCP uses explicit factors for ranking, verified status, and catalog eligibility. This page explains those rules and where the model stops being a guarantee."
+      meta={[`Average score ${formatNumber(stats.averageScore)}`, `${formatNumber(stats.verifiedListings)} verified tools`, "Public scoring model"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/docs/quality-score/")} class="btn btn-primary">Score guide</a>
@@ -48,11 +49,11 @@ const stats = content.stats;
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Verified</p>
-          <h2 class="section-shell__title">Automatic verified, not paid certification</h2>
+          <h2 class="section-shell__title">Verified is automatic, not a paid badge</h2>
         </div>
       </div>
       <p class="section-subheading">
-        Verified is automatic in v1. It reflects a score threshold plus minimum listing quality, not a sponsorship program and not a hand-managed badge.
+        Verified is automatic in v1. It reflects a score threshold plus minimum listing quality, not sponsorship and not a hand-managed certification program.
       </p>
     </section>
 

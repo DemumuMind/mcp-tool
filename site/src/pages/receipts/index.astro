@@ -63,12 +63,12 @@ weeks.sort((a, b) => b.week.localeCompare(a.week));
 >
   <div class="page-content receipts-page">
     <PageHero
-      eyebrow="Reference surface"
-      title="Receipt reference for marketplace operations"
-      lede="Weekly receipts document outbound promotion inputs and hashes. They remain useful audit surfaces, but discovery and evaluation should still happen in tools, stats, categories, and methodology."
+      eyebrow="Receipts"
+      title="Operational receipts for marketplace promotion weeks."
+      lede="Weekly receipts document outbound promotion inputs and hashes. They are useful audit records, but discovery and evaluation should still happen in tools, stats, categories, and methodology."
       meta={[`${weeks.length} receipt weeks`, "Operational receipts", "Marketplace-linked"]}
       asideTitle="What receipts are not"
-      asideBody="A receipt shows what entered an outbound workflow. It is not a ranking surface and it does not replace a tool dossier."
+      asideBody="A receipt shows what entered an outbound workflow. It is not a ranking page and it does not replace a tool page."
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -86,8 +86,8 @@ weeks.sort((a, b) => b.week.localeCompare(a.week));
       </div>
       <ul class="ops-list">
         <li>Use tool dossiers, compare pages, and browse filters for product decisions.</li>
-        <li>Use receipt weeks when you need hashed inputs, receipt files, and audit-style promotion context.</li>
-        <li>Use stats and methodology for the marketplace-wide explanation behind these operator records.</li>
+          <li>Use receipt weeks when you need hashed inputs, receipt files, and audit-style promotion context.</li>
+          <li>Use stats and methodology for the marketplace-wide explanation behind these records.</li>
       </ul>
     </section>
 

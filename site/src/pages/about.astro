@@ -6,24 +6,25 @@ import { withBase } from "../lib/site-paths";
 
 const content = getMarketplaceContent();
 const stats = content.stats;
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base
   title="About - DemumuMind MCP"
-  description="What DemumuMind MCP is building, who the marketplace is for, and why the catalog emphasizes compatibility, adoption, and transparent signals."
+  description="What DemumuMind MCP is for, who it helps, and how the catalog is put together."
   currentPath="/about/"
 >
   <div class="page-content">
     <PageHero
       eyebrow="About the marketplace"
-      title="A practical marketplace for MCP builders and adopters."
-      lede="DemumuMind MCP is a discovery layer for real MCP servers, clients, desktop apps, and tooling. The goal is not to look official. The goal is to make the ecosystem legible."
+      title="A practical marketplace for finding MCP tools."
+      lede="DemumuMind MCP helps people browse real MCP servers, apps, clients, and supporting tools without wading through vague positioning or missing setup context."
       meta={[
-        `${stats.totalListings} public listings`,
-        `${stats.verifiedListings} automatic verified`,
-        `${stats.commercialListings} commercial surfaces`,
+        `${formatNumber(stats.totalListings)} listed tools`,
+        `${formatNumber(stats.verifiedListings)} verified tools`,
+        `${formatNumber(stats.commercialListings)} commercial tools`,
       ]}
-      proofItems={["Search-first discovery", "Builder-grade signals", "Platform-aware navigation"]}
+      proofItems={["Clear discovery", "Visible quality cues", "Platform-aware navigation"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -35,25 +36,25 @@ const stats = content.stats;
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Positioning</p>
-          <h2 class="section-shell__title">Broad marketplace, builder depth</h2>
+          <h2 class="section-shell__title">Wide catalog, practical detail</h2>
         </div>
       </div>
       <p class="section-subheading">
-        The product behaves like a broad marketplace on the surface, but each listing still pushes the user toward adoption signals:
-        compatibility, docs, install path, freshness, pricing posture, and related alternatives.
+        The catalog is meant to stay broad without becoming shallow. Each listing should quickly answer the basics:
+        what the tool does, where it runs, how to try it, and what level of confidence the public signals justify.
       </p>
       <div class="about-grid">
         <article class="about-card">
           <h3>Who it helps</h3>
-          <p>MCP builders, evaluators, and teams comparing tools before adoption.</p>
+          <p>Builders, evaluators, and teams trying to choose MCP tools with less guesswork.</p>
         </article>
         <article class="about-card">
           <h3>What it covers</h3>
-          <p>Servers, clients, desktop apps, SDKs, tooling, curated collections, and platform hubs.</p>
+          <p>Servers, clients, desktop apps, SDKs, supporting utilities, curated collections, and platform hubs.</p>
         </article>
         <article class="about-card">
           <h3>What it avoids</h3>
-          <p>No paid placement logic, no user reviews, and no opaque trust claims hidden behind marketing copy.</p>
+          <p>No paid placement logic, no review-score theater, and no trust claims that cannot be traced back to public evidence.</p>
         </article>
       </div>
     </section>
@@ -66,10 +67,10 @@ const stats = content.stats;
         </div>
       </div>
       <ul>
-        <li><strong>Marketplace first:</strong> find and adopt tools quickly, not after a maze of editorial copy.</li>
-        <li><strong>Transparency first:</strong> automatic verified, quality score, and category logic are explained publicly.</li>
-        <li><strong>Compatibility matters:</strong> platform hubs and technical facets are part of discovery, not an afterthought.</li>
-        <li><strong>Commercial is allowed:</strong> official homepage and docs are enough if the MCP surface is clear.</li>
+        <li><strong>Discovery first:</strong> users should understand the option set quickly, not read through a maze of marketing copy.</li>
+        <li><strong>Public logic:</strong> verified status, score inputs, and category rules should be explained in plain language.</li>
+        <li><strong>Compatibility matters:</strong> platform fit and runtime context belong in discovery, not as an afterthought.</li>
+        <li><strong>Commercial is welcome:</strong> official docs and a clear MCP surface are enough for inclusion.</li>
       </ul>
     </section>
   </div>

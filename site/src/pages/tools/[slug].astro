@@ -20,7 +20,7 @@ const related = getRelatedTools(tool.slug);
 
 <Base title={`${tool.name} - DemumuMind MCP`} description={tool.description} currentPath={`/tools/${tool.slug}/`}>
   <div class="tool-profile">
-    <a href={withBase("/tools/")} class="back-link">&larr; Back to browse</a>
+    <a href={withBase("/tools/")} class="back-link">&larr; Back to tools</a>
 
     <section class="tool-profile__hero">
       <div class="tool-profile__lead">
@@ -39,7 +39,7 @@ const related = getRelatedTools(tool.slug);
         </div>
 
         <div class="tool-links">
-          <a href={tool.primaryActionUrl} class="btn btn-primary" rel="noopener noreferrer">Open docs / adopt</a>
+          <a href={tool.primaryActionUrl} class="btn btn-primary" rel="noopener noreferrer">Open docs</a>
           {tool.repoUrl && <a href={tool.repoUrl} class="btn btn-secondary" rel="noopener noreferrer">GitHub</a>}
           {tool.releaseTag && tool.repoUrl && <a href={`${tool.repoUrl}/releases`} class="btn btn-secondary" rel="noopener noreferrer">Releases</a>}
         </div>
@@ -78,7 +78,7 @@ const related = getRelatedTools(tool.slug);
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">Adoption</p>
-            <h2 class="section-shell__title">Why teams open this tool</h2>
+            <h2 class="section-shell__title">What this tool is good for</h2>
           </div>
         </div>
         {tool.goodFor.length > 0 ? (
@@ -86,7 +86,7 @@ const related = getRelatedTools(tool.slug);
             {tool.goodFor.map((item) => <li>{item}</li>)}
           </ul>
         ) : (
-          <div class="empty-state">Use the docs and compatibility signals above to validate whether this listing fits your workflow.</div>
+          <div class="empty-state">Use the docs and compatibility notes above to judge whether this tool fits your workflow.</div>
         )}
       </div>
 
@@ -107,17 +107,17 @@ const related = getRelatedTools(tool.slug);
 
     <section class="section-shell">
       <div class="section-shell__header">
-        <div>
-          <p class="section-kicker">Limits</p>
-          <h2 class="section-shell__title">What to check before rollout</h2>
+          <div>
+            <p class="section-kicker">Limits</p>
+            <h2 class="section-shell__title">What to check before rollout</h2>
+          </div>
         </div>
-      </div>
       {tool.notFor.length > 0 ? (
         <ul class="ops-list">
           {tool.notFor.map((item) => <li>{item}</li>)}
         </ul>
       ) : (
-        <div class="empty-state">This dossier does not include explicit "not for" guidance yet. Prefer checking docs and repo issues before production use.</div>
+        <div class="empty-state">This page does not include explicit limits yet. Check the docs and issue tracker before using the tool in production.</div>
       )}
     </section>
 
@@ -126,7 +126,7 @@ const related = getRelatedTools(tool.slug);
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">Adoption path</p>
-            <h2 class="section-shell__title">Start using the tool</h2>
+            <h2 class="section-shell__title">How to try it</h2>
           </div>
         </div>
         <div class="launch-panel__card">
@@ -135,7 +135,7 @@ const related = getRelatedTools(tool.slug);
               <code>{tool.install}</code>
             </div>
           ) : (
-            <p class="launch-panel__note">No direct install command is published. Use the docs or homepage to evaluate the current adoption path.</p>
+            <p class="launch-panel__note">No direct install command is published. Use the docs or homepage to see the current setup path.</p>
           )}
           <div class="tool-links">
             {tool.docsUrl && <a href={tool.docsUrl} class="btn btn-secondary" rel="noopener noreferrer">Docs</a>}
@@ -148,7 +148,7 @@ const related = getRelatedTools(tool.slug);
         <div class="section-shell__header">
           <div>
             <p class="section-kicker">Quality breakdown</p>
-            <h2 class="section-shell__title">Why this score looks the way it does</h2>
+            <h2 class="section-shell__title">Score breakdown</h2>
           </div>
         </div>
         <div class="stats-grid">

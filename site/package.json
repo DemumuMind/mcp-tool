@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
-    "@fontsource/cormorant-garamond": "^5.2.11",
     "@fontsource/ibm-plex-mono": "^5.2.7",
-    "@fontsource/instrument-sans": "^5.2.8",
+    "@fontsource/manrope": "^5.2.8",
+    "@fontsource/sora": "^5.2.8",
     "astro": "^5.17.1"
   }
 }

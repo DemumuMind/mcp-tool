@@ -58,12 +58,12 @@ const generatedAt = promoDecisions.generatedAt ? new Date(promoDecisions.generat
 <Base title="Marketplace Focus Reference - DemumuMind MCP" description="Secondary weekly spotlight reference for promoted marketplace listings." currentPath="/now/">
   <div class="page-content now-page">
     <PageHero
-      eyebrow="Reference surface"
-      title="Weekly marketplace focus"
-      lede={`Current promoted listings inside ${kit.site.title || "DemumuMind"} with proof-linked context. Use this as a weekly spotlight after you already know the marketplace, not as the primary discovery surface.`}
+      eyebrow="Weekly focus"
+      title="This week’s featured marketplace picks."
+      lede={`This page highlights the current promoted slice inside ${kit.site.title || "DemumuMind"} with proof and press context attached. Use it as a weekly spotlight, not as the first stop for discovery.`}
       meta={[generatedAt ? `Updated ${generatedAt}` : "Awaiting next run", "Proof-backed picks", "Promotion-linked"]}
       asideTitle="Start with the marketplace"
-      asideBody="Browse, compare, and stats remain the primary surfaces. This page is a compact weekly reference layer."
+      asideBody="Browse, compare, and stats remain the primary surfaces. This page is a compact weekly spotlight."
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -76,7 +76,7 @@ const generatedAt = promoDecisions.generatedAt ? new Date(promoDecisions.generat
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">How to use this page</p>
-          <h2 class="section-shell__title">Spotlight first, decision later</h2>
+          <h2 class="section-shell__title">Use this page as a spotlight, not a shortlist builder</h2>
         </div>
       </div>
       <ul class="ops-list">
