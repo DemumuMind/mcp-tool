@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS __ADMIN_CONTROL_PLANE_STATE__ (
+  id SMALLINT,
+  payload_json JSONB,
+  version BIGINT,
+  updated_at TIMESTAMPTZ
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS admin_control_plane_state_id_idx
+  ON __ADMIN_CONTROL_PLANE_STATE__ (id);

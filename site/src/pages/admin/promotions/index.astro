@@ -1,0 +1,25 @@
+---
+export const prerender = false;
+
+import PromotionsWorkspace from "../../../components/admin/PromotionsWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("promotions");
+const state = await loadAdminState();
+const moduleData = await getModuleData("promotions", state);
+---
+
+<AdminLayout title="Admin Promotions" currentPath="/admin/promotions/">
+  <SectionPage page={page} />
+  <PromotionsWorkspace
+    promotions={moduleData.promotions}
+    campaigns={moduleData.campaigns}
+    worthy={moduleData.worthy}
+    exports={moduleData.exports}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

@@ -1,0 +1,18 @@
+---
+export const prerender = false;
+
+import AccessWorkspace from "../../../components/admin/AccessWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("settings");
+const state = await loadAdminState();
+const moduleData = await getModuleData("settings", state);
+---
+
+<AdminLayout title="Admin Settings" currentPath="/admin/settings/">
+  <SectionPage page={page} />
+  <AccessWorkspace users={moduleData.users} csrfToken={Astro.locals.csrfToken} adminUser={Astro.locals.adminUser} />
+</AdminLayout>

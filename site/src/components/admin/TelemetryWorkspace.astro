@@ -1,0 +1,319 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface SnapshotItem {
+  id: string;
+  label: string;
+  anomalyScore?: number;
+  status?: string;
+  note?: string;
+  capturedAt?: string;
+}
+
+interface RollupData {
+  metrics?: Record<string, string | number | boolean | null>;
+}
+
+interface NotificationItem {
+  id: string;
+  title: string;
+  summary?: string;
+  status?: string;
+}
+
+interface Props {
+  snapshots: SnapshotItem[];
+  rollup: RollupData;
+  notifications: NotificationItem[];
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { snapshots = [], rollup = {}, notifications = [], csrfToken, adminUser } = Astro.props;
+const canManage = Boolean(adminUser && hasCapability(adminUser.role, "telemetry.manage"));
+const metricEntries = Object.entries(rollup.metrics || {});
+const editorId = "telemetry-editor";
+---
+
+<section class="telemetry-workspace reveal-stage">
+  <article class="telemetry-card telemetry-card--editor">
+    <header class="telemetry-card__header">
+      <div>
+        <span class="telemetry-card__kicker">SignalsWorkbench</span>
+        <h2>Log anomaly and trend notes</h2>
+      </div>
+      <StatusPill label={canManage ? "Telemetry.manage" : "Read-only"} tone={canManage ? "success" : "warning"} />
+    </header>
+
+    <form
+      id={editorId}
+      class="telemetry-form"
+      method="post"
+      action={withBase("/api/admin/telemetry/")}
+      data-admin-json-form
+      data-csrf={csrfToken || ""}
+      data-omit-empty-fields="true"
+      data-success-message="Telemetry note saved. Refreshing workspace..."
+    >
+      <input type="hidden" name="id" value="" />
+      <label>
+        Label
+        <input type="text" name="label" placeholder="Verification rate" required disabled={!canManage} />
+      </label>
+      <label>
+        Status
+        <select name="status" disabled={!canManage}>
+          <option value="investigate">Investigate</option>
+          <option value="healthy">Healthy</option>
+          <option value="watch">Watch</option>
+        </select>
+      </label>
+      <label>
+        Anomaly score
+        <input type="number" name="anomalyScore" min="0" max="1" step="0.01" placeholder="0.62" disabled={!canManage} />
+      </label>
+      <label class="telemetry-form__wide">
+        Note
+        <textarea name="note" rows="3" placeholder="What changed, why it matters, and what signal to watch next." disabled={!canManage} />
+      </label>
+      <div class="telemetry-form__footer">
+        <div class="telemetry-form__actions">
+          <button type="submit" disabled={!canManage}>Save snapshot</button>
+          <button type="button" class="telemetry-form__secondary" data-admin-reset-form={`#${editorId}`} disabled={!canManage}>New snapshot</button>
+        </div>
+        <p class="telemetry-form__status" data-admin-form-status></p>
+      </div>
+    </form>
+  </article>
+
+  <div class="telemetry-stack">
+    <article class="telemetry-card">
+      <header class="telemetry-card__header">
+        <div>
+          <span class="telemetry-card__kicker">AnomalyDesk</span>
+          <h2>Tracked snapshots</h2>
+        </div>
+        <StatusPill label={`${snapshots.length} snapshots`} tone="system" />
+      </header>
+
+      <div class="telemetry-list">
+        {snapshots.slice(0, 10).map((snapshot) => (
+          <div class="telemetry-item">
+            <div class="telemetry-item__header">
+              <div>
+                <strong>{snapshot.label}</strong>
+                <span>{snapshot.capturedAt || snapshot.id}</span>
+              </div>
+              <div class="telemetry-item__pills">
+                <StatusPill label={snapshot.status || "watch"} tone={snapshot.status === "healthy" ? "success" : "warning"} />
+                <StatusPill label={`score ${snapshot.anomalyScore ?? 0}`} tone="system" />
+              </div>
+            </div>
+            <p>{snapshot.note || "No note recorded for this telemetry snapshot."}</p>
+            <button
+              type="button"
+              class="telemetry-item__action"
+              data-admin-populate-form={`#${editorId}`}
+              data-admin-payload={JSON.stringify({
+                id: snapshot.id,
+                label: snapshot.label,
+                status: snapshot.status || "watch",
+                anomalyScore: snapshot.anomalyScore ?? 0,
+                note: snapshot.note || "",
+              })}
+              disabled={!canManage}
+            >
+              Edit snapshot
+            </button>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <article class="telemetry-card">
+      <header class="telemetry-card__header">
+        <div>
+          <span class="telemetry-card__kicker">Rollup and notes</span>
+          <h2>Current metrics surface</h2>
+        </div>
+        <StatusPill label={`${metricEntries.length} metrics`} tone="warning" />
+      </header>
+
+      <div class="telemetry-grid">
+        {metricEntries.slice(0, 8).map(([key, value]) => (
+          <div class="telemetry-metric">
+            <strong>{String(value)}</strong>
+            <span>{key}</span>
+          </div>
+        ))}
+      </div>
+
+      <div class="telemetry-list">
+        {notifications.slice(0, 6).map((note) => (
+          <div class="telemetry-item">
+            <div class="telemetry-item__header">
+              <div>
+                <strong>{note.title}</strong>
+                <span>{note.id}</span>
+              </div>
+              <StatusPill label={note.status || "unread"} tone={note.status === "resolved" ? "success" : "warning"} />
+            </div>
+            <p>{note.summary || "No telemetry note summary."}</p>
+          </div>
+        ))}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .telemetry-workspace,
+  .telemetry-stack,
+  .telemetry-list,
+  .telemetry-form,
+  .telemetry-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .telemetry-workspace {
+    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.35fr);
+    align-items: start;
+  }
+
+  .telemetry-card,
+  .telemetry-item,
+  .telemetry-metric {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .telemetry-item,
+  .telemetry-metric {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .telemetry-card__header,
+  .telemetry-item__header,
+  .telemetry-item__pills,
+  .telemetry-form__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .telemetry-card__kicker,
+  .telemetry-item span,
+  .telemetry-metric span {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .telemetry-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .telemetry-form__wide,
+  .telemetry-form__footer {
+    grid-column: 1 / -1;
+  }
+
+  .telemetry-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .telemetry-form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .telemetry-form input,
+  .telemetry-form select,
+  .telemetry-form textarea,
+  .telemetry-form button {
+    min-height: 2.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .telemetry-form textarea {
+    min-height: 4.5rem;
+    resize: vertical;
+  }
+
+  .telemetry-form button {
+    border-radius: 999px;
+    border-color: rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .telemetry-form__secondary,
+  .telemetry-item__action {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .telemetry-form button[disabled],
+  .telemetry-form input[disabled],
+  .telemetry-form select[disabled],
+  .telemetry-form textarea[disabled],
+  .telemetry-item__action[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .telemetry-metric strong {
+    font-size: 1.2rem;
+  }
+
+  .telemetry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .telemetry-item p,
+  .telemetry-form__status {
+    color: var(--color-text-muted);
+  }
+
+  .telemetry-form__status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1080px) {
+    .telemetry-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .telemetry-form,
+    .telemetry-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

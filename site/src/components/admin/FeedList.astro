@@ -1,0 +1,102 @@
+---
+import StatusPill from "./StatusPill.astro";
+import type { AdminFeedItem } from "./content";
+
+interface Props {
+  title: string;
+  kicker: string;
+  items: AdminFeedItem[];
+}
+
+const { title, kicker, items } = Astro.props;
+---
+
+<section class="admin-feed reveal-stage">
+  <div class="admin-feed__header">
+    <div>
+      <span class="admin-feed__kicker">{kicker}</span>
+      <h2>{title}</h2>
+    </div>
+  </div>
+  <div class="admin-feed__list">
+    {items.map((item) => (
+      <article class="admin-feed__item">
+        <div class="admin-feed__item-header">
+          <div>
+            <h3>{item.title}</h3>
+            <p class="admin-feed__meta">{item.meta}</p>
+          </div>
+          <StatusPill label={item.status} tone={item.tone} />
+        </div>
+        <p class="admin-feed__detail">{item.detail}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .admin-feed {
+    display: grid;
+    gap: 1rem;
+    padding: 1.05rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+      rgba(14, 18, 23, 0.9);
+  }
+
+  .admin-feed__header h2 {
+    font-size: 1.35rem;
+    letter-spacing: -0.04em;
+  }
+
+  .admin-feed__kicker {
+    color: var(--color-system);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .admin-feed__list {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .admin-feed__item {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .admin-feed__item-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-feed__item h3 {
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .admin-feed__meta,
+  .admin-feed__detail {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+  }
+
+  .admin-feed__meta {
+    margin-top: 0.2rem;
+  }
+
+  .admin-feed__detail {
+    line-height: 1.65;
+  }
+</style>

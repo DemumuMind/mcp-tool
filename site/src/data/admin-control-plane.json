@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "users": [
+    {
+      "id": "usr_owner",
+      "email": "owner@demumumind.internal",
+      "name": "Alex Orlov",
+      "role": "Owner",
+      "status": "active"
+    },
+    {
+      "id": "usr_operator",
+      "email": "operator@demumumind.internal",
+      "name": "Mira Volkov",
+      "role": "Operator",
+      "status": "active"
+    },
+    {
+      "id": "usr_reviewer",
+      "email": "reviewer@demumumind.internal",
+      "name": "Nadia Sokolov",
+      "role": "Reviewer",
+      "status": "active"
+    },
+    {
+      "id": "usr_analyst",
+      "email": "analyst@demumumind.internal",
+      "name": "Ilya Gromov",
+      "role": "Analyst",
+      "status": "active"
+    }
+  ],
+  "submissions": [
+    {
+      "id": "sub_1",
+      "slug": "tool-compass",
+      "status": "in_review"
+    }
+  ],
+  "catalogDrafts": [],
+  "approvals": [
+    {
+      "id": "apr_1",
+      "status": "pending",
+      "entityType": "release",
+      "entityId": "rel_1"
+    }
+  ],
+  "jobs": [],
+  "opsRuns": [],
+  "reviews": [],
+  "overrideWorkItems": [],
+  "campaigns": [],
+  "releases": [],
+  "exports": [],
+  "auditFindings": [],
+  "auditEvents": [],
+  "telemetrySnapshots": [],
+  "notifications": [],
+  "idempotencyLedger": {},
+  "settings": {
+    "freezePromotion": false,
+    "environmentMode": "internal",
+    "safetyCaps": {
+      "maxNamesPerRun": 50,
+      "failMode": "fail-closed",
+      "maxDailyExports": 3
+    }
+  }
+}

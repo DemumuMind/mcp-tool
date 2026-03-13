@@ -1,0 +1,263 @@
+---
+import Base from "./Base.astro";
+import AdminClientRuntime from "../components/admin/AdminClientRuntime.astro";
+import { adminNavItems } from "../components/admin/content";
+import { resolveAdminStoreConfig } from "../lib/admin/store.mjs";
+import { withBase } from "../lib/site-paths";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPath: string;
+}
+
+function isActivePath(currentPath: string, href: string) {
+  if (href === "/admin/") return currentPath === href;
+  return currentPath === href || currentPath.startsWith(href);
+}
+
+const {
+  title,
+  description = "Internal admin dashboard for DemumuMind operators.",
+  currentPath,
+} = Astro.props;
+
+const currentSection = adminNavItems.find((item) => isActivePath(currentPath, item.href)) || adminNavItems[0];
+const adminUser = Astro.locals.adminUser;
+const storeBackend = resolveAdminStoreConfig().backend;
+---
+
+<Base title={title} description={description} currentPath={currentPath} routeFamily="ops" pageClass="admin-shell-page">
+  <div class="admin-shell" data-admin-shell>
+    <aside class="admin-shell__rail">
+      <div class="admin-shell__brand">
+        <span class="admin-shell__brand-kicker">DemumuMind internal</span>
+        <strong>Admin Control Plane</strong>
+        <p>Operator-first workspace for approvals, staging, ops and publish readiness.</p>
+      </div>
+
+      <nav class="admin-shell__nav" aria-label="Admin">
+        {adminNavItems.map((item) => (
+          <a class:list={["admin-shell__nav-link", isActivePath(currentPath, item.href) && "admin-shell__nav-link--active"]} href={withBase(item.href)}>
+            <span class="admin-shell__nav-code">{item.code}</span>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="admin-shell__rail-card">
+        <span class="admin-shell__card-kicker">Current posture</span>
+        <h2>Structured approvals</h2>
+        <p>Destructive actions remain staged until reviewed, verified, and exported with a receipt trail.</p>
+        <p class="admin-shell__runtime">State backend: {storeBackend}</p>
+      </div>
+    </aside>
+
+    <div class="admin-shell__main">
+      <div class="admin-shell__topbar reveal-stage">
+        <div class="admin-shell__context">
+          <span class="admin-shell__section-code">{currentSection.code}</span>
+          <div>
+            <p class="admin-shell__context-label">Active workspace</p>
+            <strong>{currentSection.shortLabel}</strong>
+          </div>
+        </div>
+        <div class="admin-shell__meta">
+          {adminUser ? (
+            <>
+              <span>{adminUser.name} • {adminUser.role} • {adminUser.email}</span>
+              <button
+                type="button"
+                class="admin-shell__session-button"
+                data-admin-logout
+                data-endpoint={withBase("/api/admin/auth/session/")}
+                data-redirect={withBase("/admin/login/")}
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <a class="admin-shell__session-link" href={withBase("/admin/login/")}>Sign in</a>
+          )}
+        </div>
+      </div>
+
+      <p class="admin-shell__session-status" data-admin-session-status></p>
+
+      <slot />
+    </div>
+  </div>
+  <AdminClientRuntime />
+</Base>
+
+<style>
+  .admin-shell {
+    display: grid;
+    grid-template-columns: minmax(250px, 280px) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .admin-shell__rail {
+    position: sticky;
+    top: 5.4rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .admin-shell__brand,
+  .admin-shell__rail-card,
+  .admin-shell__topbar {
+    padding: 1rem 1.05rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
+      rgba(10, 13, 18, 0.92);
+  }
+
+  .admin-shell__brand,
+  .admin-shell__rail-card {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .admin-shell__brand-kicker,
+  .admin-shell__card-kicker,
+  .admin-shell__context-label,
+  .admin-shell__runtime,
+  .admin-shell__session-status {
+    color: var(--color-system);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .admin-shell__brand strong {
+    font-size: 1.15rem;
+    letter-spacing: -0.04em;
+  }
+
+  .admin-shell__brand p,
+  .admin-shell__rail-card p,
+  .admin-shell__meta span {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .admin-shell__nav {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .admin-shell__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: transform 140ms ease, border-color 140ms ease, color 140ms ease;
+  }
+
+  .admin-shell__nav-link:hover,
+  .admin-shell__nav-link--active {
+    transform: translateX(2px);
+    color: var(--color-text);
+    border-color: rgba(108, 224, 255, 0.22);
+  }
+
+  .admin-shell__nav-code,
+  .admin-shell__section-code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    min-height: 2rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-system);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .admin-shell__main {
+    display: grid;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .admin-shell__topbar,
+  .admin-shell__context,
+  .admin-shell__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .admin-shell__context strong {
+    font-size: 1.05rem;
+    letter-spacing: -0.03em;
+  }
+
+  .admin-shell__session-link,
+  .admin-shell__session-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.2rem 0.78rem;
+    border-radius: 999px;
+    border: 1px solid rgba(108, 224, 255, 0.22);
+    background: rgba(108, 224, 255, 0.08);
+    text-decoration: none;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .admin-shell__session-status {
+    min-height: 1rem;
+    margin: 0 0 0 0.2rem;
+  }
+
+  .admin-shell__session-status[data-tone="danger"] {
+    color: var(--color-danger);
+  }
+
+  .admin-shell__session-status[data-tone="system"] {
+    color: var(--color-system);
+  }
+
+  .admin-shell__session-status[data-tone="success"] {
+    color: var(--color-success);
+  }
+
+  .admin-shell__rail-card h2 {
+    font-size: 1rem;
+    letter-spacing: -0.03em;
+  }
+
+  @media (max-width: 1120px) {
+    .admin-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-shell__rail {
+      position: static;
+    }
+
+    .admin-shell__nav {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
+</style>

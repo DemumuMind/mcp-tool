@@ -1,0 +1,70 @@
+---
+import StatusPill from "./StatusPill.astro";
+import type { AdminMetric } from "./content";
+
+interface Props {
+  items: AdminMetric[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="admin-metric-grid">
+  {items.map((item) => (
+    <article class="admin-metric-card reveal-stage">
+      <div class="admin-metric-card__topline">
+        <span class="admin-metric-card__label">{item.label}</span>
+        <StatusPill label={item.tone || "default"} tone={item.tone} />
+      </div>
+      <strong>{item.value}</strong>
+      <p>{item.detail}</p>
+    </article>
+  ))}
+</section>
+
+<style>
+  .admin-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .admin-metric-card {
+    display: grid;
+    gap: 0.8rem;
+    min-height: 100%;
+    padding: 1rem 1.05rem;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
+      rgba(15, 18, 24, 0.88);
+  }
+
+  .admin-metric-card__topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .admin-metric-card__label {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .admin-metric-card strong {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .admin-metric-card p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+</style>

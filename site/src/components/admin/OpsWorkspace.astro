@@ -1,0 +1,317 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface RunItem {
+  id: string;
+  status?: string;
+  summary?: string;
+  createdAt?: string;
+  publishErrors?: number;
+}
+
+interface JobItem {
+  id: string;
+  kind?: string;
+  scope?: string;
+  status?: string;
+  result?: string;
+}
+
+interface NotificationItem {
+  id: string;
+  title: string;
+  summary?: string;
+  status?: string;
+}
+
+interface Props {
+  runs: RunItem[];
+  jobs: JobItem[];
+  notifications: NotificationItem[];
+  safetyCaps: {
+    maxNamesPerRun?: number;
+    failMode?: string;
+    maxDailyExports?: number;
+  };
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { runs = [], jobs = [], notifications = [], safetyCaps = {}, csrfToken, adminUser } = Astro.props;
+const canManage = Boolean(adminUser && hasCapability(adminUser.role, "ops.manage"));
+---
+
+<section class="ops-workspace reveal-stage">
+  <article class="ops-card ops-card--console">
+    <header class="ops-card__header">
+      <div>
+        <span class="ops-card__kicker">JobConsole</span>
+        <h2>Queue and process pipeline work</h2>
+      </div>
+      <StatusPill label={canManage ? "Ops.manage" : "Read-only"} tone={canManage ? "success" : "warning"} />
+    </header>
+
+    <form
+      class="ops-form"
+      method="post"
+      action={withBase("/api/admin/jobs/")}
+      data-admin-json-form
+      data-csrf={csrfToken || ""}
+      data-success-message="Job request accepted. Refreshing workspace..."
+      data-testid="ops-run-form"
+    >
+      <label>
+        Action
+        <select name="action" disabled={!canManage}>
+          <option value="queue">Queue work</option>
+          <option value="process">Process queued jobs</option>
+        </select>
+      </label>
+      <label>
+        Kind
+        <select name="kind" disabled={!canManage}>
+          <option value="pipeline">Pipeline</option>
+          <option value="validate">Validate</option>
+          <option value="preview">Preview</option>
+          <option value="export">Export</option>
+          <option value="verify">Verify</option>
+        </select>
+      </label>
+      <label>
+        Scope
+        <input type="text" name="scope" placeholder="2026-W11" disabled={!canManage} />
+      </label>
+      <label>
+        Reason
+        <input type="text" name="reason" placeholder="Recover publish lane before freeze." disabled={!canManage} />
+      </label>
+      <div class="ops-form__footer">
+        <button type="submit" disabled={!canManage}>Run ops action</button>
+        <p class="ops-form__status" data-admin-form-status></p>
+      </div>
+    </form>
+
+    <div class="ops-caps">
+      <div>
+        <strong>{safetyCaps.maxNamesPerRun || 0}</strong>
+        <span>max names per run</span>
+      </div>
+      <div>
+        <strong>{safetyCaps.maxDailyExports || 0}</strong>
+        <span>max daily exports</span>
+      </div>
+      <div>
+        <strong>{safetyCaps.failMode || "unknown"}</strong>
+        <span>fail mode</span>
+      </div>
+    </div>
+  </article>
+
+  <div class="ops-stack">
+    <article class="ops-card">
+      <header class="ops-card__header">
+        <div>
+          <span class="ops-card__kicker">Pipeline runs</span>
+          <h2>Recent ops history</h2>
+        </div>
+        <StatusPill label={`${runs.length} runs`} tone="system" />
+      </header>
+
+      <div class="ops-list">
+        {runs.slice(0, 8).map((run) => (
+          <div class="ops-item">
+            <div class="ops-item__header">
+              <div>
+                <strong>{run.id}</strong>
+                <span>{run.createdAt || "pending"}</span>
+              </div>
+              <StatusPill label={run.status || "unknown"} tone={run.status === "failed" ? "danger" : "success"} />
+            </div>
+            <p>{run.summary || "No run summary captured."}</p>
+            <span>{run.publishErrors || 0} publish errors</span>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <article class="ops-card">
+      <header class="ops-card__header">
+        <div>
+          <span class="ops-card__kicker">NotificationInbox</span>
+          <h2>Queued jobs and operator notices</h2>
+        </div>
+        <StatusPill label={`${notifications.length} notices`} tone={notifications.length ? "warning" : "success"} />
+      </header>
+
+      <div class="ops-list">
+        {jobs.slice(0, 8).map((job) => (
+          <div class="ops-item">
+            <div class="ops-item__header">
+              <div>
+                <strong>{job.kind || "job"}</strong>
+                <span>{job.scope || job.id}</span>
+              </div>
+              <StatusPill label={job.status || "queued"} tone={job.status === "completed" ? "success" : "warning"} />
+            </div>
+            <p>{job.result || "Awaiting execution."}</p>
+          </div>
+        ))}
+
+        {notifications.slice(0, 6).map((note) => (
+          <form
+            class="ops-item"
+            method="post"
+            action={withBase("/api/admin/notifications/")}
+            data-admin-json-form
+            data-csrf={csrfToken || ""}
+            data-success-message="Notification resolved. Refreshing workspace..."
+            data-testid={`notification-item-${note.id}`}
+          >
+            <input type="hidden" name="id" value={note.id} />
+            <div class="ops-item__header">
+              <div>
+                <strong>{note.title}</strong>
+                <span>{note.id}</span>
+              </div>
+              <StatusPill label={note.status || "unread"} tone={note.status === "resolved" ? "success" : "warning"} />
+            </div>
+            <p>{note.summary || "No operator note available."}</p>
+            <div class="ops-form__footer">
+              <button type="submit" disabled={!canManage || note.status === "resolved"}>Resolve</button>
+              <p class="ops-form__status" data-admin-form-status></p>
+            </div>
+          </form>
+        ))}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .ops-workspace,
+  .ops-stack,
+  .ops-list,
+  .ops-form,
+  .ops-caps {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .ops-workspace {
+    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.35fr);
+    align-items: start;
+  }
+
+  .ops-card,
+  .ops-item {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .ops-item {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .ops-card__header,
+  .ops-item__header,
+  .ops-form__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .ops-card__kicker,
+  .ops-item span {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .ops-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ops-form__footer {
+    grid-column: 1 / -1;
+  }
+
+  .ops-form label,
+  .ops-caps div {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .ops-form input,
+  .ops-form select,
+  .ops-form button,
+  .ops-item button {
+    min-height: 2.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .ops-form button,
+  .ops-item button {
+    border-radius: 999px;
+    border-color: rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .ops-form button[disabled],
+  .ops-form input[disabled],
+  .ops-form select[disabled],
+  .ops-item button[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .ops-item p,
+  .ops-form__status,
+  .ops-caps span {
+    color: var(--color-text-muted);
+  }
+
+  .ops-caps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ops-caps strong {
+    font-size: 1.2rem;
+  }
+
+  .ops-form__status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1080px) {
+    .ops-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .ops-form,
+    .ops-caps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

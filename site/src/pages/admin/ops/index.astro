@@ -1,0 +1,25 @@
+---
+export const prerender = false;
+
+import OpsWorkspace from "../../../components/admin/OpsWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("ops");
+const state = await loadAdminState();
+const moduleData = await getModuleData("ops", state);
+---
+
+<AdminLayout title="Admin Ops" currentPath="/admin/ops/">
+  <SectionPage page={page} />
+  <OpsWorkspace
+    runs={moduleData.runs}
+    jobs={moduleData.jobs}
+    notifications={moduleData.notifications || []}
+    safetyCaps={moduleData.safetyCaps}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

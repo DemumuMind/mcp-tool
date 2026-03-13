@@ -64,3 +64,6 @@ pnpm-debug.log*
 *.tgz
 
 reports/
+artifacts/e2e/
+artifacts/playwright-results/
+.serena/

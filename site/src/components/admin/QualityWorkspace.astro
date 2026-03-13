@@ -1,0 +1,299 @@
+---
+import { hasCapability } from "../../lib/admin/control-plane.mjs";
+import { withBase } from "../../lib/site-paths";
+import StatusPill from "./StatusPill.astro";
+
+interface FindingItem {
+  id: string;
+  title: string;
+  summary?: string;
+  slug?: string | null;
+  severity?: string;
+  status?: string;
+}
+
+interface NotificationItem {
+  id: string;
+  title: string;
+  summary?: string;
+  status?: string;
+}
+
+interface Props {
+  findings: FindingItem[];
+  notifications: NotificationItem[];
+  csrfToken: string | null;
+  adminUser: App.Locals["adminUser"];
+}
+
+const { findings = [], notifications = [], csrfToken, adminUser } = Astro.props;
+const canEdit = Boolean(adminUser && hasCapability(adminUser.role, "quality.manage"));
+const editorId = "quality-editor";
+---
+
+<section class="quality-workspace reveal-stage">
+  <article class="quality-card quality-card--editor">
+    <header class="quality-card__header">
+      <div>
+        <span class="quality-card__kicker">FindingWorkbench</span>
+        <h2>Log remediation work</h2>
+      </div>
+      <StatusPill label={canEdit ? "Quality.manage" : "Read-only"} tone={canEdit ? "success" : "warning"} />
+    </header>
+
+    <form
+      id={editorId}
+      class="quality-form"
+      method="post"
+      action={withBase("/api/admin/audit/findings/")}
+      data-admin-json-form
+      data-csrf={csrfToken || ""}
+      data-omit-empty-fields="true"
+      data-success-message="Quality finding saved. Refreshing workspace..."
+    >
+      <input type="hidden" name="id" value="" />
+      <label>
+        Title
+        <input type="text" name="title" placeholder="README health regression" required disabled={!canEdit} />
+      </label>
+      <label>
+        Slug
+        <input type="text" name="slug" placeholder="ledger-suite" disabled={!canEdit} />
+      </label>
+      <label>
+        Severity
+        <select name="severity" disabled={!canEdit}>
+          <option value="warning">Warning</option>
+          <option value="high">High</option>
+        </select>
+      </label>
+      <label>
+        Status
+        <select name="status" disabled={!canEdit}>
+          <option value="open">Open</option>
+          <option value="in_review">In review</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </label>
+      <label class="quality-form__wide">
+        Summary
+        <textarea name="summary" rows="3" placeholder="What broke, why it matters, and what must be fixed." disabled={!canEdit} />
+      </label>
+      <div class="quality-form__footer">
+        <div class="quality-form__actions">
+          <button type="submit" disabled={!canEdit}>Save finding</button>
+          <button type="button" class="quality-form__secondary" data-admin-reset-form={`#${editorId}`} disabled={!canEdit}>New finding</button>
+        </div>
+        <p class="quality-form__status" data-admin-form-status></p>
+      </div>
+    </form>
+  </article>
+
+  <div class="quality-stack">
+    <article class="quality-card">
+      <header class="quality-card__header">
+        <div>
+          <span class="quality-card__kicker">RemediationQueue</span>
+          <h2>Open findings</h2>
+        </div>
+        <StatusPill label={`${findings.length} findings`} tone={findings.length ? "warning" : "success"} />
+      </header>
+
+      <div class="quality-list">
+        {findings.slice(0, 10).map((finding) => (
+          <div class="quality-item">
+            <div class="quality-item__header">
+              <div>
+                <strong>{finding.title}</strong>
+                <span>{finding.slug || finding.id}</span>
+              </div>
+              <div class="quality-item__pills">
+                <StatusPill label={finding.status || "open"} tone={finding.status === "resolved" ? "success" : "warning"} />
+                <StatusPill label={finding.severity || "warning"} tone={finding.severity === "high" ? "danger" : "warning"} />
+              </div>
+            </div>
+            <p>{finding.summary || "No remediation summary recorded."}</p>
+            <button
+              type="button"
+              class="quality-item__action"
+              data-admin-populate-form={`#${editorId}`}
+              data-admin-payload={JSON.stringify({
+                id: finding.id,
+                title: finding.title,
+                slug: finding.slug || "",
+                severity: finding.severity || "warning",
+                status: finding.status || "open",
+                summary: finding.summary || "",
+              })}
+              disabled={!canEdit}
+            >
+              Edit finding
+            </button>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <article class="quality-card">
+      <header class="quality-card__header">
+        <div>
+          <span class="quality-card__kicker">Operator feed</span>
+          <h2>Recent quality notifications</h2>
+        </div>
+        <StatusPill label={`${notifications.length} notes`} tone="system" />
+      </header>
+
+      <div class="quality-list">
+        {notifications.slice(0, 8).map((note) => (
+          <div class="quality-item">
+            <div class="quality-item__header">
+              <div>
+                <strong>{note.title}</strong>
+                <span>{note.id}</span>
+              </div>
+              <StatusPill label={note.status || "unread"} tone={note.status === "resolved" ? "success" : "system"} />
+            </div>
+            <p>{note.summary || "No summary recorded."}</p>
+          </div>
+        ))}
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .quality-workspace,
+  .quality-stack,
+  .quality-list,
+  .quality-form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .quality-workspace {
+    grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.35fr);
+    align-items: start;
+  }
+
+  .quality-card,
+  .quality-item {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+      rgba(10, 14, 19, 0.9);
+  }
+
+  .quality-item {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .quality-card__header,
+  .quality-item__header,
+  .quality-item__pills,
+  .quality-form__footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .quality-card__kicker,
+  .quality-item span {
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .quality-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quality-form__wide,
+  .quality-form__footer {
+    grid-column: 1 / -1;
+  }
+
+  .quality-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .quality-form label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .quality-form input,
+  .quality-form select,
+  .quality-form textarea,
+  .quality-form button {
+    min-height: 2.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--color-text);
+  }
+
+  .quality-form textarea {
+    min-height: 4.5rem;
+    resize: vertical;
+  }
+
+  .quality-form button {
+    border-radius: 999px;
+    border-color: rgba(108, 224, 255, 0.24);
+    background: rgba(108, 224, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .quality-form__secondary,
+  .quality-item__action {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .quality-form button[disabled],
+  .quality-form input[disabled],
+  .quality-form select[disabled],
+  .quality-form textarea[disabled],
+  .quality-item__action[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .quality-item p,
+  .quality-form__status {
+    color: var(--color-text-muted);
+  }
+
+  .quality-form__status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1080px) {
+    .quality-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .quality-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

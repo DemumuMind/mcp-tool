@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+
+import CatalogWorkspace from "../../../components/admin/CatalogWorkspace.astro";
+import SectionPage from "../../../components/admin/SectionPage.astro";
+import { getBoundAdminPage } from "../../../components/admin/content";
+import { getModuleData, loadAdminState } from "../../../lib/admin/control-plane.mjs";
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("catalog");
+const state = await loadAdminState();
+const moduleData = await getModuleData("catalog", state);
+---
+
+<AdminLayout title="Admin Catalog" currentPath="/admin/catalog/">
+  <SectionPage page={page} />
+  <CatalogWorkspace
+    tools={moduleData.tools}
+    drafts={moduleData.drafts}
+    csrfToken={Astro.locals.csrfToken}
+    adminUser={Astro.locals.adminUser}
+  />
+</AdminLayout>

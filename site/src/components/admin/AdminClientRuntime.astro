@@ -1,0 +1,339 @@
+<script is:inline>
+  const jsonHeaders = {
+    "Content-Type": "application/json; charset=utf-8",
+  };
+
+  function setStatus(target, tone, message) {
+    if (!target) return;
+    target.textContent = message || "";
+    target.dataset.tone = tone || "default";
+  }
+
+  function getFormAction(form) {
+    const action = form.getAttribute("action") || window.location.href;
+    return new URL(action, window.location.href).toString();
+  }
+
+  function getFormMethod(form) {
+    return (form.getAttribute("method") || "POST").toUpperCase();
+  }
+
+  async function parseJson(response) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  }
+
+  function formDataToObject(formData, { omitEmpty = false } = {}) {
+    const entries = {};
+
+    for (const [key, value] of formData.entries()) {
+      const normalizedValue = typeof value === "string" ? value.trim() : value;
+      if (omitEmpty && normalizedValue === "") {
+        continue;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(entries, key)) {
+        const current = entries[key];
+        entries[key] = Array.isArray(current) ? [...current, normalizedValue] : [current, normalizedValue];
+        continue;
+      }
+
+      entries[key] = normalizedValue;
+    }
+
+    return entries;
+  }
+
+  function setFieldValue(field, value) {
+    const nextValue = Array.isArray(value) ? value.join(", ") : value == null ? "" : String(value);
+    if (
+      field instanceof HTMLInputElement ||
+      field instanceof HTMLTextAreaElement ||
+      field instanceof HTMLSelectElement
+    ) {
+      field.value = nextValue;
+    }
+  }
+
+  function populateAdminForm(selector, payload) {
+    const form = document.querySelector(selector);
+    if (!(form instanceof HTMLFormElement)) return;
+
+    for (const [key, value] of Object.entries(payload || {})) {
+      const field = form.elements.namedItem(key);
+      if (!field) continue;
+
+      if (field instanceof RadioNodeList) {
+        const target = [...field].find((entry) => entry instanceof HTMLInputElement && entry.value === String(value));
+        if (target instanceof HTMLInputElement) {
+          target.checked = true;
+        }
+        continue;
+      }
+
+      setFieldValue(field, value);
+    }
+
+    form.dataset.adminHydrated = "true";
+    const status = form.querySelector("[data-admin-form-status]");
+    setStatus(status, "system", "Existing record loaded into the editor.");
+  }
+
+  function resetAdminForm(selector) {
+    const form = document.querySelector(selector);
+    if (!(form instanceof HTMLFormElement)) return;
+
+    form.reset();
+    delete form.dataset.adminHydrated;
+    const idField = form.elements.namedItem("id");
+    if (
+      idField instanceof HTMLInputElement ||
+      idField instanceof HTMLTextAreaElement ||
+      idField instanceof HTMLSelectElement
+    ) {
+      idField.value = "";
+    }
+
+    const status = form.querySelector("[data-admin-form-status]");
+    setStatus(status, "system", "Editor reset for a new record.");
+  }
+
+  async function handleLogin(form) {
+    const status = form.querySelector("[data-admin-form-status]");
+    const submit = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+
+    if (submit) submit.disabled = true;
+    setStatus(status, "system", "Signing in...");
+
+    try {
+      const response = await fetch(getFormAction(form), {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      });
+      const payload = await parseJson(response);
+
+      if (!response.ok || !payload?.success) {
+        setStatus(status, "danger", payload?.error || "Unable to start an admin session.");
+        return;
+      }
+
+      setStatus(status, "success", "Session established. Redirecting...");
+      const nextPath = form.dataset.next || "/admin/";
+      window.location.assign(nextPath);
+    } catch (error) {
+      setStatus(status, "danger", error instanceof Error ? error.message : "Unable to reach the admin session API.");
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  }
+
+  async function handleCommand(form) {
+    const status = form.querySelector("[data-admin-form-status]");
+    const submit = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const csrfToken = form.dataset.csrf || "";
+
+    if (submit) submit.disabled = true;
+    setStatus(status, "system", "Submitting command...");
+
+    try {
+      const response = await fetch(getFormAction(form), {
+        method: "POST",
+        headers: {
+          ...jsonHeaders,
+          "X-Admin-CSRF": csrfToken,
+          "X-Idempotency-Key": `${String(formData.get("command") || "admin-command")}:${crypto.randomUUID()}`,
+        },
+        body: JSON.stringify({
+          command: formData.get("command"),
+          entityType: formData.get("entityType"),
+          entityId: formData.get("entityId"),
+          reason: formData.get("reason"),
+        }),
+      });
+      const payload = await parseJson(response);
+
+      if (!response.ok || !payload?.success) {
+        setStatus(status, "danger", payload?.error || "Admin command failed.");
+        return;
+      }
+
+      setStatus(status, "success", "Command accepted. Refreshing workspace...");
+      window.setTimeout(() => window.location.reload(), 240);
+    } catch (error) {
+      setStatus(status, "danger", error instanceof Error ? error.message : "Admin command failed.");
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  }
+
+  async function handleCredentialForm(form) {
+    const status = form.querySelector("[data-admin-form-status]");
+    const submit = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const csrfToken = form.dataset.csrf || "";
+
+    if (submit) submit.disabled = true;
+    setStatus(status, "system", "Rotating password...");
+
+    try {
+      const response = await fetch(getFormAction(form), {
+        method: "POST",
+        headers: {
+          ...jsonHeaders,
+          "X-Admin-CSRF": csrfToken,
+        },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      });
+      const payload = await parseJson(response);
+
+      if (!response.ok || !payload?.success) {
+        setStatus(status, "danger", payload?.error || "Credential rotation failed.");
+        return;
+      }
+
+      setStatus(status, "success", "Password rotated.");
+      form.reset();
+    } catch (error) {
+      setStatus(status, "danger", error instanceof Error ? error.message : "Credential rotation failed.");
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  }
+
+  async function handleJsonForm(form) {
+    const status = form.querySelector("[data-admin-form-status]");
+    const submit = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    const csrfToken = form.dataset.csrf || "";
+    const pendingMessage = form.dataset.pendingMessage || "Saving changes...";
+    const successMessage = form.dataset.successMessage || "Saved. Refreshing workspace...";
+    const errorMessage = form.dataset.errorMessage || "Request failed.";
+
+    const omitEmptyFields = form.dataset.omitEmptyFields === "true" && form.dataset.adminHydrated !== "true";
+
+    if (submit) submit.disabled = true;
+    setStatus(status, "system", pendingMessage);
+
+    try {
+      const response = await fetch(getFormAction(form), {
+        method: getFormMethod(form),
+        headers: {
+          ...jsonHeaders,
+          "X-Admin-CSRF": csrfToken,
+        },
+        body: JSON.stringify(formDataToObject(formData, { omitEmpty: omitEmptyFields })),
+      });
+      const payload = await parseJson(response);
+
+      if (!response.ok || !payload?.success) {
+        setStatus(status, "danger", payload?.error || errorMessage);
+        return;
+      }
+
+      setStatus(status, "success", successMessage);
+      if (form.dataset.resetOnSuccess === "true") {
+        form.reset();
+      }
+      window.setTimeout(() => window.location.reload(), 240);
+    } catch (error) {
+      setStatus(status, "danger", error instanceof Error ? error.message : errorMessage);
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  }
+
+  async function handleLogout(button) {
+    const target = button.closest("[data-admin-shell]")?.querySelector("[data-admin-session-status]");
+    button.disabled = true;
+    setStatus(target, "system", "Ending session...");
+
+    try {
+      const response = await fetch(button.dataset.endpoint || "/api/admin/auth/session/", {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        setStatus(target, "danger", "Unable to clear the current session.");
+        button.disabled = false;
+        return;
+      }
+
+      window.location.assign(button.dataset.redirect || "/admin/login/");
+    } catch (error) {
+      setStatus(target, "danger", error instanceof Error ? error.message : "Unable to clear the current session.");
+      button.disabled = false;
+    }
+  }
+
+  document.addEventListener("submit", (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) return;
+
+    if (form.matches("[data-admin-login-form]")) {
+      event.preventDefault();
+      void handleLogin(form);
+      return;
+    }
+
+    if (form.matches("[data-admin-command-form]")) {
+      event.preventDefault();
+      void handleCommand(form);
+      return;
+    }
+
+    if (form.matches("[data-admin-credential-form]")) {
+      event.preventDefault();
+      void handleCredentialForm(form);
+      return;
+    }
+
+    if (form.matches("[data-admin-json-form]")) {
+      event.preventDefault();
+      void handleJsonForm(form);
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const populateButton = target.closest("[data-admin-populate-form]");
+    if (populateButton instanceof HTMLElement) {
+      event.preventDefault();
+      try {
+        const payload = JSON.parse(populateButton.dataset.adminPayload || "{}");
+        populateAdminForm(populateButton.dataset.adminPopulateForm || "", payload);
+      } catch (error) {
+        const selector = populateButton.dataset.adminPopulateForm || "";
+        const form = document.querySelector(selector);
+        const status = form?.querySelector?.("[data-admin-form-status]");
+        setStatus(status, "danger", error instanceof Error ? error.message : "Unable to load the selected record.");
+      }
+      return;
+    }
+
+    const resetButton = target.closest("[data-admin-reset-form]");
+    if (resetButton instanceof HTMLElement) {
+      event.preventDefault();
+      resetAdminForm(resetButton.dataset.adminResetForm || "");
+      return;
+    }
+
+    const button = target.closest("[data-admin-logout]");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    event.preventDefault();
+    void handleLogout(button);
+  });
+</script>

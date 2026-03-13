@@ -1,0 +1,13 @@
+---
+export const prerender = false;
+
+import SectionPage from "../../components/admin/SectionPage.astro";
+import { getBoundAdminPage, overviewModules } from "../../components/admin/content";
+import AdminLayout from "../../layouts/AdminLayout.astro";
+
+const page = await getBoundAdminPage("overview");
+---
+
+<AdminLayout title="Admin Dashboard" currentPath="/admin/">
+  <SectionPage page={page} modules={overviewModules} />
+</AdminLayout>

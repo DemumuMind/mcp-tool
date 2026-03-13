@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 import { readFileSync } from 'node:fs';
 
@@ -20,6 +21,13 @@ const basePath = (() => {
 export default defineConfig({
   site: kitSiteUrl,
   base: basePath,
+  output: 'server',
+  session: {
+    driver: 'memory',
+  },
+  adapter: node({
+    mode: 'standalone',
+  }),
   trailingSlash: 'always',
   integrations: [sitemap({
     filter: (page) => !page.includes('/lab/'),
