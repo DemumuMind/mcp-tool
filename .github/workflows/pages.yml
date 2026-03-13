@@ -36,8 +36,15 @@ jobs:
       - name: Install root dependencies
         run: npm ci
       - name: Fetch MarketIR snapshot
-        continue-on-error: true
-        run: node scripts/fetch-marketir.mjs
+        run: |
+          set +e
+          node scripts/fetch-marketir.mjs
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            echo 'MarketIR snapshot unavailable; continuing with fallback data.'
+          fi
+          exit 0
       - name: Fetch GitHub facts
         run: node scripts/fetch-github-facts.mjs
       - name: Generate link registry

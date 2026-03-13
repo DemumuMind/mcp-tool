@@ -155,7 +155,7 @@ describe("workflow hardening", () => {
     assert.ok(marketirSection, "pages.yml: missing Fetch MarketIR snapshot section");
     assert.match(
       marketirSection[0],
-      /continue-on-error:\s*true/,
+      /MarketIR snapshot unavailable; continuing with fallback data\./,
       "pages.yml: MarketIR fetch should not block a Pages deploy when upstream is unavailable"
     );
   });
