@@ -4,6 +4,7 @@ export const prerender = true;
 import Base from "../../layouts/Base.astro";
 import MarketplaceCard from "../../components/MarketplaceCard.astro";
 import { getMarketplaceContent, getPublishedCompareHref, getRelatedTools, getToolDossier } from "../../lib/content/marketplace.ts";
+import { getProofData } from "../../lib/marketir/loader.mjs";
 import { withBase } from "../../lib/site-paths";
 
 export function getStaticPaths() {
@@ -17,6 +18,7 @@ if (!tool) {
   throw new Error(`Unknown tool dossier: ${Astro.params.slug}`);
 }
 
+const proofData = getProofData(tool.slug);
 const related = getRelatedTools(tool.slug);
 ---
 
@@ -163,6 +165,37 @@ const related = getRelatedTools(tool.slug);
         </div>
       </div>
     </section>
+
+    {proofData && (
+      <section class="section-shell" data-proof-section>
+        <div class="section-shell__header">
+          <div>
+            <p class="section-kicker">Public Proof</p>
+            <h2 class="section-shell__title">Claims and evidence visible to the public</h2>
+          </div>
+        </div>
+        {proofData.proven.length > 0 ? (
+          <ul class="ops-list">
+            {proofData.proven.map((claim) => <li>{claim.statement}</li>)}
+          </ul>
+        ) : (
+          <div class="empty-state">No proven claims are published yet. Review the docs, releases, and repository activity before rollout.</div>
+        )}
+        {proofData.antiClaims.length > 0 && (
+          <>
+            <div class="section-shell__header">
+              <div>
+                <p class="section-kicker">Not Claimed</p>
+                <h3 class="section-shell__title">Capabilities intentionally not promised</h3>
+              </div>
+            </div>
+            <ul class="ops-list">
+              {proofData.antiClaims.map((claim) => <li>{claim}</li>)}
+            </ul>
+          </>
+        )}
+      </section>
+    )}
 
     {tool.screenshot && (
       <section class="tool-screenshot">
