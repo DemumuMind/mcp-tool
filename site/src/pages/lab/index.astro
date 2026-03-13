@@ -1,7 +1,11 @@
 ---
+export const prerender = true;
+
 import InternalHero from "../../components/InternalHero.astro";
 import Layout from "../../layouts/Base.astro";
 import { withBase } from "../../lib/site-paths";
+
+const adminUrl = String(import.meta.env.PUBLIC_ADMIN_URL || "").trim().replace(/\/$/, "");
 
 const LAB_SECTIONS = [
   {
@@ -27,7 +31,7 @@ const LAB_SECTIONS = [
     id: "governance",
     title: "Governance & Promotion",
     items: [
-      { href: "/admin/", code: "ADM", title: "Admin Control Plane", desc: "Role-aware backoffice for approvals, releases, moderation, and operator queues", badge: "Internal" },
+      { href: adminUrl || "/lab/control/", code: "ADM", title: "Admin Control Plane", desc: adminUrl ? "Role-aware backoffice for approvals, releases, moderation, and operator queues" : "Internal backoffice lives on a separate runtime. Use the control surface from the public lab until an admin host is configured.", badge: "Internal", external: Boolean(adminUrl) },
       { href: "/lab/control/", code: "CTL", title: "Control Surface", desc: "Operator actions for governance and promotion", badge: "Internal" },
       { href: "/lab/promo/", code: "PRM", title: "Promotion Track", desc: "Active promotion campaigns and status", badge: "Internal" },
       { href: "/lab/worthy/", code: "WRT", title: "Worthy Candidates", desc: "Tools flagged for potential promotion", badge: "Internal" },
@@ -91,7 +95,7 @@ const LAB_SECTIONS = [
       </section>
     ))}
 
-    <p class="ops-caption">Use `/admin/` for the full backoffice. `/lab/` remains the public/internal observability surface for audits, health, and pipeline signals.</p>
+    <p class="ops-caption">{adminUrl ? "Use the configured admin host for the full backoffice. /lab/ remains the public/internal observability surface for audits, health, and pipeline signals." : "/lab/ remains the public/internal observability surface. Configure PUBLIC_ADMIN_URL to expose a direct link to the private admin host."}</p>
   </div>
 </Layout>
 
