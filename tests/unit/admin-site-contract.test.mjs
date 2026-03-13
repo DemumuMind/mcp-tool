@@ -165,8 +165,8 @@ describe("admin site contract", () => {
 
     assert.match(
       workflow,
-      /path:\s*site\/dist\/client/,
-      "pages deployment should publish the prerendered client bundle only"
+      /tar --format=ustar -czf \.pages-artifact\/github-pages\.tar\.gz -C site\/dist\/client \./,
+      "pages deployment should package the prerendered client bundle only"
     );
   });
 

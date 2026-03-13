@@ -85,6 +85,8 @@ jobs:
         with:
           node-version: 22
       - id: deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/deploy-pages-api.mjs
 
   smoke:
