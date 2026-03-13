@@ -23,7 +23,7 @@ describe("public site URL contract", () => {
 
     assert.match(
       workflow,
-      /outputs:\s*\n\s*page_url:\s*\$\{\{\s*steps\.deployment\.outputs\.page_url\s*\}\}/,
+      /outputs:\s*\n\s*page_url:\s*\$\{\{\s*steps\.page\.outputs\.page_url\s*\}\}/,
       "deploy job should expose page_url"
     );
     assert.match(
@@ -33,16 +33,16 @@ describe("public site URL contract", () => {
     );
     assert.match(
       workflow,
-      /run:\s*node scripts\/deploy-pages-api\.mjs/,
-      "deploy job should use the repo-owned Pages API deploy script"
+      /git push --force origin gh-pages/,
+      "pages workflow should publish the gh-pages branch directly"
     );
     assert.ok(
       !workflow.includes("actions/deploy-pages@"),
       "pages workflow should not depend on actions/deploy-pages"
     );
     assert.ok(
-      !workflow.includes("actions/upload-pages-artifact@"),
-      "pages workflow should not depend on actions/upload-pages-artifact"
+      !workflow.includes("actions/upload-pages-artifact@") && !workflow.includes("actions/upload-artifact@"),
+      "pages workflow should not depend on artifact wrapper actions"
     );
   });
 
