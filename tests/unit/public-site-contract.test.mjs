@@ -31,6 +31,19 @@ describe("public site URL contract", () => {
       /node scripts\/smoke-test\.mjs "\$\{\{\s*needs\.deploy\.outputs\.page_url\s*\}\}"/,
       "smoke job should use the deployed page_url"
     );
+    assert.match(
+      workflow,
+      /run:\s*node scripts\/deploy-pages-api\.mjs/,
+      "deploy job should use the repo-owned Pages API deploy script"
+    );
+    assert.ok(
+      !workflow.includes("actions/deploy-pages@"),
+      "pages workflow should not depend on actions/deploy-pages"
+    );
+    assert.ok(
+      !workflow.includes("actions/upload-pages-artifact@"),
+      "pages workflow should not depend on actions/upload-pages-artifact"
+    );
   });
 
   it("runs quality checks for root config and workflow changes that affect public URLs", () => {
