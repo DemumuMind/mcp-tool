@@ -1,12 +1,13 @@
 ## Submission: Experiment
 
 **Tool slug:** <!-- e.g. my-cool-tool -->
-**Submission file:** `submissions/<slug>.json`
+**Submission intake file:** `submissions/<slug>.json`
 **Experiment dimension:** <!-- tagline | snippet | cta -->
 
 ### Checklist
 
 - [ ] `submissions/<slug>.json` added and passes schema validation
+- [ ] I understand maintainers sync public queue state separately via `site/src/data/submissions.json`
 - [ ] Tool has at least one published release
 - [ ] At least one proof link is included (CI, tests, demo, benchmark)
 - [ ] README has install instructions, usage, and license

@@ -273,13 +273,27 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'submissions/*.json' 2>/dev/null || true)
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'submissions/*.json' 'site/src/data/submissions.json' 2>/dev/null || true)
           if [ -z "$CHANGED" ]; then
             echo "No submission files changed — skipping lint"
             exit 0
           fi
-          echo "Linting changed submissions: $CHANGED"
-          node scripts/lint-submission.mjs --ci --files $CHANGED
+          FILE_SUBMISSIONS=$(printf "%s\n" "$CHANGED" | grep '^submissions/.*\.json$' || true)
+          SUMMARY_CHANGED=$(printf "%s\n" "$CHANGED" | grep '^site/src/data/submissions\.json$' || true)
+          if [ -n "$FILE_SUBMISSIONS" ]; then
+            echo "Linting changed submissions: $FILE_SUBMISSIONS"
+            node scripts/lint-submission.mjs --ci --files $FILE_SUBMISSIONS
+          elif [ -n "$SUMMARY_CHANGED" ]; then
+            echo "Summary changed without intake-file edits; recording explicit review note."
+            cat > lint-report.md <<'EOF'
+          ## Submission Lint Report
+
+          Public queue summary changed in `site/src/data/submissions.json`.
+
+          No `submissions/*.json` intake files changed in this PR, so per-file submission lint was not applicable.
+          Schema validation still runs in CI via `validate-submissions.mjs`.
+          EOF
+          fi
           if [ -f lint-report.md ]; then
             gh pr comment "${{ github.event.pull_request.number }}" --body-file lint-report.md
           fi

@@ -30,6 +30,6 @@ export default defineConfig({
   }),
   trailingSlash: 'always',
   integrations: [sitemap({
-    filter: (page) => !page.includes('/lab/'),
+    filter: (page) => !page.includes('/lab/') && !page.includes('/admin/') && !page.includes('/api/admin/'),
   })],
 });

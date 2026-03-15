@@ -159,4 +159,19 @@ describe("workflow hardening", () => {
       "pages.yml: MarketIR fetch should not block a Pages deploy when upstream is unavailable"
     );
   });
+
+  it("does not silently skip submission lint when only the public queue summary changes", () => {
+    const siteQuality = readWorkflow("site-quality.yml");
+
+    assert.match(
+      siteQuality,
+      /'submissions\/\*\.json' 'site\/src\/data\/submissions\.json'/,
+      "site-quality.yml: submission lint gate must watch both intake files and the public queue summary"
+    );
+    assert.match(
+      siteQuality,
+      /Summary changed without intake-file edits; recording explicit review note\./,
+      "site-quality.yml: summary-only edits should produce an explicit lint note instead of silently skipping"
+    );
+  });
 });

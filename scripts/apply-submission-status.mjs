@@ -7,7 +7,7 @@
  * Called from the apply-submission-status workflow.
  *
  * Usage:
- *   node scripts/apply-submission-status.mjs '{"slug":"my-tool","status":"needs-info","reviewNotes":"Please add a demo"}'
+ *   node scripts/apply-submission-status.mjs '{"slug":"my-tool","status":"needs-info"}'
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -25,7 +25,7 @@ export const VALID_STATUSES = [
 ];
 
 const PATCHABLE_FIELDS = new Set([
-  "status", "reviewNotes", "lastReviewedAt", "sourcePr", "updatedAt", "reason",
+  "status", "updatedAt",
 ]);
 
 const PROTECTED_FIELDS = new Set([
@@ -34,24 +34,11 @@ const PROTECTED_FIELDS = new Set([
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
 
-function isHttpsUrl(str) {
-  try {
-    const url = new URL(str);
-    return url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
 // ── Field validators ──────────────────────────────────────────
 
 const FIELD_VALIDATORS = {
   status: (v) => typeof v === "string" && VALID_STATUSES.includes(v),
-  reviewNotes: (v) => typeof v === "string" && v.length <= 500,
-  lastReviewedAt: (v) => typeof v === "string" && ISO_DATE_RE.test(v),
-  sourcePr: (v) => typeof v === "string" && isHttpsUrl(v),
   updatedAt: (v) => typeof v === "string" && ISO_DATE_RE.test(v),
-  reason: (v) => typeof v === "string" && v.length <= 300,
 };
 
 // ── Risk notes ────────────────────────────────────────────────
@@ -67,8 +54,6 @@ const RISK_NOTES = {
     };
     return notes[v] || `Status changed to "${v}"`;
   },
-  reviewNotes: () => "Review notes updated",
-  reason: () => "Rejection/status reason updated",
 };
 
 export function resolvePatchInput({ patchJson = "", patchJsonB64 = "" } = {}) {

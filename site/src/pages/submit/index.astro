@@ -43,7 +43,7 @@ const exampleJson = JSON.stringify(
     <PageHero
       eyebrow="Submission guide"
       title="Submit a tool with enough proof to review it."
-      lede="Submissions start from a structured JSON file, CI validation, and a human review pass. The goal is simple: give people enough context to install, test, and trust what they are looking at."
+      lede="Submissions start from a structured intake file, CI validation, and a human review pass. The public queue only mirrors safe status updates after review."
       meta={["Weekly review cycle", "Proof required", "Two submission paths"]}
     />
 
@@ -95,8 +95,8 @@ const exampleJson = JSON.stringify(
         <ol>
           <li>Fork the <a href={`https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}`} rel="noopener" data-link-type="fork">marketing repo</a>.</li>
           <li>Create <code>submissions/&lt;your-slug&gt;.json</code>.</li>
-          <li>Open the promotion or experiment pull request template.</li>
-          <li>Wait for CI validation and human review.</li>
+          <li>Open the promotion or experiment pull request template and wait for CI validation.</li>
+          <li>After review, maintainers sync the public queue status into <code>site/src/data/submissions.json</code>.</li>
         </ol>
       </div>
     </section>
@@ -142,7 +142,7 @@ const exampleJson = JSON.stringify(
       <ul class="policy-list">
         <li>Submissions are reviewed on a weekly cadence.</li>
         <li>Entries may be marked <strong>needs info</strong> while details are clarified.</li>
-        <li>Rejections include a reason and a path to resubmit.</li>
+        <li>The public queue shows only status-safe updates, not reviewer-only notes or internal escalation details.</li>
       </ul>
     </section>
   </div>

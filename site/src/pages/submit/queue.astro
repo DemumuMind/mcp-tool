@@ -42,7 +42,6 @@ function renderCompactRows(items) {
     slug: submission.slug,
     lane: submission.lane,
     date: formatDate(submission.updatedAt || submission.submittedAt),
-    reason: submission.reason || "",
   }));
 }
 ---
@@ -58,7 +57,7 @@ function renderCompactRows(items) {
     <PageHero
       eyebrow="Queue ledger"
       title="Track review status without asking in the dark."
-      lede="Promotion and experiment submissions move through a single evidence-first queue with explicit statuses and review notes."
+      lede="Promotion and experiment submissions move through a single evidence-first queue with public status updates only."
       meta={[
         `${byStatus.pending.length} pending`,
         `${byStatus.needsInfo.length} needs info`,
@@ -156,15 +155,9 @@ function renderCompactRows(items) {
                     {submission.kind && <span class="badge badge-kind">{submission.kind}</span>}
                     {submission.category && <span class="badge badge-kind">{submission.category}</span>}
                   </div>
-                  {submission.reviewNotes && (
-                    <div class="review-card">
-                      <span class="label">Reviewer notes</span>
-                      <p>{submission.reviewNotes}</p>
-                    </div>
-                  )}
+                  <p>Please update the submission file and push a new PR revision if more evidence is requested.</p>
                   <div class="queue-card__footer">
-                    {submission.lastReviewedAt && <span class="field-hint">Reviewed {formatDate(submission.lastReviewedAt)}</span>}
-                    {submission.sourcePr && <a href={submission.sourcePr} rel="noopener">Source PR</a>}
+                    <span class="field-hint">Status updated {formatDate(submission.updatedAt || submission.submittedAt)}</span>
                     {submission.pr && <a href={submission.pr} rel="noopener">View PR</a>}
                   </div>
                 </article>
@@ -207,7 +200,6 @@ function renderCompactRows(items) {
                   <span class="release-tool mono">{row.slug}</span>
                   <span class={`badge badge-${row.lane === "promo" ? "registered" : "beta"}`}>{row.lane}</span>
                   <span class="release-date-inline">{row.date}</span>
-                  {row.reason && <span class="field-hint">{row.reason}</span>}
                 </div>
               ))}
             </div>
@@ -245,7 +237,10 @@ function renderCompactRows(items) {
       </div>
       <div class="steps-box">
         <p>
-          Submissions are validated by <code>validate-submissions.mjs</code> on every PR before they reach a human reviewer.
+          Submission files are validated by <code>validate-submissions.mjs</code> on every PR before they reach a human reviewer.
+        </p>
+        <p>
+          This public queue is a status ledger derived from the intake flow. It does not publish reviewer-only notes or internal escalation metadata.
         </p>
         <p>
           Learn the intake contract on <a href={withBase("/submit/")}>Get Featured</a>.

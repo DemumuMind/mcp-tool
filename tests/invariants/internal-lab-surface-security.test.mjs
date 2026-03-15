@@ -10,6 +10,7 @@ const REPO_ROOT = path.resolve(__dirname, "../..");
 const LAB_PAGES_DIR = path.join(REPO_ROOT, "site", "src", "pages", "lab");
 const MIDDLEWARE_PATH = path.join(REPO_ROOT, "site", "src", "middleware.ts");
 const PAGES_WORKFLOW_PATH = path.join(REPO_ROOT, ".github", "workflows", "pages.yml");
+const ASTRO_CONFIG_PATH = path.join(REPO_ROOT, "site", "astro.config.mjs");
 
 function getLabPages(rootDir) {
   const entries = fs.readdirSync(rootDir, { withFileTypes: true });
@@ -60,5 +61,13 @@ describe("Internal lab surface security", () => {
       /rm -rf site\/dist\/client\/lab/,
       "pages workflow must remove internal lab artifacts from the public client bundle"
     );
+  });
+
+  it("excludes admin and lab routes from the public sitemap", () => {
+    const source = fs.readFileSync(ASTRO_CONFIG_PATH, "utf8");
+
+    assert.match(source, /!page\.includes\('\/lab\/'\)/);
+    assert.match(source, /!page\.includes\('\/admin\/'\)/);
+    assert.match(source, /!page\.includes\('\/api\/admin\/'\)/);
   });
 });
