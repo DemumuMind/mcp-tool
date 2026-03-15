@@ -842,6 +842,10 @@
     "screenshotType": "placeholder",
     "needsHumanReview": true
   },
+  "homebrew-core": {
+    "screenshot": "/screenshots/homebrew-core.png",
+    "screenshotType": "placeholder"
+  },
   "integradio": {
     "tags": [
       "gradio",
@@ -931,6 +935,14 @@
     "tagline": "SessionStart hook that health-checks MCP servers, quarantines broken ones, and...",
     "needsHumanReview": true
   },
+  "mcp-docs": {
+    "screenshot": "/screenshots/mcp-docs.png",
+    "screenshotType": "placeholder"
+  },
+  "mcp-examples": {
+    "screenshot": "/screenshots/mcp-examples.png",
+    "screenshotType": "placeholder"
+  },
   "mcp-file-forge": {
     "tags": [
       "mcp",
@@ -1008,6 +1020,10 @@
     "smithery": "https://smithery.ai/servers/DemumuMind/voice-soundboard",
     "flyio": "https://voice-soundboard-mcp.fly.dev"
   },
+  "mcpt": {
+    "screenshot": "/screenshots/mcpt.png",
+    "screenshotType": "placeholder"
+  },
   "meta-content-system": {
     "tags": [
       "content-system",
@@ -1021,6 +1037,10 @@
     "kind": "desktop-app",
     "tagline": "Shared content system for typing-practice apps — lessons, progression, and adaptive...",
     "needsHumanReview": true
+  },
+  "next-gallery": {
+    "screenshot": "/screenshots/next-gallery.png",
+    "screenshotType": "placeholder"
   },
   "nexus-attest": {
     "tags": [
@@ -1619,6 +1639,10 @@
     "screenshotType": "placeholder",
     "needsHumanReview": true
   },
+  "websketch-demo": {
+    "screenshot": "/screenshots/websketch-demo.png",
+    "screenshotType": "placeholder"
+  },
   "websketch-extension": {
     "tags": [
       "browser",
@@ -1669,6 +1693,10 @@
     "kind": "vscode-extension",
     "tagline": "VS Code extension — capture web pages as grammar-based IR for LLMs.",
     "needsHumanReview": true
+  },
+  "winget-pkgs": {
+    "screenshot": "/screenshots/winget-pkgs.png",
+    "screenshotType": "placeholder"
   },
   "witness": {
     "tags": [
