@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-03-15T18:46:23.793Z",
+  "commit": "f641b26",
+  "marketirLockHash": null,
+  "coeVersion": "unknown",
+  "provenClaims": 0,
+  "worthyStats": {
+    "total": 1,
+    "worthy": 1,
+    "notWorthy": 0
+  },
+  "artifactManifest": {
+    "projects.json": "sha256:14bd20c1e816b929ce2580ffc7678493c29e26e06c965331fb456db348190d8f",
+    "overrides.json": "sha256:62d9ecae3b1b19d21f0cb02fcd5b0ae06c658cd9aa32bb89dad07f778b833294",
+    "worthy.json": "sha256:6683b6d0212127695b040bc0072a12747d83b4a208bdc73233218b9ad19b8e87",
+    "promo.json": "sha256:b29340318f426fe4a7d1eb49eaba853e9ed19803883a95519a2fb44d1afda9ff",
+    "baseline.json": "sha256:66eb013ddb742e578fae7b44d337f5c814fd70ab6312d14fa5575cd04d67bb49",
+    "ops-history.json": "sha256:a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+    "promo-decisions.json": "sha256:d148c2c2eb09bcfb522bf8a6e78d0b35e2590776cf3e8d3c1847cdd572442a0c",
+    "experiment-decisions.json": "sha256:2afce8ac9e5cfb66fc3dc06a0ec3453ed976beb518b44ea90e1449a8e4425058"
+  }
+}
