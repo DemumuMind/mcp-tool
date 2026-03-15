@@ -67,6 +67,8 @@ jobs:
         working-directory: site
       - run: npm run build
         working-directory: site
+      - name: Remove internal lab artifacts from public bundle
+        run: rm -rf site/dist/client/lab
       - id: page
         name: Expose public site URL
         run: echo "page_url=${PUBLIC_SITE_URL}" >> "$GITHUB_OUTPUT"

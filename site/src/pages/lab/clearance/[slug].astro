@@ -1,31 +1,10 @@
 ﻿---
+export const prerender = false;
+
 import Base from "../../../layouts/Base.astro";
 import fs from "node:fs";
 import path from "node:path";
 import { withBase } from "../../../lib/site-paths";
-
-export function getStaticPaths() {
-  const baseDir = path.join(process.cwd(), "public/lab/clearance");
-  const paths: { params: { slug: string } }[] = [];
-
-  try {
-    if (fs.existsSync(baseDir)) {
-      const entries = fs.readdirSync(baseDir, { withFileTypes: true });
-      for (const entry of entries) {
-        if (entry.isDirectory()) {
-          const reportPath = path.join(baseDir, entry.name, "report.html");
-          if (fs.existsSync(reportPath)) {
-            paths.push({ params: { slug: entry.name } });
-          }
-        }
-      }
-    }
-  } catch {
-    // No directories available
-  }
-
-  return paths;
-}
 
 const { slug } = Astro.params;
 
@@ -93,7 +72,6 @@ function formatDate(dateStr: string | null) {
   }
 }
 ---
-export const prerender = true;
 
 
 <Base

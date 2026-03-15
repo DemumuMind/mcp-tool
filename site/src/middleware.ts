@@ -4,6 +4,7 @@ import { withBase } from "./lib/site-paths";
 
 const ADMIN_PREFIX = withBase("/admin/");
 const ADMIN_API_PREFIX = withBase("/api/admin/");
+const LAB_PREFIX = withBase("/lab/");
 const LOGIN_PATH = withBase("/admin/login/");
 const SESSION_API_PATH = withBase("/api/admin/auth/session/");
 
@@ -28,10 +29,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const pathname = context.url.pathname;
   const isAdminPage = pathname.startsWith(ADMIN_PREFIX);
   const isAdminApi = pathname.startsWith(ADMIN_API_PREFIX);
+  const isLabPage = pathname.startsWith(LAB_PREFIX);
   const isSessionRoute = pathname.startsWith(SESSION_API_PATH);
   const isLoginRoute = pathname.startsWith(LOGIN_PATH);
 
-  if (!isAdminPage && !isAdminApi) {
+  if (!isAdminPage && !isAdminApi && !isLabPage) {
     return next();
   }
 
