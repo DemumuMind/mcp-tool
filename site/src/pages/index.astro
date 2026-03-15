@@ -6,226 +6,265 @@ import { withBase } from "../lib/site-paths";
 
 const content = getMarketplaceContent();
 const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
-const heroSuggestions = [
-  ...content.catalog.primary.slice(0, 10).map((entry) => entry.name),
-  ...content.categories.slice(0, 6).map((category) => category.title),
-  ...content.docs.slice(0, 4).map((doc) => doc.title),
+
+const featuredEntries = content.catalog.featured.slice(0, 6);
+const heroCategories = content.categories.slice(0, 5);
+const workflowCategories = content.stats.topCategories.slice(0, 4);
+const workflowPlatforms = content.stats.topPlatforms.filter((platform) => platform.slug !== "any-mcp-client").slice(0, 4);
+const editorialDocs = content.docs.slice(0, 2);
+
+const valueCards = [
+  {
+    eyebrow: "Context first",
+    title: "See where a tool fits before you trial it.",
+    body: "Categories, platforms, pricing, freshness, and proof signals stay visible together so the shortlist happens faster.",
+  },
+  {
+    eyebrow: "Signal over noise",
+    title: "Compare quality clues instead of guessing from a repo name.",
+    body: "The catalog surfaces docs readiness, install posture, trust cues, and recent activity in the same place.",
+  },
+  {
+    eyebrow: "Workflow entry points",
+    title: "Start from the job you need to solve, not from a random listing.",
+    body: "Browse through category lanes, platform hubs, and curated collections built to reduce dead-end clicks.",
+  },
+  {
+    eyebrow: "Decision support",
+    title: "Move from browsing to proof-backed selection.",
+    body: "Trust, proof, stats, and compare routes stay one click away when you need receipts for a choice.",
+  },
+];
+
+const proofRail = [
+  {
+    label: "Listed tools",
+    value: formatNumber(content.stats.totalListings),
+    detail: "Public MCP tools and apps indexed into one catalog surface.",
+  },
+  {
+    label: "Verified tools",
+    value: formatNumber(content.stats.verifiedListings),
+    detail: "Listings with clearer docs, fresher signals, and stronger public evidence.",
+  },
+  {
+    label: "Fresh listings",
+    value: formatNumber(content.stats.freshListings),
+    detail: "Projects showing recent movement, useful when recency matters to your stack.",
+  },
+  {
+    label: "Visible stars",
+    value: formatNumber(content.stats.totalStars),
+    detail: "Public adoption signal aggregated across the catalog's indexed repositories.",
+  },
+];
+
+const proofLinks = [
+  {
+    href: withBase("/trust/"),
+    eyebrow: "Trust center",
+    title: "How DemumuMind decides what deserves confidence",
+    body: "Review freeze modes, governance cues, and the operational rules behind the catalog.",
+  },
+  {
+    href: withBase("/proof/"),
+    eyebrow: "Proof",
+    title: "Open the evidence trail behind quality and promotion claims",
+    body: "Use proof routes when you need direct receipts instead of marketing-only statements.",
+  },
+  {
+    href: withBase("/stats/"),
+    eyebrow: "Stats",
+    title: "Read the health of the marketplace at a glance",
+    body: "Track listing mix, quality averages, and freshness patterns before diving into individual tools.",
+  },
+  {
+    href: withBase("/docs/"),
+    eyebrow: "Docs",
+    title: "Learn how to browse the catalog like an operator",
+    body: editorialDocs.map((doc) => doc.title).join(" · "),
+  },
 ];
 ---
 
 <Base
   title="DemumuMind MCP"
-  description="Find MCP tools, compare your options, and review compatibility and quality signals in one place."
+  description="Browse MCP tools through a curated, proof-aware marketplace with clearer compatibility notes, quality cues, and faster paths into the right shortlist."
   currentPath="/"
 >
-  <div class="home-flow">
-    <section class="marketplace-hero">
-      <div class="marketplace-hero__copy">
+  <div class="home-flow home-flow--editorial">
+    <section class="home-editorial-hero">
+      <div class="home-editorial-hero__copy">
         <p class="eyebrow">DemumuMind MCP tool shop</p>
-        <h1 class="marketplace-hero__title">Find MCP tools that fit your stack.</h1>
-        <p class="marketplace-hero__lede">
-          Search a curated marketplace of MCP servers, apps, and utilities with clearer compatibility notes, quality signals, and comparison pages for faster decisions.
+        <div class="home-editorial-hero__signal-row">
+          <span class="compat-pill">Curated catalog</span>
+          <span class="compat-pill">Compatibility context</span>
+          <span class="compat-pill">Proof-aware picks</span>
+        </div>
+
+        <h1 class="home-editorial-hero__title">Choose MCP tools with less guesswork.</h1>
+        <p class="home-editorial-hero__lede">
+          DemumuMind turns a crowded MCP ecosystem into a sharper decision surface: curated listings, clearer fit signals,
+          and direct paths into the tools that actually match your runtime, workflow, and quality bar.
         </p>
 
-        <form class="search-omnibox" id="home-search-form" action={withBase("/tools/")}>
-          <label class="sr-only" for="home-search">Search MCP tools</label>
-          <input
-            id="home-search"
-            name="q"
-            list="home-search-suggestions"
-            placeholder="Search MCP tools, categories, docs, or platforms"
-            autocomplete="off"
-          />
-          <button type="submit" class="btn btn-primary">Explore tools</button>
-        </form>
-        <datalist id="home-search-suggestions">
-          {heroSuggestions.map((item) => <option value={item} />)}
-        </datalist>
+        <div class="home-editorial-hero__actions">
+          <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+          <a href={withBase("/submit/")} class="btn btn-secondary">Submit a tool</a>
+        </div>
 
-        <div class="marketplace-hero__quickfacets">
-          {content.categories.slice(0, 5).map((category) => (
-            <a href={withBase(`/tools/?category=${category.slug}`)} class="compat-pill">{category.title}</a>
-          ))}
-        </div>
-      </div>
-
-      <div class="marketplace-hero__aside">
-        <div class="metric-card">
-          <span class="metric-card__label">Listed tools</span>
-          <strong class="metric-card__value">{formatNumber(content.stats.totalListings)}</strong>
-          <p>Public MCP tools and apps you can browse right now.</p>
-        </div>
-        <div class="metric-card">
-          <span class="metric-card__label">Verified tools</span>
-          <strong class="metric-card__value">{formatNumber(content.stats.verifiedListings)}</strong>
-          <p>Listings with clearer docs, fresher releases, and stronger public signals.</p>
-        </div>
-        <div class="metric-card">
-          <span class="metric-card__label">Browse paths</span>
-          <strong class="metric-card__value">{formatNumber(content.categories.length)}</strong>
-          <p>Category hubs that help you narrow the catalog by workflow.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-shell">
-      <div class="section-shell__header">
-        <div>
-          <p class="section-kicker">Featured</p>
-          <h2 class="section-shell__title">Strong places to start</h2>
-        </div>
-        <a href={withBase("/tools/")} class="see-all">Browse all</a>
-      </div>
-      <div class="featured-tools-grid">
-        {content.catalog.featured.map((entry) => <MarketplaceCard entry={entry} compact />)}
-      </div>
-    </section>
-
-    <section class="section-split">
-      <div class="section-shell">
-        <div class="section-shell__header">
-          <div>
-            <p class="section-kicker">Trending</p>
-            <h2 class="section-shell__title">Tools getting attention</h2>
+        <div class="home-editorial-hero__support">
+          <p class="home-editorial-hero__support-label">Jump into popular lanes</p>
+          <div class="home-editorial-hero__facets">
+            {heroCategories.map((category) => (
+              <a href={withBase(`/tools/?category=${category.slug}`)} class="compat-pill">{category.title}</a>
+            ))}
           </div>
         </div>
-        <div class="featured-tools-grid">
-          {content.catalog.trending.slice(0, 4).map((entry) => <MarketplaceCard entry={entry} compact />)}
-        </div>
       </div>
 
-      <div class="section-shell">
-        <div class="section-shell__header">
-          <div>
-            <p class="section-kicker">New</p>
-            <h2 class="section-shell__title">Recently updated</h2>
-          </div>
+      <aside class="home-proof-rail" aria-label="Homepage proof rail">
+        <div class="home-proof-rail__intro">
+          <p class="section-kicker">Proof rail</p>
+          <h2>Trust cues stay visible before you open a listing.</h2>
+          <p>
+            The home page should explain why the catalog is useful before it asks you to browse. These cards make that case
+            with visible coverage, freshness, and public signal density.
+          </p>
         </div>
-        <div class="featured-tools-grid">
-          {content.catalog.newest.slice(0, 4).map((entry) => <MarketplaceCard entry={entry} compact />)}
-        </div>
-      </div>
-    </section>
 
-    <section class="section-shell">
-      <div class="section-shell__header">
-        <div>
-          <p class="section-kicker">Categories</p>
-          <h2 class="section-shell__title">Browse by category</h2>
-        </div>
-        <a href={withBase("/categories/")} class="see-all">All categories</a>
-      </div>
-      <div class="platform-hub-grid">
-        {content.categories.slice(0, 6).map((category) => (
-          <a href={withBase(`/categories/${category.slug}/`)} class="collection-item">
-            <span class="collection-item-name">{category.title}</span>
-            <span class="collection-item-desc">{category.description}</span>
-            <span class="collection-item-count">{formatNumber(category.count)} listed tools</span>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="section-shell">
-      <div class="section-shell__header">
-        <div>
-          <p class="section-kicker">Platform hubs</p>
-          <h2 class="section-shell__title">Browse by client or runtime</h2>
-        </div>
-        <a href={withBase("/platforms/")} class="see-all">All platforms</a>
-      </div>
-      <div class="platform-hub-grid">
-        {content.platforms.slice(0, 6).map((platform) => (
-          <a href={withBase(`/platforms/${platform.slug}/`)} class="collection-item">
-            <span class="collection-item-name">{platform.title}</span>
-            <span class="collection-item-desc">{platform.description}</span>
-            <span class="collection-item-count">{formatNumber(platform.count)} matching tools</span>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="section-shell">
-      <div class="section-shell__header">
-        <div>
-          <p class="section-kicker">Collections</p>
-          <h2 class="section-shell__title">Hand-picked tool sets</h2>
-        </div>
-        <a href={withBase("/collections/")} class="see-all">All collections</a>
-      </div>
-      <div class="platform-hub-grid">
-        {content.collections.slice(0, 4).map((collection) => (
-          <a href={withBase(`/collections/${collection.slug}/`)} class="collection-item">
-            <span class="collection-item-name">{collection.title}</span>
-            <span class="collection-item-desc">{collection.description}</span>
-            <span class="collection-item-count">{formatNumber(collection.count)} tools in set</span>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="section-split">
-      <div class="section-shell">
-        <div class="section-shell__header">
-          <div>
-            <p class="section-kicker">Docs</p>
-            <h2 class="section-shell__title">How to use the catalog well</h2>
-          </div>
-          <a href={withBase("/docs/")} class="see-all">Docs hub</a>
-        </div>
-        <div class="featured-tools-grid">
-          {content.docs.slice(0, 3).map((doc) => (
-            <a href={withBase(`/docs/${doc.slug}/`)} class="collection-item">
-              <span class="collection-item-name">{doc.title}</span>
-              <span class="collection-item-desc">{doc.summary}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <div class="section-shell">
-        <div class="section-shell__header">
-          <div>
-            <p class="section-kicker">FAQ</p>
-            <h2 class="section-shell__title">Common questions</h2>
-          </div>
-          <a href={withBase("/faq/")} class="see-all">Open FAQ</a>
-        </div>
-        <div class="faq-preview-grid">
-          {content.faq.slice(0, 4).map((item) => (
-            <article class="collection-item">
-              <span class="collection-item-name">{item.question}</span>
-              <span class="collection-item-desc">{item.answer}</span>
+        <div class="home-proof-rail__grid">
+          {proofRail.map((item) => (
+            <article class="home-proof-stat">
+              <span class="home-proof-stat__label">{item.label}</span>
+              <strong class="home-proof-stat__value">{item.value}</strong>
+              <p>{item.detail}</p>
             </article>
           ))}
         </div>
+      </aside>
+    </section>
+
+    <section class="home-editorial-section">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Why this catalog</p>
+          <h2 class="section-shell__title">A marketplace built for faster MCP decisions</h2>
+        </div>
+      </div>
+
+      <div class="home-value-grid">
+        {valueCards.map((card) => (
+          <article class="home-value-card">
+            <span class="home-value-card__eyebrow">{card.eyebrow}</span>
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+          </article>
+        ))}
       </div>
     </section>
 
-    <section class="section-shell">
+    <section class="home-editorial-section">
       <div class="section-shell__header">
         <div>
-          <p class="section-kicker">Stats</p>
-          <h2 class="section-shell__title">Catalog health at a glance</h2>
+          <p class="section-kicker">Featured</p>
+          <h2 class="section-shell__title">Start from stronger MCP picks, not random search results</h2>
+          <p class="section-subheading">
+            These listings are a good first pass when you want to browse a sharper slice of the catalog.
+          </p>
         </div>
-        <a href={withBase("/stats/")} class="see-all">Open stats</a>
+        <a href={withBase("/tools/")} class="see-all">Browse all tools</a>
       </div>
-      <div class="stats-grid">
-        <div class="metric-card">
-          <span class="metric-card__label">Average score</span>
-          <strong class="metric-card__value">{formatNumber(content.stats.averageScore)}</strong>
-          <p>Average marketplace score across documentation, freshness, adoption, and trust cues.</p>
+
+      <div class="home-feature-grid">
+        {featuredEntries.map((entry) => <MarketplaceCard entry={entry} compact />)}
+      </div>
+    </section>
+
+    <section class="home-editorial-section">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Browse by workflow</p>
+          <h2 class="section-shell__title">Start from the lane you actually need</h2>
+          <p class="section-subheading">
+            Move through high-signal category hubs and client or runtime hubs without losing the marketplace context.
+          </p>
         </div>
-        <div class="metric-card">
-          <span class="metric-card__label">Open-source tools</span>
-          <strong class="metric-card__value">{formatNumber(content.stats.openSourceListings)}</strong>
-          <p>Listings backed by public repositories and visible development history.</p>
+        <a href={withBase("/categories/")} class="see-all">Open all hubs</a>
+      </div>
+
+      <div class="home-workflow-grid">
+        <section class="home-workflow-panel">
+          <div class="home-workflow-panel__header">
+            <p class="section-kicker">Categories</p>
+            <h3>Browse by job to be done</h3>
+          </div>
+
+          <div class="home-workflow-stack">
+            {workflowCategories.map((category) => (
+              <a href={withBase(`/categories/${category.slug}/`)} class="home-workflow-card">
+                <span class="home-workflow-card__title">{category.title}</span>
+                <span class="home-workflow-card__body">{category.description}</span>
+                <span class="home-workflow-card__meta">{formatNumber(category.count)} listed tools</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section class="home-workflow-panel">
+          <div class="home-workflow-panel__header">
+            <p class="section-kicker">Platforms</p>
+            <h3>Browse by client or runtime target</h3>
+          </div>
+
+          <div class="home-workflow-stack">
+            {workflowPlatforms.map((platform) => (
+              <a href={withBase(`/platforms/${platform.slug}/`)} class="home-workflow-card">
+                <span class="home-workflow-card__title">{platform.title}</span>
+                <span class="home-workflow-card__body">{platform.description}</span>
+                <span class="home-workflow-card__meta">{formatNumber(platform.count)} matching tools</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="home-editorial-section home-editorial-section--proof">
+      <div class="section-shell__header">
+        <div>
+          <p class="section-kicker">Trust and proof</p>
+          <h2 class="section-shell__title">When you need receipts, the evidence is already in the product</h2>
+          <p class="section-subheading">
+            The marketplace does not stop at listings. Trust, proof, stats, and docs stay connected to the browsing flow.
+          </p>
         </div>
-        <div class="metric-card">
-          <span class="metric-card__label">Commercial tools</span>
-          <strong class="metric-card__value">{formatNumber(content.stats.commercialListings)}</strong>
-          <p>Listings sourced from official product pages and vendor documentation.</p>
-        </div>
+      </div>
+
+      <div class="home-proof-grid">
+        {proofLinks.map((link) => (
+          <a href={link.href} class="home-proof-card">
+            <span class="home-proof-card__eyebrow">{link.eyebrow}</span>
+            <h3>{link.title}</h3>
+            <p>{link.body}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="home-final-cta">
+      <div class="home-final-cta__copy">
+        <p class="section-kicker">Ready to browse</p>
+        <h2>Open the catalog and build a better MCP shortlist.</h2>
+        <p>
+          Browse the marketplace, compare stronger candidates, and move into trust details only when the decision actually
+          needs them.
+        </p>
+      </div>
+
+      <div class="home-final-cta__actions">
+        <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
+        <a href={withBase("/trust/")} class="btn btn-secondary">Review trust center</a>
       </div>
     </section>
   </div>

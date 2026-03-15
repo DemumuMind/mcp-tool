@@ -11,15 +11,19 @@ const HOME_PAGE_PATH = path.join(REPO_ROOT, "site", "src", "pages", "index.astro
 const BASE_LAYOUT_PATH = path.join(REPO_ROOT, "site", "src", "layouts", "Base.astro");
 const GLOBAL_CSS_PATH = path.join(REPO_ROOT, "site", "src", "styles", "global.css");
 
-describe("Homepage marketplace contract", () => {
-  it("restructures the homepage around a search-first marketplace flow", () => {
+describe("Homepage editorial landing contract", () => {
+  it("restructures the homepage around a value-first editorial landing flow", () => {
     const source = fs.readFileSync(HOME_PAGE_PATH, "utf8");
 
-    assert.match(source, /marketplace-hero/, "homepage should include a marketplace hero");
-    assert.match(source, /search-omnibox/, "homepage should include omnibox search");
-    assert.match(source, /featured-tools-grid/, "homepage should include a featured tools section");
-    assert.match(source, /platform-hub-grid/, "homepage should include platform hubs");
-    assert.match(source, /faq-preview-grid/, "homepage should include FAQ previews");
+    assert.match(source, /home-editorial-hero/, "homepage should include the editorial hero shell");
+    assert.match(source, /home-proof-rail/, "homepage should include a proof rail beside the hero copy");
+    assert.match(source, /home-value-grid/, "homepage should include value proposition cards");
+    assert.match(source, /home-feature-grid/, "homepage should include a curated featured tools grid");
+    assert.match(source, /home-workflow-grid/, "homepage should include workflow browse entry points");
+    assert.match(source, /home-proof-grid/, "homepage should include a trust or proof block");
+    assert.match(source, /home-final-cta/, "homepage should include a final browse CTA");
+    assert.match(source, />Browse tools</, "homepage primary CTA should send users to browse tools");
+    assert.match(source, />Submit a tool</, "homepage should preserve a secondary author CTA");
   });
 
   it("updates the shared shell to expose marketplace-first navigation", () => {
@@ -32,12 +36,14 @@ describe("Homepage marketplace contract", () => {
     assert.match(source, /FAQ/, "primary nav should include FAQ");
   });
 
-  it("defines marketplace-specific shell and browse tokens", () => {
+  it("defines home-specific editorial section styling", () => {
     const source = fs.readFileSync(GLOBAL_CSS_PATH, "utf8");
 
     assert.match(source, /--marketplace-accent:/, "global theme should define a marketplace accent token");
-    assert.match(source, /--search-hero-grid:/, "global theme should define the search hero grid token");
-    assert.match(source, /\.marketplace-card/, "global stylesheet should define marketplace card styling");
-    assert.match(source, /\.facet-toolbar/, "global stylesheet should define facet toolbar styling");
+    assert.match(source, /\.home-editorial-hero/, "global stylesheet should define the home editorial hero");
+    assert.match(source, /\.home-proof-rail/, "global stylesheet should define the home proof rail");
+    assert.match(source, /\.home-value-grid/, "global stylesheet should define the home value grid");
+    assert.match(source, /\.home-workflow-grid/, "global stylesheet should define the home workflow grid");
+    assert.match(source, /\.home-final-cta/, "global stylesheet should define the final home CTA block");
   });
 });
