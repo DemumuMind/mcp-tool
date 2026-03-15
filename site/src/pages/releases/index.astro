@@ -18,13 +18,13 @@ function timeAgo(iso: string) {
 }
 ---
 
-<Base title="Release Reference - DemumuMind MCP" description="Secondary release reference for tools listed in the MCP marketplace." currentPath="/releases/">
+<Base title="Release Reference - DemumuMind MCP" description="Release history for tools listed in the MCP marketplace." currentPath="/releases/">
   <div class="page-content">
     <PageHero
-      eyebrow="Reference surface"
-      title="Marketplace release reference"
-      lede="Release history remains available as a secondary reference surface for operators who want freshness context after they discover a tool."
-      meta={[`${(releases as any[]).length} release entries`, "Reference surface", "Marketplace-linked"]}
+      eyebrow="Releases"
+      title="Release history across listed tools."
+      lede="Use this page when you want freshness context after you already know which tools you are evaluating."
+      meta={[`${(releases as any[]).length} release entries`, "Freshness context", "Marketplace-linked"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>

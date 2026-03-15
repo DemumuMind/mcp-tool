@@ -7,6 +7,7 @@ import { getMarketplaceContent } from "../lib/content/marketplace.ts";
 import { withBase } from "../lib/site-paths";
 
 const content = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base title="Stats - DemumuMind MCP" description="Marketplace health and coverage across the MCP ecosystem." currentPath="/stats/">
@@ -14,8 +15,8 @@ const content = getMarketplaceContent();
     <PageHero
       eyebrow="Marketplace health"
       title="Public stats that explain the shape of the ecosystem."
-      lede="Stats focus on catalog breadth, verification coverage, category depth, and platform coverage instead of private telemetry."
-      meta={[`${content.stats.totalListings} listings`, `${content.stats.verifiedListings} verified`, `${content.stats.totalStars} total stars`]}
+      lede="Stats focus on catalog size, verification coverage, category depth, and platform reach instead of private telemetry."
+      meta={[`${formatNumber(content.stats.totalListings)} listed tools`, `${formatNumber(content.stats.verifiedListings)} verified tools`, `${formatNumber(content.stats.totalStars)} total stars`]}
     >
       <Fragment slot="actions">
         <a href={withBase("/methodology/")} class="btn btn-primary">Read methodology</a>
@@ -24,22 +25,22 @@ const content = getMarketplaceContent();
     </PageHero>
 
     <div class="stats-grid">
-      <div class="metric-card">
-        <span class="metric-card__label">Average quality</span>
-        <strong class="metric-card__value">{content.stats.averageScore}</strong>
-      </div>
-      <div class="metric-card">
-        <span class="metric-card__label">Open source</span>
-        <strong class="metric-card__value">{content.stats.openSourceListings}</strong>
-      </div>
-      <div class="metric-card">
-        <span class="metric-card__label">Commercial</span>
-        <strong class="metric-card__value">{content.stats.commercialListings}</strong>
-      </div>
-      <div class="metric-card">
-        <span class="metric-card__label">Fresh listings</span>
-        <strong class="metric-card__value">{content.stats.freshListings}</strong>
-      </div>
+        <div class="metric-card">
+          <span class="metric-card__label">Average score</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.averageScore)}</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card__label">Open-source tools</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.openSourceListings)}</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card__label">Commercial tools</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.commercialListings)}</strong>
+        </div>
+        <div class="metric-card">
+          <span class="metric-card__label">Fresh listings</span>
+          <strong class="metric-card__value">{formatNumber(content.stats.freshListings)}</strong>
+        </div>
     </div>
 
     <section class="section-split">
@@ -55,7 +56,7 @@ const content = getMarketplaceContent();
             <a href={withBase(`/categories/${category.slug}/`)} class="collection-item">
               <span class="collection-item-name">{category.title}</span>
               <span class="collection-item-desc">{category.description}</span>
-              <span class="collection-item-count">{category.count} listings</span>
+              <span class="collection-item-count">{formatNumber(category.count)} listed tools</span>
             </a>
           ))}
         </div>
@@ -73,7 +74,7 @@ const content = getMarketplaceContent();
             <a href={withBase(`/platforms/${platform.slug}/`)} class="collection-item">
               <span class="collection-item-name">{platform.title}</span>
               <span class="collection-item-desc">{platform.description}</span>
-              <span class="collection-item-count">{platform.count} tools</span>
+              <span class="collection-item-count">{formatNumber(platform.count)} matching tools</span>
             </a>
           ))}
         </div>

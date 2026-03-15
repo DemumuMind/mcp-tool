@@ -271,6 +271,24 @@ function cleanText(value: unknown, fallback = "") {
   return typeof value === "string" ? value.trim() : fallback;
 }
 
+function chooseFirstText(...values: unknown[]) {
+  for (const value of values) {
+    const text = cleanText(value);
+    if (text) return text;
+  }
+
+  return "";
+}
+
+function normalizeCatalogText(value: string, fallback: string) {
+  const text = cleanText(value, fallback)
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return text || fallback;
+}
+
 export function getDefaultBrowseState(): BrowseState {
   return {
     q: "",
@@ -627,8 +645,8 @@ function buildCatalogEntry(raw: RawProject): CatalogEntry {
   return {
     slug: repo || cleanText(raw.slug),
     name: cleanText(raw.name, "Untitled MCP Tool"),
-    summary: cleanText(raw.tagline || raw.description, "MCP ecosystem listing"),
-    description: cleanText(raw.description || raw.tagline, cleanText(raw.name, "MCP ecosystem listing")),
+    summary: normalizeCatalogText(chooseFirstText(raw.tagline, raw.summary, raw.description), "MCP tool listing"),
+    description: normalizeCatalogText(chooseFirstText(raw.description, raw.summary, raw.tagline, raw.name), "MCP tool listing"),
     sourceType: repo ? "repo" : "external",
     meetsListingBar: meetsPrimaryListingBar(raw),
     repo: repo || undefined,
@@ -653,8 +671,8 @@ function buildCatalogEntry(raw: RawProject): CatalogEntry {
     install: cleanText(raw.install) || undefined,
     screenshot: cleanText(raw.screenshot) || undefined,
     screenshotType: cleanText(raw.screenshotType) || undefined,
-    goodFor: Array.isArray(raw.goodFor) ? raw.goodFor.filter(Boolean).slice(0, 4) : [],
-    notFor: Array.isArray(raw.notFor) ? raw.notFor.filter(Boolean).slice(0, 4) : [],
+    goodFor: Array.isArray(raw.goodFor) ? raw.goodFor.map((item) => cleanText(item)).filter(Boolean).slice(0, 4) : [],
+    notFor: Array.isArray(raw.notFor) ? raw.notFor.map((item) => cleanText(item)).filter(Boolean).slice(0, 4) : [],
     releaseTag: cleanText(release?.tag) || undefined,
     releasePublishedAt,
     proofSignals: Array.isArray(proof?.proofs) ? proof.proofs : [],
@@ -731,7 +749,7 @@ function buildCollectionModels(entries: CatalogEntry[]): CollectionModel[] {
     return {
       slug: cleanText(collection.id),
       title: cleanText(collection.title, titleCase(cleanText(collection.id))),
-      description: cleanText(collection.description, "Curated path through the MCP marketplace."),
+      description: cleanText(collection.description, "Curated tool set from the MCP marketplace."),
       count: tools.length,
       tools,
     };

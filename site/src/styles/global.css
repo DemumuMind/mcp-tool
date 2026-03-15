@@ -27,8 +27,8 @@
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
   --space-3xl: 6rem;
-  --font-display: "Cormorant Garamond", "Times New Roman", serif;
-  --font-sans: "Instrument Sans", "Segoe UI", sans-serif;
+  --font-display: "Sora", "Aptos Display", "Segoe UI", sans-serif;
+  --font-sans: "Manrope", "Aptos", "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "Cascadia Code", "SF Mono", monospace;
   --max-width: 1280px;
   --content-width: 760px;
@@ -98,7 +98,7 @@ body {
   min-height: 100vh;
   color: var(--color-text);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  line-height: 1.65;
   background:
     radial-gradient(circle at top center, rgba(122, 141, 255, 0.16), transparent 32%),
     radial-gradient(circle at 20% 15%, rgba(215, 255, 63, 0.1), transparent 28%),
@@ -183,7 +183,7 @@ h5,
 h6 {
   margin: 0;
   color: var(--color-text);
-  line-height: 1.08;
+  line-height: 1.04;
 }
 
 code,
@@ -287,9 +287,9 @@ pre {
 }
 
 .site-brand__title {
-  font-size: 1.06rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .nav-links,
@@ -309,7 +309,9 @@ pre {
   padding: 0.55rem 0.82rem;
   border-radius: 999px;
   color: var(--color-text-dim);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   text-decoration: none;
   transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
   border: 1px solid transparent;
@@ -483,8 +485,10 @@ pre {
 
 .ops-hero__title {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 4.2vw, 4rem);
-  letter-spacing: -0.05em;
+  font-size: clamp(2.3rem, 4vw, 3.85rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.99;
 }
 
 .ops-hero__lede {
@@ -692,23 +696,26 @@ pre {
 .receipts-page h1,
 .experiments-page h1 {
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-size: clamp(2.55rem, 4.5vw, 4.35rem);
   font-weight: 700;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.055em;
 }
 
 .page-content h2,
 .section-heading,
 .section-shell__title {
-  font-size: clamp(1.28rem, 2.4vw, 1.78rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.34rem, 2.2vw, 1.9rem);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
 }
 
 .page-content h3,
 .card-title {
-  font-size: 1.04rem;
+  font-size: 1.08rem;
   font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .page-content p,
@@ -721,8 +728,8 @@ pre {
 
 .page-content p,
 .page-content li {
-  font-size: 1.03rem;
-  line-height: 1.78;
+  font-size: 1.02rem;
+  line-height: 1.8;
 }
 
 .page-content ul,
@@ -776,8 +783,8 @@ pre {
   max-width: 42rem;
   margin-top: 1rem;
   color: var(--color-text-muted);
-  font-size: clamp(1.03rem, 2vw, 1.28rem);
-  line-height: 1.62;
+  font-size: clamp(1.04rem, 1.7vw, 1.22rem);
+  line-height: 1.72;
 }
 
 .page-hero--split {
@@ -991,9 +998,12 @@ pre {
 .meta-value {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.3rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 0.92;
+  font-weight: 700;
+  letter-spacing: -0.065em;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
 .label,
@@ -1011,6 +1021,8 @@ pre {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 .section-shell,
@@ -1417,6 +1429,249 @@ tbody tr:hover {
   gap: 2rem;
 }
 
+.home-flow--editorial {
+  gap: clamp(1.5rem, 3vw, 2.6rem);
+}
+
+.home-editorial-section {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.home-editorial-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.88fr);
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(1.4rem, 4vw, 2.4rem);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top left, rgba(108, 224, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(122, 141, 255, 0.22), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(215, 255, 63, 0.12), transparent 24%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012)),
+    rgba(10, 13, 18, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.home-editorial-hero__copy,
+.home-proof-rail,
+.home-proof-rail__grid,
+.home-editorial-hero__support,
+.home-value-card,
+.home-workflow-panel,
+.home-final-cta,
+.home-final-cta__copy {
+  display: grid;
+  gap: 1rem;
+}
+
+.home-editorial-hero__signal-row,
+.home-editorial-hero__actions,
+.home-editorial-hero__facets,
+.home-final-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.home-editorial-hero__signal-row .compat-pill {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.home-editorial-hero__title {
+  max-width: 12ch;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 5.8vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  line-height: 0.92;
+}
+
+.home-editorial-hero__lede {
+  max-width: 44rem;
+  color: var(--color-text-muted);
+  font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+  line-height: 1.78;
+}
+
+.home-editorial-hero__support {
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.home-editorial-hero__support-label {
+  color: var(--color-text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-proof-rail {
+  align-content: start;
+  padding: 1.1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+    rgba(11, 15, 21, 0.82);
+}
+
+.home-proof-rail__intro h2 {
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  letter-spacing: -0.05em;
+}
+
+.home-proof-rail__intro p:last-child,
+.home-proof-stat p,
+.home-value-card p,
+.home-workflow-card__body,
+.home-proof-card p,
+.home-final-cta__copy p:last-child {
+  color: var(--color-text-muted);
+}
+
+.home-proof-rail__grid,
+.home-value-grid,
+.home-proof-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.home-proof-rail__grid,
+.home-proof-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-proof-stat,
+.home-value-card,
+.home-workflow-card,
+.home-proof-card,
+.home-final-cta {
+  padding: 1.1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+    rgba(255, 255, 255, 0.02);
+}
+
+.home-proof-stat__label,
+.home-value-card__eyebrow,
+.home-proof-card__eyebrow,
+.home-workflow-card__meta {
+  color: var(--color-text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-proof-stat__value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+}
+
+.home-value-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.home-value-card h3,
+.home-workflow-panel__header h3,
+.home-proof-card h3,
+.home-final-cta__copy h2 {
+  font-size: clamp(1.12rem, 2vw, 1.5rem);
+  letter-spacing: -0.04em;
+}
+
+.home-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.home-workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.home-workflow-panel {
+  padding: 1.1rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top right, rgba(122, 141, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012)),
+    rgba(13, 17, 24, 0.84);
+}
+
+.home-workflow-stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.home-workflow-card,
+.home-proof-card {
+  display: grid;
+  gap: 0.7rem;
+  text-decoration: none;
+  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.home-workflow-card:hover,
+.home-proof-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(108, 224, 255, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.014)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.home-workflow-card__title {
+  color: var(--color-text);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.home-editorial-section--proof {
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top left, rgba(122, 141, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.008)),
+    rgba(12, 15, 20, 0.72);
+}
+
+.home-proof-card__eyebrow {
+  color: var(--marketplace-accent);
+}
+
+.home-final-cta {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: clamp(1.2rem, 3vw, 1.7rem);
+  background:
+    radial-gradient(circle at top left, rgba(215, 255, 63, 0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(108, 224, 255, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+    rgba(11, 15, 20, 0.9);
+}
+
+.home-final-cta__copy h2 {
+  font-family: var(--font-display);
+}
+
 .marketplace-hero {
   display: grid;
   grid-template-columns: var(--search-hero-grid);
@@ -1438,15 +1693,17 @@ tbody tr:hover {
 
 .marketplace-hero__title {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 5vw, 5.3rem);
-  letter-spacing: -0.05em;
-  line-height: 0.98;
+  font-size: clamp(2.85rem, 4.9vw, 4.95rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.96;
 }
 
 .marketplace-hero__lede {
   max-width: 44rem;
   color: var(--color-text-muted);
-  font-size: 1.05rem;
+  font-size: clamp(1.02rem, 1.45vw, 1.16rem);
+  line-height: 1.72;
 }
 
 .search-omnibox {
@@ -1467,7 +1724,7 @@ tbody tr:hover {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   color: var(--color-text);
-  font-size: 0.96rem;
+  font-size: 0.98rem;
 }
 
 .stats-grid,
@@ -1500,6 +1757,8 @@ tbody tr:hover {
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 .compat-pill,
@@ -1565,8 +1824,10 @@ tbody tr:hover {
 }
 
 .marketplace-card__title {
-  font-size: 1.14rem;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
 }
 
 .marketplace-card__title a {
@@ -1575,8 +1836,8 @@ tbody tr:hover {
 
 .marketplace-card__summary {
   color: var(--color-text-muted);
-  font-size: 0.96rem;
-  line-height: 1.65;
+  font-size: 0.97rem;
+  line-height: 1.7;
 }
 
 .marketplace-card__score {
@@ -1587,8 +1848,12 @@ tbody tr:hover {
 
 .marketplace-card__score strong {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 2.1rem;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: -0.065em;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
 .marketplace-card__actions .btn {
@@ -1669,6 +1934,18 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 
+  .home-editorial-hero,
+  .home-value-grid,
+  .home-workflow-grid,
+  .home-proof-grid,
+  .home-final-cta {
+    grid-template-columns: 1fr;
+  }
+
+  .home-proof-rail__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .marketplace-hero,
   .section-split,
   .compare-grid {
@@ -1708,6 +1985,28 @@ tbody tr:hover {
     flex-wrap: wrap;
   }
 
+  .home-editorial-hero {
+    padding: 1.25rem;
+  }
+
+  .home-editorial-hero__title {
+    max-width: none;
+    font-size: clamp(2.5rem, 10vw, 3.5rem);
+  }
+
+  .home-proof-rail__grid,
+  .home-value-grid,
+  .home-proof-grid,
+  .home-feature-grid,
+  .home-workflow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-final-cta__actions .btn,
+  .home-editorial-hero__actions .btn {
+    width: 100%;
+  }
+
   .search-omnibox {
     grid-template-columns: 1fr;
   }
@@ -1731,7 +2030,7 @@ tbody tr:hover {
   .tool-header h1,
   .press-header h1,
   .proof-header h1 {
-    font-size: clamp(2.3rem, 9vw, 3.3rem);
+    font-size: clamp(2.15rem, 8.2vw, 3rem);
   }
 
   .project-grid,

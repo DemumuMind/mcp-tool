@@ -41,21 +41,21 @@ const exampleJson = JSON.stringify(
 <Base title={`Get Featured - ${kit.site.title || "DemumuMind"}`} description={`Submit your tool for promotion or experimentation on the ${kit.site.title || "DemumuMind"} catalog.`} currentPath="/submit/">
   <div class="submit-page">
     <PageHero
-      eyebrow="Submission protocol"
-      title="Bring proof, not just a pitch."
-      lede="Promotion and experimentation start from a structured JSON submission, CI validation, and a human review pass."
-      meta={["Weekly review cadence", "Proof required", "Two-lane intake"]}
+      eyebrow="Submission guide"
+      title="Submit a tool with enough proof to review it."
+      lede="Submissions start from a structured JSON file, CI validation, and a human review pass. The goal is simple: give people enough context to install, test, and trust what they are looking at."
+      meta={["Weekly review cycle", "Proof required", "Two submission paths"]}
     />
 
     <section class="submit-section">
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Qualification</p>
-          <h2 class="section-shell__title">What qualifies</h2>
+          <h2 class="section-shell__title">What qualifies for review</h2>
         </div>
       </div>
       <p>
-        A stranger should be able to install and run the tool, read its limits, and inspect at least one proof link.
+        A new visitor should be able to install and run the tool, understand its limits, and inspect at least one proof link.
       </p>
       {worthyCriteria.length > 0 && (
         <div class="rubric-list">
@@ -73,7 +73,7 @@ const exampleJson = JSON.stringify(
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Disqualifiers</p>
-          <h2 class="section-shell__title">What gets rejected</h2>
+          <h2 class="section-shell__title">What gets rejected quickly</h2>
         </div>
       </div>
       <ul class="disqualify-list">
@@ -95,7 +95,7 @@ const exampleJson = JSON.stringify(
         <ol>
           <li>Fork the <a href={`https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}`} rel="noopener" data-link-type="fork">marketing repo</a>.</li>
           <li>Create <code>submissions/&lt;your-slug&gt;.json</code>.</li>
-          <li>Open the promotion or experiment PR template.</li>
+          <li>Open the promotion or experiment pull request template.</li>
           <li>Wait for CI validation and human review.</li>
         </ol>
       </div>
@@ -117,13 +117,13 @@ const exampleJson = JSON.stringify(
       <div class="section-shell__header">
         <div>
           <p class="section-kicker">Two lanes</p>
-          <h2 class="section-shell__title">Promotion or experiment</h2>
+          <h2 class="section-shell__title">Choose a submission path</h2>
         </div>
       </div>
       <div class="lanes-grid">
         <div class="lane-card">
           <h3>Promotion</h3>
-          <p>Tools that clear the rubric move into the public promotion pipeline with proof pages, press surfaces, and receipts.</p>
+          <p>Tools that clear the rubric move into the public promotion pipeline with proof pages, press coverage, and receipts.</p>
         </div>
         <div class="lane-card">
           <h3>Experiment</h3>

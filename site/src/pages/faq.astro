@@ -7,15 +7,16 @@ import { getMarketplaceContent } from "../lib/content/marketplace.ts";
 import { withBase } from "../lib/site-paths";
 
 const { faq } = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base title="FAQ - DemumuMind MCP" description="Answers to the main questions about ranking, verified status, compatibility, and marketplace inclusion." currentPath="/faq/">
   <div class="page-content">
     <PageHero
       eyebrow="FAQ"
-      title="Questions builders ask before they trust a marketplace."
-      lede="The FAQ focuses on how listings are classified, why quality score exists, what verified means, and how to submit new MCP tools."
-      meta={[`${faq.length} answers`, "Automatic verified", "Public methodology"]}
+      title="Common questions about the marketplace."
+      lede="Use this page to understand how listings are grouped, what verified means, how score works, and how new MCP tools get added."
+      meta={[`${formatNumber(faq.length)} answers`, "Verified explained", "Public methodology"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/methodology/")} class="btn btn-primary">Open methodology</a>
