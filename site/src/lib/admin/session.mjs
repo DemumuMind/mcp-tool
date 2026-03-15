@@ -69,9 +69,15 @@ function loadSeedAdminStore() {
   }
 }
 
-export async function setAdminUserPassword(email, password, env = process.env) {
+export async function setAdminUserPassword(email, password, env = process.env, options = {}) {
+  const idempotencyKey = options.idempotencyKey;
   const result = await mutateRawAdminStore(
     async (store) => {
+      const ledgerKey = idempotencyKey ? `mutation:admin-password:${idempotencyKey}` : "";
+      if (ledgerKey && store.idempotencyLedger?.[ledgerKey]?.data) {
+        return store.idempotencyLedger[ledgerKey].data;
+      }
+
       const userIndex = store.users.findIndex(
         (entry) => entry.email?.toLowerCase() === String(email || "").toLowerCase()
       );
@@ -88,7 +94,17 @@ export async function setAdminUserPassword(email, password, env = process.env) {
         passwordUpdatedAt: new Date().toISOString(),
       };
 
-      return sanitizeAdminUser(store.users[userIndex]);
+      const sanitizedUser = sanitizeAdminUser(store.users[userIndex]);
+      if (ledgerKey) {
+        store.idempotencyLedger = store.idempotencyLedger || {};
+        store.idempotencyLedger[ledgerKey] = {
+          kind: "mutation",
+          recordedAt: new Date().toISOString(),
+          data: sanitizedUser,
+        };
+      }
+
+      return sanitizedUser;
     },
     env,
     { seedFactory: () => loadSeedAdminStore() }

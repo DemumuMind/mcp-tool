@@ -143,6 +143,27 @@ describe("admin site contract", () => {
     assert.match(telemetry, /TelemetryWorkspace|SignalsWorkbench|AnomalyDesk/, "telemetry page should ship an interactive workspace");
   });
 
+  it("requires idempotency keys for direct admin mutation routes and limits user inventory access", () => {
+    const toolsApi = readText("site", "src", "pages", "api", "admin", "tools.ts");
+    const overridesApi = readText("site", "src", "pages", "api", "admin", "overrides.ts");
+    const promotionsApi = readText("site", "src", "pages", "api", "admin", "promotions.ts");
+    const findingsApi = readText("site", "src", "pages", "api", "admin", "audit", "findings.ts");
+    const telemetryApi = readText("site", "src", "pages", "api", "admin", "telemetry.ts");
+    const jobsApi = readText("site", "src", "pages", "api", "admin", "jobs.ts");
+    const notificationsApi = readText("site", "src", "pages", "api", "admin", "notifications.ts");
+    const credentialsApi = readText("site", "src", "pages", "api", "admin", "users", "credentials.ts");
+    const rolesApi = readText("site", "src", "pages", "api", "admin", "users", "roles.ts");
+    const settingsPage = readText("site", "src", "pages", "admin", "settings", "index.astro");
+
+    for (const source of [toolsApi, overridesApi, promotionsApi, findingsApi, telemetryApi, jobsApi, notificationsApi, credentialsApi]) {
+      assert.match(source, /requireIdempotencyKey\(/, "direct mutation routes should require idempotency keys");
+    }
+
+    assert.match(rolesApi, /withAdminApi\("settings\.manageUsers"/, "users/roles should be limited to manageUsers");
+    assert.match(settingsPage, /hasCapability\(Astro\.locals\.adminUser\.role, "settings\.manageUsers"\)/, "settings page should gate user inventory");
+    assert.match(settingsPage, /users=\{canManageUsers \? moduleData\.users : \[\]\}/, "settings page should strip user inventory for read-only roles");
+  });
+
   it("lets operators load existing admin records back into workspace editors", () => {
     const catalogWorkspace = readText("site", "src", "components", "admin", "CatalogWorkspace.astro");
     const moderationWorkspace = readText("site", "src", "components", "admin", "ModerationWorkspace.astro");

@@ -227,6 +227,42 @@ function sortByDate(items, key = "createdAt") {
   return [...items].sort((left, right) => new Date(right[key] || 0).valueOf() - new Date(left[key] || 0).valueOf());
 }
 
+function sanitizeControlPlaneAdminUser(user) {
+  return user
+    ? {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+    : null;
+}
+
+function buildMutationIdempotencyKey(scope, idempotencyKey) {
+  return idempotencyKey ? `mutation:${scope}:${idempotencyKey}` : "";
+}
+
+function readMutationIdempotency(store, scope, idempotencyKey) {
+  if (!idempotencyKey) {
+    return null;
+  }
+
+  const entry = store.idempotencyLedger[buildMutationIdempotencyKey(scope, idempotencyKey)];
+  return entry?.data ? structuredClone(entry.data) : null;
+}
+
+function rememberMutationIdempotency(store, scope, idempotencyKey, data, recordedAt = new Date().toISOString()) {
+  if (!idempotencyKey) {
+    return;
+  }
+
+  store.idempotencyLedger[buildMutationIdempotencyKey(scope, idempotencyKey)] = {
+    kind: "mutation",
+    recordedAt,
+    data: structuredClone(data),
+  };
+}
+
 function checksum(value) {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex").slice(0, 16);
 }
@@ -853,7 +889,7 @@ export async function getModuleData(moduleName, state) {
     case "governance":
       return { approvals: sortByPriority(safeArray(resolvedState.approvals)), releases: sortByDate(safeArray(resolvedState.releases)), exports: sortByDate(safeArray(resolvedState.exports)), activity: sortByDate(safeArray(resolvedState.auditEvents)) };
     case "settings":
-      return { users: safeArray(resolvedState.users), settings: resolvedState.settings };
+      return { users: safeArray(resolvedState.users).map(sanitizeControlPlaneAdminUser), settings: resolvedState.settings };
     default:
       return buildAdminSnapshot(resolvedState);
   }
@@ -903,6 +939,26 @@ function updateSubmission(store, submissionId, patch) {
   };
 
   return store.submissions[submissionIndex];
+}
+
+function ensureApprovalReviewAllowed(approval, input) {
+  if (approval.status !== "pending") {
+    const error = new Error("Approval request is not pending");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  if (approval.requestedBy === input.actorId) {
+    const error = new Error("You cannot approve your own request");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  if (safeArray(approval.requiredRoles).length > 0 && !approval.requiredRoles.includes(input.actorRole)) {
+    const error = new Error("Insufficient approval role");
+    error.statusCode = 403;
+    throw error;
+  }
 }
 
 function executeApprovedMutation(store, envelope) {
@@ -1059,6 +1115,7 @@ export function applyCommandToStore(store, input) {
     }
 
     const approval = nextStore.approvals[approvalIndex];
+    ensureApprovalReviewAllowed(approval, input);
     nextStore.approvals[approvalIndex] = {
       ...approval,
       status: "approved",
@@ -1224,8 +1281,13 @@ async function mutateAdminStore(mutator) {
   };
 }
 
-export async function saveCatalogDraft(input, { actorId }) {
+export async function saveCatalogDraft(input, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "catalog", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const slug = normalizeText(input.slug);
     if (!slug) {
       const error = new Error("Catalog draft slug is required");
@@ -1256,7 +1318,7 @@ export async function saveCatalogDraft(input, { actorId }) {
         ...(hasOwn(input, "reason") || !existing ? { reason: normalizeText(input.reason) } : {}),
         ownerId: existing?.ownerId || actorId,
         updatedAt: timestamp,
-        createdAt: existing?.createdAt || normalizeText(input.createdAt, timestamp),
+        createdAt: existing?.createdAt || timestamp,
       },
       (entry) => entry.id === input.id || entry.slug === slug
     );
@@ -1284,12 +1346,18 @@ export async function saveCatalogDraft(input, { actorId }) {
       })
     );
 
+    rememberMutationIdempotency(store, "catalog", idempotencyKey, draft, timestamp);
     return draft;
   });
 }
 
-export async function saveOverrideWorkItem(input, { actorId }) {
+export async function saveOverrideWorkItem(input, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "override", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const slug = normalizeText(input.slug);
     if (!slug) {
       const error = new Error("Override slug is required");
@@ -1309,11 +1377,9 @@ export async function saveOverrideWorkItem(input, { actorId }) {
         status: normalizeOptionalEnumField(input, "status", LIFECYCLE_STATUSES, "override status", existing?.status || "in_review"),
         ...(hasOwn(input, "notes") || !existing ? { notes: normalizeText(input.notes) } : {}),
         ...(hasOwn(input, "reason") || !existing ? { reason: normalizeText(input.reason) } : {}),
-        reviewerId: hasOwn(input, "reviewerId")
-          ? normalizeText(input.reviewerId) || actorId
-          : existing?.reviewerId || actorId,
+        reviewerId: existing?.reviewerId || actorId,
         updatedAt: timestamp,
-        createdAt: existing?.createdAt || normalizeText(input.createdAt, timestamp),
+        createdAt: existing?.createdAt || timestamp,
       },
       (entry) => entry.id === input.id || entry.slug === slug
     );
@@ -1342,12 +1408,18 @@ export async function saveOverrideWorkItem(input, { actorId }) {
       })
     );
 
+    rememberMutationIdempotency(store, "override", idempotencyKey, item, timestamp);
     return item;
   });
 }
 
-export async function saveCampaign(input, { actorId }) {
+export async function saveCampaign(input, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "campaign", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const week = normalizeText(input.week);
     if (!week) {
       const error = new Error("Campaign week is required");
@@ -1368,7 +1440,7 @@ export async function saveCampaign(input, { actorId }) {
         ownerId: existing?.ownerId || actorId,
         ...(hasOwn(input, "notes") || !existing ? { notes: normalizeText(input.notes) } : {}),
         updatedAt: timestamp,
-        createdAt: existing?.createdAt || normalizeText(input.createdAt, timestamp),
+        createdAt: existing?.createdAt || timestamp,
       },
       (entry) => entry.id === input.id || entry.week === week
     );
@@ -1396,12 +1468,18 @@ export async function saveCampaign(input, { actorId }) {
       })
     );
 
+    rememberMutationIdempotency(store, "campaign", idempotencyKey, campaign, timestamp);
     return campaign;
   });
 }
 
-export async function saveAuditFinding(input, { actorId }) {
+export async function saveAuditFinding(input, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "finding", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const title = normalizeText(input.title);
     if (!title) {
       const error = new Error("Finding title is required");
@@ -1427,11 +1505,9 @@ export async function saveAuditFinding(input, { actorId }) {
         ...(hasOwn(input, "slug") || !existing ? { slug: findingSlug ?? null } : {}),
         severity: normalizeOptionalEnumField(input, "severity", FINDING_SEVERITIES, "finding severity", existing?.severity || "warning"),
         status: normalizeOptionalEnumField(input, "status", FINDING_STATUSES, "finding status", existing?.status || "open"),
-        ownerId: hasOwn(input, "ownerId")
-          ? normalizeText(input.ownerId) || actorId
-          : existing?.ownerId || actorId,
+        ownerId: existing?.ownerId || actorId,
         updatedAt: timestamp,
-        createdAt: existing?.createdAt || normalizeText(input.createdAt, timestamp),
+        createdAt: existing?.createdAt || timestamp,
       },
       matchesExistingFinding
     );
@@ -1460,12 +1536,18 @@ export async function saveAuditFinding(input, { actorId }) {
       })
     );
 
+    rememberMutationIdempotency(store, "finding", idempotencyKey, finding, timestamp);
     return finding;
   });
 }
 
-export async function saveTelemetrySnapshot(input, { actorId }) {
+export async function saveTelemetrySnapshot(input, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "telemetry", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const label = normalizeText(input.label);
     if (!label) {
       const error = new Error("Telemetry label is required");
@@ -1483,9 +1565,7 @@ export async function saveTelemetrySnapshot(input, { actorId }) {
         status: normalizeOptionalEnumField(input, "status", TELEMETRY_STATUSES, "telemetry status", existing?.status || "investigate"),
         anomalyScore: normalizeTelemetryScore(input.anomalyScore, existing?.anomalyScore ?? 0),
         ...(hasOwn(input, "note") || !existing ? { note: normalizeText(input.note) } : {}),
-        capturedAt: hasOwn(input, "capturedAt")
-          ? normalizeText(input.capturedAt, timestamp)
-          : existing?.capturedAt || timestamp,
+        capturedAt: existing?.capturedAt || timestamp,
         ownerId: existing?.ownerId || actorId,
         updatedAt: timestamp,
       },
@@ -1516,12 +1596,18 @@ export async function saveTelemetrySnapshot(input, { actorId }) {
       })
     );
 
+    rememberMutationIdempotency(store, "telemetry", idempotencyKey, snapshot, timestamp);
     return snapshot;
   });
 }
 
-export async function queueAdminJob(input, { actorId }) {
+export async function queueAdminJob(input, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "job", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const action = normalizeEnumValue(input.action, JOB_ACTIONS, "job action", "queue");
     const kind = normalizeEnumValue(input.kind, JOB_KINDS, "job kind", "pipeline");
     const scope = normalizeText(input.scope, "manual");
@@ -1531,7 +1617,9 @@ export async function queueAdminJob(input, { actorId }) {
     if (action === "process") {
       const nextStore = processQueuedJobs(store, { actorId });
       Object.assign(store, nextStore);
-      return { processed: true, jobs: nextStore.jobs };
+      const result = { processed: true, jobs: nextStore.jobs };
+      rememberMutationIdempotency(store, "job", idempotencyKey, result, timestamp);
+      return result;
     }
 
     if (kind === "pipeline") {
@@ -1571,12 +1659,19 @@ export async function queueAdminJob(input, { actorId }) {
       })
     );
 
-    return { queued: true, jobs: store.jobs };
+    const result = { queued: true, jobs: store.jobs };
+    rememberMutationIdempotency(store, "job", idempotencyKey, result, timestamp);
+    return result;
   });
 }
 
-export async function resolveNotification(notificationId, { actorId }) {
+export async function resolveNotification(notificationId, { actorId, idempotencyKey } = {}) {
   return mutateAdminStore(async (store) => {
+    const storedResult = readMutationIdempotency(store, "notification", idempotencyKey);
+    if (storedResult) {
+      return storedResult;
+    }
+
     const id = normalizeText(notificationId);
     if (!id) {
       const error = new Error("Notification id is required");
@@ -1608,6 +1703,7 @@ export async function resolveNotification(notificationId, { actorId }) {
       })
     );
 
+    rememberMutationIdempotency(store, "notification", idempotencyKey, notification, notification.resolvedAt);
     return notification;
   });
 }

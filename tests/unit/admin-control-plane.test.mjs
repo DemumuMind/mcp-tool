@@ -84,6 +84,116 @@ describe("admin control plane", () => {
     assert.equal(canRunCommand("Owner", "freeze_promotion"), true);
   });
 
+  it("sanitizes settings users and blocks self-approval or unauthorized approval roles", async () => {
+    const { getModuleData, applyCommandToStore } = await loadAdminModule();
+
+    const settings = await getModuleData("settings", {
+      users: [
+        {
+          id: "usr_owner",
+          email: "owner@demumumind.internal",
+          name: "Alex",
+          role: "Owner",
+          status: "active",
+          passwordHash: "secret",
+        },
+      ],
+      settings: { freezePromotion: false, safetyCaps: { maxNamesPerRun: 50, failMode: "fail-closed", maxDailyExports: 3 } },
+    });
+
+    assert.deepEqual(settings.users, [
+      {
+        id: "usr_owner",
+        email: "owner@demumumind.internal",
+        name: "Alex",
+        role: "Owner",
+      },
+    ]);
+
+    const approvalStore = {
+      version: 1,
+      users: [],
+      submissions: [],
+      reviews: [],
+      overrideWorkItems: [],
+      approvals: [
+        {
+          id: "apr_publish",
+          module: "governance",
+          title: "Publish release",
+          status: "pending",
+          priority: "critical",
+          entityType: "release",
+          entityId: "rel_2026w11",
+          requestedBy: "usr_owner",
+          requiredRoles: ["Reviewer"],
+          deferredCommand: {
+            command: "release.publish",
+            entityType: "release",
+            entityId: "rel_2026w11",
+            reason: "Friday publish window",
+          },
+        },
+      ],
+      campaigns: [],
+      jobs: [],
+      releases: [
+        {
+          id: "rel_2026w11",
+          status: "approved",
+          window: "2026-03-14",
+          createdAt: "2026-03-12T10:25:00.000Z",
+          requestedBy: "usr_owner",
+        },
+      ],
+      exports: [],
+      auditEvents: [],
+      telemetrySnapshots: [],
+      notifications: [],
+      catalogDrafts: [],
+      idempotencyLedger: {},
+      settings: {
+        freezePromotion: false,
+        environmentMode: "internal",
+        safetyCaps: { maxNamesPerRun: 50, failMode: "fail-closed", maxDailyExports: 3 },
+      },
+    };
+
+    assert.throws(
+      () =>
+        applyCommandToStore(approvalStore, {
+          actorId: "usr_owner",
+          actorRole: "Owner",
+          command: "approval.approve",
+          entityType: "approval",
+          entityId: "apr_publish",
+          reason: "Self-approving",
+          idempotencyKey: "idem-self-approve",
+        }),
+      /cannot approve your own request/i
+    );
+
+    assert.throws(
+      () =>
+        applyCommandToStore(
+          {
+            ...approvalStore,
+            approvals: [{ ...approvalStore.approvals[0], requestedBy: "usr_operator" }],
+          },
+          {
+            actorId: "usr_owner",
+            actorRole: "Owner",
+            command: "approval.approve",
+            entityType: "approval",
+            entityId: "apr_publish",
+            reason: "Owner but not required reviewer",
+            idempotencyKey: "idem-wrong-role",
+          }
+        ),
+      /insufficient approval role/i
+    );
+  });
+
   it("builds an executive dashboard and public export previews from seeded state", async () => {
     const { buildAdminSnapshot, buildPublicArtifactPreview } = await loadAdminModule();
 

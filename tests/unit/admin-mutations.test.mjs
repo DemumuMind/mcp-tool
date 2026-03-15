@@ -228,6 +228,86 @@ describe("admin mutation safety", () => {
     assert.equal(result.data.createdAt, "2026-03-09T09:00:00.000Z");
   });
 
+  it("ignores client-supplied ownership and audit timestamps on admin mutations", async () => {
+    const { saveOverrideWorkItem, saveAuditFinding, saveTelemetrySnapshot } = await loadControlPlaneModule();
+
+    const overrideResult = await saveOverrideWorkItem(
+      {
+        slug: "ledger-suite",
+        reviewerId: "usr_attacker",
+        createdAt: "2000-01-01T00:00:00.000Z",
+        notes: "Escalated by forged reviewer",
+      },
+      { actorId: "usr_operator" }
+    );
+    assert.equal(overrideResult.data.reviewerId, "usr_operator");
+    assert.notEqual(overrideResult.data.createdAt, "2000-01-01T00:00:00.000Z");
+
+    const findingResult = await saveAuditFinding(
+      {
+        title: "Forged ownership attempt",
+        ownerId: "usr_attacker",
+        createdAt: "2000-01-01T00:00:00.000Z",
+      },
+      { actorId: "usr_operator" }
+    );
+    assert.equal(findingResult.data.ownerId, "usr_operator");
+    assert.notEqual(findingResult.data.createdAt, "2000-01-01T00:00:00.000Z");
+
+    const telemetryResult = await saveTelemetrySnapshot(
+      {
+        label: "Verification drift",
+        anomalyScore: 0.9,
+        capturedAt: "2000-01-01T00:00:00.000Z",
+      },
+      { actorId: "usr_operator" }
+    );
+    assert.equal(telemetryResult.data.ownerId, "usr_operator");
+    assert.notEqual(telemetryResult.data.capturedAt, "2000-01-01T00:00:00.000Z");
+  });
+
+  it("treats repeated idempotency keys as a no-op for direct admin mutations", async () => {
+    const { saveCampaign, queueAdminJob } = await loadControlPlaneModule();
+
+    const firstCampaign = await saveCampaign(
+      {
+        week: "2026-W12",
+        status: "scheduled",
+        slugs: ["tool-compass"],
+        channels: ["homepage"],
+        notes: "Primary campaign",
+      },
+      { actorId: "usr_operator", idempotencyKey: "idem-campaign-1" }
+    );
+    const secondCampaign = await saveCampaign(
+      {
+        week: "2026-W12",
+        status: "approved",
+        slugs: ["tool-compass", "registry-stats"],
+        channels: ["homepage", "presskit"],
+        notes: "Mutation retry should no-op",
+      },
+      { actorId: "usr_operator", idempotencyKey: "idem-campaign-1" }
+    );
+
+    assert.equal(firstCampaign.state.campaigns.length, 1);
+    assert.equal(secondCampaign.state.campaigns.length, 1);
+    assert.deepEqual(secondCampaign.data.slugs, ["tool-compass"]);
+    assert.equal(secondCampaign.data.status, "scheduled");
+
+    const firstJob = await queueAdminJob(
+      { action: "queue", kind: "pipeline", scope: "2026-W12", reason: "Initial queue" },
+      { actorId: "usr_operator", idempotencyKey: "idem-job-1" }
+    );
+    const secondJob = await queueAdminJob(
+      { action: "queue", kind: "pipeline", scope: "2026-W12", reason: "Retry should no-op" },
+      { actorId: "usr_operator", idempotencyKey: "idem-job-1" }
+    );
+
+    assert.equal(firstJob.state.jobs.length, 4);
+    assert.equal(secondJob.state.jobs.length, 4);
+  });
+
   it("rejects invalid mutation enum values and malformed telemetry scores", async () => {
     const {
       saveOverrideWorkItem,
