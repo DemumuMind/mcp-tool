@@ -7,15 +7,16 @@ import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 const content = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base title="Categories - DemumuMind MCP" description="Browse the MCP marketplace by automatically generated categories." currentPath="/categories/">
   <div class="page-content">
     <PageHero
       eyebrow="Categories"
-      title="Browse the ecosystem by workflow lane."
-      lede="Categories are generated from real listing signals, then surfaced as first-class discovery pages."
-      meta={[`${content.categories.length} categories`, `${content.stats.totalListings} primary listings`, "Automatic taxonomy"]}
+      title="Browse the catalog by category."
+      lede="Categories group tools by use case so you can move faster when you already know the kind of workflow you need."
+      meta={[`${formatNumber(content.categories.length)} categories`, `${formatNumber(content.stats.totalListings)} listed tools`, "Catalog overview"]}
     />
 
     <div class="platform-hub-grid">
@@ -23,7 +24,7 @@ const content = getMarketplaceContent();
         <a href={withBase(`/categories/${category.slug}/`)} class="collection-item">
           <span class="collection-item-name">{category.title}</span>
           <span class="collection-item-desc">{category.description}</span>
-          <span class="collection-item-count">{category.count} listings</span>
+          <span class="collection-item-count">{formatNumber(category.count)} listed tools</span>
         </a>
       ))}
     </div>

@@ -40,11 +40,11 @@ describe("Site theme contract", () => {
     );
   });
 
-  it("global theme defines the protocol editorial typography and accent tokens", () => {
+  it("global theme defines the active site typography and accent tokens", () => {
     const globalCss = fs.readFileSync(GLOBAL_CSS_PATH, "utf8");
 
-    assert.match(globalCss, /Cormorant Garamond/, "display serif font stack missing");
-    assert.match(globalCss, /Instrument Sans/, "interface sans font stack missing");
+    assert.match(globalCss, /Sora/, "display font stack missing");
+    assert.match(globalCss, /Manrope/, "interface sans font stack missing");
     assert.match(globalCss, /IBM Plex Mono/, "mono font stack missing");
     assert.match(globalCss, /--color-signal:\s*#D7FF3F/i, "signal accent token missing");
     assert.match(globalCss, /--color-ink:\s*#0D0F12/i, "ink token missing");

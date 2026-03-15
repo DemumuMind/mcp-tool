@@ -23,13 +23,13 @@ const pressTools = Object.keys(overrideMap)
   .filter(Boolean);
 ---
 
-<Base title="Press Reference - DemumuMind MCP" description="Secondary reference surface for press-ready marketplace listings." currentPath="/press/">
+<Base title="Press Reference - DemumuMind MCP" description="Press-ready reference pages for marketplace listings." currentPath="/press/">
   <div class="page-content">
     <PageHero
-      eyebrow="Reference surface"
-      title="Press reference for marketplace-ready MCP products"
-      lede="This is a secondary reference layer for press-ready listings. Primary discovery should still start in the marketplace, not here."
-      meta={[`${pressTools.length} press-ready listings`, "Reference surface", "Marketplace-linked"]}
+      eyebrow="Press reference"
+      title="Press-ready pages for selected MCP products."
+      lede="Use this page when you need a cleaner narrative layer for selected listings. Discovery should still start in the marketplace itself."
+      meta={[`${pressTools.length} press-ready listings`, "Narrative layer", "Marketplace-linked"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -41,10 +41,10 @@ const pressTools = Object.keys(overrideMap)
       {pressTools.map((tool) => (
         <a href={withBase(`/press/${tool.slug}/`)} class="tool-card">
           <h2>{tool.name}</h2>
-          <p>{tool.oneLiner || "Reference-ready narrative and quote surface."}</p>
+          <p>{tool.oneLiner || "Press-ready narrative and quote context for this listing."}</p>
           <div class="card-meta">
             <span>{tool.quoteCount} quotes</span>
-            <span>Reference</span>
+            <span>Press ready</span>
           </div>
         </a>
       ))}

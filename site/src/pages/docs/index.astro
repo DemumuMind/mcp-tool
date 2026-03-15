@@ -7,19 +7,20 @@ import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 const { docs } = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
 <Base
   title="Docs - DemumuMind MCP"
-  description="Guides for choosing MCP tools, understanding compatibility, reading quality score signals, and publishing into the marketplace."
+  description="Guides for using the catalog, understanding compatibility, and reading the marketplace signals."
   currentPath="/docs/"
 >
   <div class="page-content">
     <PageHero
       eyebrow="Docs"
-      title="Marketplace docs for the MCP ecosystem."
-      lede="These pages explain how to use the catalog, how compatibility works, how quality score is derived, and how new tools enter the marketplace."
-      meta={[`${docs.length} guides`, "Builder-grade discovery", "GitHub-native submission"]}
+      title="Docs for using the marketplace well."
+      lede="These guides explain how to browse the catalog, read compatibility and quality cues, and understand how tools make it into the marketplace."
+      meta={[`${formatNumber(docs.length)} guides`, "Plain-language help", "Catalog workflow"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Open browse</a>
@@ -33,7 +34,7 @@ const { docs } = getMarketplaceContent();
           <p class="eyebrow">{doc.eyebrow}</p>
           <h2><a href={withBase(`/docs/${doc.slug}/`)}>{doc.title}</a></h2>
           <p>{doc.summary}</p>
-          <span class="doc-card__meta">{doc.sections.length} sections</span>
+          <span class="doc-card__meta">{formatNumber(doc.sections.length)} sections</span>
         </article>
       ))}
     </section>

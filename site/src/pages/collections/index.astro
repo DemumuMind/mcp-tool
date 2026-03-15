@@ -7,15 +7,16 @@ import { getMarketplaceContent } from "../../lib/content/marketplace.ts";
 import { withBase } from "../../lib/site-paths";
 
 const content = getMarketplaceContent();
+const formatNumber = (value: number) => new Intl.NumberFormat("en-US").format(value);
 ---
 
-<Base title="Collections - DemumuMind MCP" description="Curated collection pages layered on top of the MCP marketplace taxonomy." currentPath="/collections/">
+<Base title="Collections - DemumuMind MCP" description="Curated collections that group MCP tools into useful starting sets." currentPath="/collections/">
   <div class="page-content">
     <PageHero
       eyebrow="Collections"
-      title="Curated onboarding paths over a broad catalog."
-      lede="Collections are the secondary discovery layer: tighter tool paths for people who want a starting point, not the whole graph."
-      meta={[`${content.collections.length} collections`, "Curated", "Built on primary listings"]}
+      title="Curated tool sets for faster shortlists."
+      lede="Use collections when you want a smaller, opinionated set of MCP tools instead of starting from the full catalog."
+      meta={[`${formatNumber(content.collections.length)} collections`, "Curated shortlists", "Built from live listings"]}
     />
 
     <div class="platform-hub-grid">
@@ -23,7 +24,7 @@ const content = getMarketplaceContent();
         <a href={withBase(`/collections/${collection.slug}/`)} class="collection-item">
           <span class="collection-item-name">{collection.title}</span>
           <span class="collection-item-desc">{collection.description}</span>
-          <span class="collection-item-count">{collection.count} tools</span>
+          <span class="collection-item-count">{formatNumber(collection.count)} tools in set</span>
         </a>
       ))}
     </div>

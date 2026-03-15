@@ -11,8 +11,8 @@ import { withBase } from "../lib/site-paths";
     <PageHero
       eyebrow="Marketplace guide"
       title="Start from the marketplace, then narrow fast."
-      lede="This page is now a lightweight secondary guide. The real product surface is the marketplace itself: browse, categories, platforms, and dossiers."
-      meta={["Marketplace guide", "Secondary surface", "Use-case first"]}
+      lede="Use this page when you want one simple entry point, then jump into browse, categories, platforms, or collections depending on how you evaluate tools."
+      meta={["Marketplace guide", "Simple starting point", "Workflow-first browse"]}
     >
       <Fragment slot="actions">
         <a href={withBase("/tools/")} class="btn btn-primary">Browse tools</a>
@@ -24,19 +24,19 @@ import { withBase } from "../lib/site-paths";
     <div class="platform-hub-grid">
       <a href={withBase("/tools/?platform=claude")} class="collection-item">
         <span class="collection-item-name">Start with a client</span>
-        <span class="collection-item-desc">Use platform hubs if your workflow begins from Claude, Cursor, VS Code, ChatGPT, or Gemini.</span>
+        <span class="collection-item-desc">Use platform hubs if you already know the client or environment you want to support.</span>
       </a>
       <a href={withBase("/categories/")} class="collection-item">
         <span class="collection-item-name">Start with a category</span>
-        <span class="collection-item-desc">Use categories if you already know whether you need servers, infrastructure, voice, web, or developer tools.</span>
+        <span class="collection-item-desc">Use categories if you already know the kind of workflow or capability you need.</span>
       </a>
       <a href={withBase("/collections/")} class="collection-item">
         <span class="collection-item-name">Start with a collection</span>
-        <span class="collection-item-desc">Collections are the guided paths when you want a curated stack instead of a full marketplace browse.</span>
+        <span class="collection-item-desc">Use collections when you want a smaller shortlist instead of the full catalog.</span>
       </a>
       <a href={withBase("/stats/")} class="collection-item">
         <span class="collection-item-name">Start with market health</span>
-        <span class="collection-item-desc">Use stats when you want to see category depth, verification coverage, and ecosystem shape before picking a lane.</span>
+        <span class="collection-item-desc">Use stats when you want a quick read on catalog depth, verification coverage, and overall marketplace shape.</span>
       </a>
     </div>
   </div>
