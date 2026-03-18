@@ -7,15 +7,12 @@
  * Run manually or from CI after deploy.
  *
  * Usage:
- *   node scripts/smoke-test.mjs                    # test live site
- *   node scripts/smoke-test.mjs http://127.0.0.1:4321  # test local dev
+ *   node scripts/smoke-test.mjs
+ *   node scripts/smoke-test.mjs http://127.0.0.1:4321
  */
 
 import { getSiteUrl } from "./lib/config.mjs";
-import {
-  classifySmokeOutcome,
-  detectDegradedMarketingMode,
-} from "./lib/smoke.mjs";
+import { classifySmokeOutcome } from "./lib/smoke.mjs";
 
 const BASE = (() => {
   const raw = process.argv[2] || process.env.PUBLIC_SITE_URL || getSiteUrl();
@@ -28,7 +25,6 @@ function resolveFromBase(pathname = "/") {
 }
 
 const CHECKS = [
-  // Key pages — expect 200
   { url: "/", expect: 200, label: "homepage" },
   { url: "/tools/", expect: 200, label: "tools index" },
   { url: "/tools/zip-meta-map/", expect: 200, label: "zip-meta-map tool page" },
@@ -36,53 +32,26 @@ const CHECKS = [
   { url: "/about/", expect: 200, label: "about page" },
   { url: "/trust/", expect: 200, label: "trust page" },
   { url: "/support/", expect: 200, label: "support page" },
-
-  // Legacy redirects — expect 200 after following the redirect
-  // (fetch follows redirects by default)
+  { url: "/submit/queue/", expect: 200, label: "submission queue" },
   { url: "/brain-dev.html", expect: 200, label: "legacy: brain-dev.html" },
   { url: "/registry.html", expect: 200, label: "legacy: registry.html" },
   { url: "/voice-soundboard.html", expect: 200, label: "legacy: voice-soundboard.html" },
-
-  // Lab (internal preview, noindex)
-  { url: "/lab/marketir/", expect: 200, label: "lab: marketir preview" },
-  { url: "/lab/signals/", expect: 200, label: "lab: signals dashboard" },
-  { url: "/lab/targets/", expect: 200, label: "lab: targets viewer" },
-  { url: "/lab/clearance/", expect: 200, label: "lab: clearance index" },
-  { url: "/lab/ops/", expect: 200, label: "lab: ops dashboard" },
-  { url: "/lab/worthy/", expect: 200, label: "lab: worthy scorecards" },
-  { url: "/lab/baseline/", expect: 200, label: "lab: pipeline baseline" },
   { url: "/trust.json", expect: 200, label: "trust receipt JSON" },
-  { url: "/lab/promo/", expect: 200, label: "lab: promo calendar" },
-
-  // Marketing outputs (generated from MarketIR)
   { url: "/presskit/zip-meta-map/", expect: 200, label: "presskit: zip-meta-map" },
   { url: "/presskit/zip-meta-map/presskit.json", expect: 200, label: "presskit: machine-readable" },
   { url: "/snippets/zip-meta-map.md", expect: 200, label: "snippets: zip-meta-map" },
   { url: "/campaigns/zip-meta-map-launch/bundle.json", expect: 200, label: "campaign: bundle.json" },
   { url: "/campaigns/zip-meta-map-launch/README.md", expect: 200, label: "campaign: README.md" },
-
-  // Press pages (Astro-rendered)
   { url: "/press/", expect: 200, label: "press index" },
   { url: "/press/zip-meta-map/", expect: 200, label: "press: zip-meta-map" },
-
-  // Proof pages (Astro-rendered)
   { url: "/proof/", expect: 200, label: "proof index" },
   { url: "/proof/zip-meta-map/", expect: 200, label: "proof: zip-meta-map" },
-
-  // Outreach packs (generated)
   { url: "/outreach/zip-meta-map/email-partner.md", expect: 200, label: "outreach: email-partner" },
   { url: "/outreach/zip-meta-map/github-readme-snippet.md", expect: 200, label: "outreach: readme-snippet" },
-
-  // Partner packs (generated)
   { url: "/partners/zip-meta-map/partner-pack.zip", expect: 200, label: "partner: zip bundle" },
   { url: "/partners/zip-meta-map/manifest.json", expect: 200, label: "partner: manifest" },
-
-  // Link registry + go-links
-  { url: "/links.json", expect: 200, label: "link registry" },
   { url: "/go/zmm-hn/", expect: 200, label: "go-link: zmm-hn" },
   { url: "/go/zmm-github/", expect: 200, label: "go-link: zmm-github" },
-
-  // Static assets
   { url: "/favicon.svg", expect: 200, label: "favicon" },
   { url: "/screenshots/zip-meta-map.png", expect: 200, label: "zip-meta-map screenshot" },
   { url: "/marketir/evidence/zip-meta-map-dashboard.png", expect: 200, label: "marketir evidence screenshot" },
@@ -95,32 +64,22 @@ let warned = 0;
 function recordOutcome({ label, ok, successMessage, failureMessage, degradedMarketingMode }) {
   const outcome = classifySmokeOutcome({ label, ok, degradedMarketingMode });
   if (outcome.level === "pass") {
-    console.log(`  ✓ ${successMessage}`);
+    console.log(`  PASS ${successMessage}`);
     passed++;
     return;
   }
 
   if (outcome.level === "warn") {
-    console.warn(`  ⚠ ${failureMessage} (degraded marketing mode)`);
+    console.warn(`  WARN ${failureMessage} (degraded marketing mode)`);
     warned++;
     return;
   }
 
-  console.error(`  ✗ ${failureMessage}`);
+  console.error(`  FAIL ${failureMessage}`);
   failed++;
 }
 
-let linksPayload = null;
-try {
-  const linksProbe = await fetch(resolveFromBase("/links.json"));
-  if (linksProbe.ok) {
-    linksPayload = await linksProbe.json();
-  }
-} catch {
-  // Best-effort probe; core checks below still validate /links.json availability explicitly.
-}
-
-const degradedMarketingMode = detectDegradedMarketingMode(linksPayload);
+const degradedMarketingMode = false;
 
 for (const check of CHECKS) {
   const url = resolveFromBase(check.url);
@@ -144,28 +103,26 @@ for (const check of CHECKS) {
   }
 }
 
-// ── Public Proof content check ────────────────────────────
 try {
   const proofRes = await fetch(resolveFromBase("/tools/zip-meta-map/"));
   if (proofRes.ok) {
     const html = await proofRes.text();
     if (html.includes("data-proof-section")) {
-      console.log(`  ✓ zip-meta-map Public Proof section present`);
+      console.log("  PASS zip-meta-map Public Proof section present");
       passed++;
     } else {
-      console.error(`  ✗ zip-meta-map Public Proof section missing`);
+      console.error("  FAIL zip-meta-map Public Proof section missing");
       failed++;
     }
   } else {
-    console.error(`  ✗ zip-meta-map page returned ${proofRes.status}`);
+    console.error(`  FAIL zip-meta-map page returned ${proofRes.status}`);
     failed++;
   }
 } catch (err) {
-  console.error(`  ✗ Public Proof check failed: ${err.message}`);
+  console.error(`  FAIL Public Proof check failed: ${err.message}`);
   failed++;
 }
 
-// ── Press kit GitHub Facts content check ──────────────────
 try {
   const pkRes = await fetch(resolveFromBase("/presskit/zip-meta-map/presskit.json"));
   if (pkRes.ok) {
@@ -196,28 +153,6 @@ try {
   });
 }
 
-// ── Link registry content check ───────────────────────────
-try {
-  const linksRes = await fetch(resolveFromBase("/links.json"));
-  if (linksRes.ok) {
-    const data = await linksRes.json();
-    recordOutcome({
-      label: "links.json is empty",
-      ok: Boolean(data.links && data.links.length > 0),
-      successMessage: `links.json: ${data.links.length} links`,
-      failureMessage: "links.json is empty",
-      degradedMarketingMode,
-    });
-  } else {
-    console.error(`  ✗ links.json returned ${linksRes.status}`);
-    failed++;
-  }
-} catch (err) {
-  console.error(`  ✗ links.json check failed: ${err.message}`);
-  failed++;
-}
-
-// ── Press page verified claims check ──────────────────────
 try {
   const pressRes = await fetch(resolveFromBase("/press/zip-meta-map/"));
   if (pressRes.ok) {
@@ -230,15 +165,14 @@ try {
       degradedMarketingMode,
     });
   } else {
-    console.error(`  ✗ press page returned ${pressRes.status}`);
+    console.error(`  FAIL press page returned ${pressRes.status}`);
     failed++;
   }
 } catch (err) {
-  console.error(`  ✗ press page check failed: ${err.message}`);
+  console.error(`  FAIL press page check failed: ${err.message}`);
   failed++;
 }
 
-// ── Outreach email proof links check ──────────────────────
 try {
   const outreachRes = await fetch(resolveFromBase("/outreach/zip-meta-map/email-partner.md"));
   if (outreachRes.ok) {
@@ -269,7 +203,6 @@ try {
   });
 }
 
-// ── Snippet source markers check ──────────────────────────
 try {
   const snippetRes = await fetch(resolveFromBase("/snippets/zip-meta-map.md"));
   if (snippetRes.ok) {
@@ -300,97 +233,81 @@ try {
   });
 }
 
-// ── Clearance runs.json check (warning-only) ────────────────
-try {
-  const clearanceRes = await fetch(resolveFromBase("/lab/clearance/runs.json"));
-  if (clearanceRes.ok) {
-    const data = await clearanceRes.json();
-    if (Array.isArray(data)) {
-      console.log(`  ✓ clearance runs.json: ${data.length} entries`);
-      if (data.length > 0) passed++;
-    } else {
-      console.warn(`  ⚠ clearance runs.json is not an array`);
-    }
-  } else if (clearanceRes.status === 404) {
-    console.warn(`  ⚠ clearance runs.json not populated yet (404)`);
-  } else {
-    console.warn(`  ⚠ clearance runs.json returned ${clearanceRes.status}`);
-  }
-} catch (err) {
-  console.warn(`  ⚠ clearance check skipped: ${err.message}`);
-}
-
-// ── Target list checks (warning-only, never fail build) ─────
 try {
   const targetsRes = await fetch(resolveFromBase("/targets/zip-meta-map/targets.json"));
   if (targetsRes.ok) {
     const data = await targetsRes.json();
     if (data.candidates && data.candidates.length > 0) {
-      console.log(`  ✓ targets.json: ${data.candidates.length} candidates (scoring v${data.scoringVersion})`);
+      console.log(`  PASS targets.json: ${data.candidates.length} candidates (scoring v${data.scoringVersion})`);
     } else {
-      console.warn(`  ⚠ targets.json exists but has no candidates`);
+      console.warn("  WARN targets.json exists but has no candidates");
     }
   } else if (targetsRes.status === 404) {
-    console.warn(`  ⚠ targets.json not generated yet (404) — run gen-targets.mjs`);
+    console.warn("  WARN targets.json not generated yet (404) - run gen-targets.mjs");
   } else {
-    console.warn(`  ⚠ targets.json returned ${targetsRes.status}`);
+    console.warn(`  WARN targets.json returned ${targetsRes.status}`);
   }
 } catch (err) {
-  console.warn(`  ⚠ targets check skipped: ${err.message}`);
+  console.warn(`  WARN targets check skipped: ${err.message}`);
 }
 
-// ── Build metadata check ───────────────────────────────────
 try {
   const buildRes = await fetch(resolveFromBase("/_build.json"));
   if (buildRes.ok) {
     const build = await buildRes.json();
-    console.log(`\n  Build metadata:`);
+    console.log("\n  Build metadata:");
     console.log(`    commit:  ${build.commit}`);
     console.log(`    built:   ${build.builtAt}`);
     console.log(`    synced:  ${build.syncedAt || "n/a"}`);
     console.log(`    projects: ${build.projects}`);
 
-    // Warn if build is older than 24 hours
     const age = Date.now() - new Date(build.builtAt).getTime();
     const hours = Math.round(age / 3600000);
     if (hours > 24) {
-      console.warn(`    ⚠ Build is ${hours}h old`);
+      console.warn(`    WARN Build is ${hours}h old`);
     } else {
       console.log(`    age: ${hours}h`);
       passed++;
     }
   } else {
-    console.warn(`\n  ⚠ _build.json not found (${buildRes.status}) — skipping freshness check`);
+    console.warn(`\n  WARN _build.json not found (${buildRes.status}) - skipping freshness check`);
   }
 } catch (err) {
-  console.warn(`\n  ⚠ _build.json check failed: ${err.message}`);
+  console.warn(`\n  WARN _build.json check failed: ${err.message}`);
 }
 
-// ── Security scan (warning-only, checks live pages for dangerous URLs) ──
 try {
   const securityPages = ["/", "/tools/", "/press/zip-meta-map/"];
-  const DANGEROUS = /(?:href|src|action)\s*=\s*["']?\s*(?:javascript|data|vbscript):/gi;
-  let secIssues = 0;
+  const dangerous = /(?:href|src|action)\s*=\s*["']?\s*(?:javascript|data|vbscript):/gi;
+  let issues = 0;
+
   for (const page of securityPages) {
     try {
       const res = await fetch(resolveFromBase(page));
-      if (res.ok) {
-        const html = await res.text();
-        DANGEROUS.lastIndex = 0;
-        const matches = html.match(DANGEROUS);
-        if (matches) {
-          console.warn(`  ⚠ ${page}: ${matches.length} dangerous URL(s) found`);
-          secIssues += matches.length;
-        }
+      if (!res.ok) {
+        continue;
       }
-    } catch { /* skip individual page errors */ }
+
+      const html = await res.text();
+      dangerous.lastIndex = 0;
+      const matches = html.match(dangerous);
+      if (matches) {
+        console.warn(`  WARN ${page}: ${matches.length} dangerous URL(s) found`);
+        issues += matches.length;
+      }
+    } catch {
+      // Ignore individual page failures in the warning-only scan.
+    }
   }
-  if (secIssues === 0) {
-    console.log(`  ✓ security scan: no dangerous protocols in ${securityPages.length} sampled pages`);
+
+  if (issues === 0) {
+    console.log(`  PASS security scan: no dangerous protocols in ${securityPages.length} sampled pages`);
   }
 } catch (err) {
-  console.warn(`  ⚠ security scan skipped: ${err.message}`);
+  console.warn(`  WARN security scan skipped: ${err.message}`);
 }
 
-console.log(`\n${passed} passed, ${failed} failed, ${warned} warned out of ${CHECKS.length + 7} checks (+ target/security warnings above)`);
-if (failed > 0) process.exit(1);
+console.log(`\n${passed} passed, ${failed} failed, ${warned} warned out of ${CHECKS.length + 5} checks (+ target/security warnings above)`);
+if (failed > 0) {
+  process.exit(1);
+}

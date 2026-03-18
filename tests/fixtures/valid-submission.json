@@ -32,5 +32,10 @@
   "maintainer": {
     "handle": "@example-dev",
     "contact": "dev@example.com"
+  },
+  "submission": {
+    "lane": "promo",
+    "submittedAt": "2026-02-16T00:00:00Z",
+    "pr": "https://github.com/DemumuMind/mcp-tool/pull/42"
   }
 }

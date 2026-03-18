@@ -8,15 +8,32 @@ import { getSiteUrl } from "./lib/config.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const DIST_DIR = path.join(ROOT, "site", "dist");
+const CLIENT_DIST_DIR = path.join(DIST_DIR, "client");
+const SERVER_ONLY_CLIENT_DIRS = [
+  "admin",
+  path.join("api", "admin"),
+  "lab",
+];
 
 const basePath = (() => {
   const pathname = new URL(getSiteUrl()).pathname.replace(/\/$/, "");
   return pathname && pathname !== "" ? pathname : "";
 })();
 
-if (!basePath || basePath === "/") {
-  console.log("No project base path detected. Skipping dist postprocess.");
-  process.exit(0);
+function pruneServerOnlyClientArtifacts() {
+  let prunedDirs = 0;
+
+  for (const relativeDir of SERVER_ONLY_CLIENT_DIRS) {
+    const fullPath = path.join(CLIENT_DIST_DIR, relativeDir);
+    if (!fs.existsSync(fullPath)) {
+      continue;
+    }
+
+    fs.rmSync(fullPath, { recursive: true, force: true });
+    prunedDirs++;
+  }
+
+  return prunedDirs;
 }
 
 function walk(dir) {
@@ -27,6 +44,16 @@ function walk(dir) {
     }
     return [fullPath];
   });
+}
+
+const prunedDirs = pruneServerOnlyClientArtifacts();
+if (prunedDirs > 0) {
+  console.log(`Pruned ${prunedDirs} server-only client artifact director${prunedDirs === 1 ? "y" : "ies"}.`);
+}
+
+if (!basePath || basePath === "/") {
+  console.log("No project base path detected. Skipping HTML base-path postprocess.");
+  process.exit(0);
 }
 
 const htmlFiles = walk(DIST_DIR).filter((file) => file.endsWith(".html"));

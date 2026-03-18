@@ -38,6 +38,7 @@ function makeMinimal() {
       },
     ],
     maintainer: { handle: "@dev" },
+    submission: { lane: "experiment" },
   };
 }
 

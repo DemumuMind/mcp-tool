@@ -4,6 +4,7 @@ export const prerender = true;
 import PageHero from "../../components/PageHero.astro";
 import Base from "../../layouts/Base.astro";
 import { kit } from "../../lib/kit";
+import { partitionPublicQueue } from "../../lib/submissions/public-queue.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { withBase } from "../../lib/site-paths";
@@ -24,13 +25,7 @@ try {
   }
 } catch {}
 
-const byStatus = {
-  pending: submissions.filter((submission) => submission.status === "pending"),
-  needsInfo: submissions.filter((submission) => submission.status === "needs-info"),
-  accepted: submissions.filter((submission) => submission.status === "accepted"),
-  rejected: submissions.filter((submission) => submission.status === "rejected"),
-  withdrawn: submissions.filter((submission) => submission.status === "withdrawn"),
-};
+const byStatus = partitionPublicQueue(submissions);
 
 function formatDate(iso) {
   if (!iso) return "";

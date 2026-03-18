@@ -88,15 +88,17 @@ describe("validateStatusPatch", () => {
     assert.ok(result.errors.some((e) => e.includes("slug")));
   });
 
-  it("multiple valid fields pass", () => {
+  it("reviewer-only metadata is rejected", () => {
     const result = validateStatusPatch("test-tool", {
       status: "needs-info",
       reviewNotes: "Please add a demo link",
       lastReviewedAt: "2025-06-01T12:00:00Z",
       sourcePr: "https://github.com/org/repo/pull/42",
     });
-    assert.equal(result.valid, true);
-    assert.equal(result.errors.length, 0);
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some((e) => e.includes("reviewNotes")));
+    assert.ok(result.errors.some((e) => e.includes("lastReviewedAt")));
+    assert.ok(result.errors.some((e) => e.includes("sourcePr")));
   });
 });
 
@@ -136,14 +138,27 @@ describe("applyStatusPatch", () => {
     assert.ok(result.riskNotes.some((n) => n.includes("needs-info")));
   });
 
-  it("reviewNotes risk note generated", () => {
-    const tmp = makeTmpSubmissions([makeSeedSubmission()]);
-    const result = applyStatusPatch(
-      "test-tool",
-      { reviewNotes: "Please add a demo" },
-      { dataDir: tmp },
-    );
-    assert.ok(result.riskNotes.some((n) => n.includes("Review notes")));
+  it("sanitizes historical reviewer-only fields out of the summary file on write", () => {
+    const tmp = makeTmpSubmissions([
+      makeSeedSubmission({
+        reviewNotes: "Please add a demo",
+        lastReviewedAt: "2025-06-01T12:00:00Z",
+        sourcePr: "https://github.com/org/repo/pull/42",
+      }),
+    ]);
+
+    const result = applyStatusPatch("test-tool", { status: "accepted" }, { dataDir: tmp });
+    assert.equal(result.applied, true);
+
+    const data = JSON.parse(readFileSync(join(tmp, "submissions.json"), "utf8"));
+    assert.deepEqual(Object.keys(data.submissions[0]).sort(), [
+      "lane",
+      "slug",
+      "status",
+      "submittedAt",
+      "tool",
+      "updatedAt",
+    ]);
   });
 });
 

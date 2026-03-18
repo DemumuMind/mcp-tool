@@ -16,6 +16,7 @@
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
+import { compareSubmissionSummaryProjection } from "./lib/submission-summary.mjs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 
@@ -170,6 +171,26 @@ export function validateSubmission(data) {
     checkString(errors, data, "maintainer.handle", { required: true, min: 1 });
   }
 
+  if (!data.submission || typeof data.submission !== "object") {
+    errors.push("submission: required object");
+  } else {
+    if (!data.submission.lane) {
+      errors.push("submission.lane: required");
+    } else if (!VALID_LANES.includes(data.submission.lane)) {
+      errors.push(`submission.lane: invalid value "${data.submission.lane}"`);
+    }
+
+    if (data.submission.pr != null && !isHttpsUrl(data.submission.pr)) {
+      errors.push("submission.pr: must be a valid https URL");
+    }
+
+    if (data.submission.submittedAt != null) {
+      if (typeof data.submission.submittedAt !== "string" || !ISO_DATE_RE.test(data.submission.submittedAt)) {
+        errors.push("submission.submittedAt: invalid ISO date format");
+      }
+    }
+  }
+
   return { valid: errors.length === 0, errors };
 }
 
@@ -252,6 +273,8 @@ export function validateAllSubmissions(opts = {}) {
   const allErrors = [];
   let valid = 0;
   let invalid = 0;
+  const validSubmissions = [];
+  let summaryData = null;
 
   // Validate individual submission files
   if (existsSync(submissionsDir)) {
@@ -262,6 +285,7 @@ export function validateAllSubmissions(opts = {}) {
         const result = validateSubmission(data);
         if (result.valid) {
           valid++;
+          validSubmissions.push(data);
         } else {
           invalid++;
           for (const err of result.errors) {
@@ -278,8 +302,8 @@ export function validateAllSubmissions(opts = {}) {
   // Validate aggregate submissions.json
   if (existsSync(summaryPath)) {
     try {
-      const data = JSON.parse(readFileSync(summaryPath, "utf8"));
-      const result = validateSubmissionsJson(data);
+      summaryData = JSON.parse(readFileSync(summaryPath, "utf8"));
+      const result = validateSubmissionsJson(summaryData);
       if (!result.valid) {
         for (const err of result.errors) {
           allErrors.push(`submissions.json: ${err}`);
@@ -287,6 +311,13 @@ export function validateAllSubmissions(opts = {}) {
       }
     } catch (err) {
       allErrors.push(`submissions.json: failed to parse JSON — ${err.message}`);
+    }
+  }
+
+  if (summaryData) {
+    const comparison = compareSubmissionSummaryProjection(validSubmissions, summaryData);
+    for (const err of comparison.errors) {
+      allErrors.push(`submissions.json: ${err}`);
     }
   }
 

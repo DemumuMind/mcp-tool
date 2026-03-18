@@ -197,12 +197,22 @@ describe("validateSubmission", () => {
     assert.ok(result.errors.some((e) => e.includes("maintainer.handle")));
   });
 
+  it("missing submission.lane fails", () => {
+    const data = makeValid();
+    delete data.submission.lane;
+    const result = validateSubmission(data);
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some((e) => e.includes("submission.lane")));
+  });
+
   it("optional fields absent still passes", () => {
     const data = makeValid();
     delete data.install;
     delete data.quickstart;
     delete data.notFor;
     delete data.maintainer.contact;
+    delete data.submission.pr;
+    delete data.submission.submittedAt;
     const result = validateSubmission(data);
     assert.equal(result.valid, true);
     assert.equal(result.errors.length, 0);
@@ -248,6 +258,7 @@ describe("validateSubmissionsJson", () => {
           status: "pending",
           lane: "promo",
           submittedAt: "2026-02-16T00:00:00Z",
+          pitch: "Public-safe summary row",
         },
       ],
     });

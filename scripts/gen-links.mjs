@@ -8,7 +8,6 @@
  *
  * Output:
  *   - site/src/data/links.json     (consumed by downstream generators)
- *   - site/public/links.json       (publicly accessible)
  *
  * Usage:
  *   node scripts/gen-links.mjs
@@ -25,7 +24,6 @@ const SITE = path.join(ROOT, "site");
 const DATA_DIR = path.join(SITE, "src", "data", "marketir");
 const OVERRIDES_PATH = path.join(SITE, "src", "data", "overrides.json");
 const OUT_DATA = path.join(SITE, "src", "data", "links.json");
-const OUT_PUBLIC = path.join(SITE, "public", "links.json");
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -212,13 +210,9 @@ links.sort((a, b) => a.id.localeCompare(b.id));
 const registry = { generatedAt, links };
 const text = JSON.stringify(registry, null, 2) + "\n";
 
-// Write to both locations
+// Write internal generator input only.
 fs.mkdirSync(path.dirname(OUT_DATA), { recursive: true });
 fs.writeFileSync(OUT_DATA, text, "utf8");
 console.log(`\n  wrote site/src/data/links.json`);
-
-fs.mkdirSync(path.dirname(OUT_PUBLIC), { recursive: true });
-fs.writeFileSync(OUT_PUBLIC, text, "utf8");
-console.log(`  wrote site/public/links.json`);
 
 console.log(`\nDone. ${links.length} link(s) registered.`);

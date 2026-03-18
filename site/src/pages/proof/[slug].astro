@@ -35,19 +35,6 @@ try {
   facts = JSON.parse(fs.readFileSync(factsPath, "utf8"));
 } catch {}
 
-let toolLinks: any[] = [];
-try {
-  const linksPath = path.join(process.cwd(), "src/data/links.json");
-  const linksData = JSON.parse(fs.readFileSync(linksPath, "utf8"));
-  toolLinks = (linksData.links || []).filter((link: any) => link.slug === slug);
-} catch {}
-
-let clearance: any = null;
-try {
-  const clearancePath = path.join(process.cwd(), "../site/public/lab/clearance", `${slug}.json`);
-  clearance = JSON.parse(fs.readFileSync(clearancePath, "utf8"));
-} catch {}
-
 const orgUrl = `https://github.com/DemumuMind/${slug}`;
 const factsObservedAt = facts?.fetchedAt
   ? new Date(facts.fetchedAt).toLocaleDateString("en-US", { dateStyle: "medium" })
@@ -58,12 +45,6 @@ const snapshotObservedAt = snapshot?.fetchedAt
 const supportedClaimCount = proofData?.proven?.length || 0;
 const openClaimCount = proofData?.aspirational?.length || 0;
 const limitCount = proofData?.antiClaims?.length || 0;
-
-function getTierLabel(score: number): string {
-  if (score >= 80) return "GREEN";
-  if (score >= 50) return "YELLOW";
-  return "RED";
-}
 ---
 
 <Base
@@ -218,54 +199,6 @@ function getTierLabel(score: number): string {
       </section>
     )}
 
-    {clearance?.overallScore != null && (
-      <section class="section">
-        <div class="section-shell__header">
-          <div>
-            <p class="section-kicker">Operational reference</p>
-            <h2 class="section-shell__title">Clearance status</h2>
-          </div>
-        </div>
-        <div class="clearance-card">
-          <span class={`badge badge-kind`}>{getTierLabel(clearance.overallScore)}</span>
-          <span class="clearance-score">Score: {clearance.overallScore}/100</span>
-        </div>
-      </section>
-    )}
-
-    {toolLinks.length > 0 && (
-      <section class="section">
-        <div class="section-shell__header">
-          <div>
-            <p class="section-kicker">Distribution context</p>
-            <h2 class="section-shell__title">Tracked outbound links</h2>
-          </div>
-        </div>
-        <div class="links-table-wrap">
-          <table class="links-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Channel</th>
-                <th>Target</th>
-                <th>Campaign</th>
-              </tr>
-            </thead>
-            <tbody>
-              {toolLinks.map((link: any) => (
-                <tr>
-                  <td class="mono">{link.id}</td>
-                  <td>{link.channel}</td>
-                  <td><a href={link.target} target="_blank" rel="noopener">{link.target.replace("https://", "").slice(0, 40)}{link.target.length > 48 ? "..." : ""}</a></td>
-                  <td class="mono">{link.utm?.campaign || "--"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    )}
-
     <section class="section">
       <div class="section-shell__header">
         <div>
@@ -403,12 +336,11 @@ function getTierLabel(score: number): string {
     color: var(--color-text-muted);
   }
 
-  .clearance-score,
-  .updated-label {
-    font-family: var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+      .updated-label {
+        font-family: var(--font-mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
 
   .updated-banner {
     display: flex;

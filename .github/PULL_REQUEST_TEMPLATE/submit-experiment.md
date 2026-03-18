@@ -7,7 +7,8 @@
 ### Checklist
 
 - [ ] `submissions/<slug>.json` added and passes schema validation
-- [ ] I understand maintainers sync public queue state separately via `site/src/data/submissions.json`
+- [ ] I included `submission.lane` (and optional PR metadata) because the intake file is the canonical public-content source
+- [ ] I understand maintainers only patch review state in `site/src/data/submissions.json`
 - [ ] Tool has at least one published release
 - [ ] At least one proof link is included (CI, tests, demo, benchmark)
 - [ ] README has install instructions, usage, and license

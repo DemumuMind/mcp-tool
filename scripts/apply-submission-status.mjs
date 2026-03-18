@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { getConfig, getRoot } from "./lib/config.mjs";
+import { sanitizeSummaryEntry } from "./lib/submission-summary.mjs";
 
 const ROOT = getRoot();
 const config = getConfig();
@@ -131,7 +132,7 @@ export function applyStatusPatch(slug, fields, opts = {}) {
   }
 
   // Merge fields
-  const submission = data.submissions[idx];
+  const submission = sanitizeSummaryEntry(data.submissions[idx]);
   for (const [field, value] of Object.entries(fields)) {
     submission[field] = value;
 

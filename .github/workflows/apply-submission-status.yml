@@ -47,6 +47,9 @@ jobs:
           PATCH_JSON_B64: ${{ inputs.patch_json_b64 }}
         run: node scripts/apply-submission-status.mjs "$PATCH_JSON" "$PATCH_JSON_B64"
 
+      - name: Re-project public submission summary
+        run: node scripts/sync-public-submissions.mjs
+
       - name: Run invariant tests
         run: node --test tests/invariants/*.test.mjs
 

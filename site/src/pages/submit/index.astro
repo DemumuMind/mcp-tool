@@ -32,6 +32,11 @@ const exampleJson = JSON.stringify(
     install: "npm install -g my-tool",
     quickstart: "my-tool init",
     maintainer: { handle: "@you" },
+    submission: {
+      lane: "promo",
+      submittedAt: "2026-03-17T09:00:00Z",
+      pr: "https://github.com/org/marketing-repo/pull/42",
+    },
   },
   null,
   2
@@ -94,9 +99,9 @@ const exampleJson = JSON.stringify(
       <div class="steps-box">
         <ol>
           <li>Fork the <a href={`https://github.com/${kit.repo.marketing || "DemumuMind/mcp-tool"}`} rel="noopener" data-link-type="fork">marketing repo</a>.</li>
-          <li>Create <code>submissions/&lt;your-slug&gt;.json</code>.</li>
+          <li>Create <code>submissions/&lt;your-slug&gt;.json</code> with the public submission metadata, including <code>submission.lane</code>.</li>
           <li>Open the promotion or experiment pull request template and wait for CI validation.</li>
-          <li>After review, maintainers sync the public queue status into <code>site/src/data/submissions.json</code>.</li>
+          <li>CI projects the public queue row into <code>site/src/data/submissions.json</code>; maintainers patch only review status there.</li>
         </ol>
       </div>
     </section>

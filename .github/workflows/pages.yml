@@ -68,7 +68,13 @@ jobs:
       - run: npm run build
         working-directory: site
       - name: Remove internal lab artifacts from public bundle
-        run: rm -rf site/dist/client/lab
+        run: |
+          rm -rf site/dist/client/lab
+          rm -f site/dist/client/links.json
+      - name: Assert public build safety
+        run: node scripts/assert-public-build-safety.mjs site/dist/client
+      - name: Verify public build artifacts
+        run: node --test tests/build-artifacts/*.test.mjs
       - id: page
         name: Expose public site URL
         run: echo "page_url=${PUBLIC_SITE_URL}" >> "$GITHUB_OUTPUT"

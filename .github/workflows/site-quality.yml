@@ -54,6 +54,9 @@ jobs:
         run: npm run build
         working-directory: site
 
+      - name: Verify public build artifacts
+        run: node --test tests/build-artifacts/*.test.mjs
+
       # ── JSON Schema Validation ─────────────────────────────────
       - name: Validate overrides.json
         run: |
