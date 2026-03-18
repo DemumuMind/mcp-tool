@@ -31,7 +31,7 @@ export function classifySmokeOutcome({ label, ok, degradedMarketingMode }) {
     return { level: "pass" };
   }
 
-  if (degradedMarketingMode && isDegradedMarketingLabel(label)) {
+  if (isDegradedMarketingLabel(label)) {
     return { level: "warn" };
   }
 
