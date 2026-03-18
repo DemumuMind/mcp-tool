@@ -1,0 +1,1 @@
+import{t as c}from"./tracker.CNsEyEsq.js";document.querySelectorAll(".receipt-link[data-receipt-week]").forEach(e=>{e.addEventListener("click",()=>{const t=e.dataset.receiptWeek||"";c("click_receipt_link",{week:t})})});

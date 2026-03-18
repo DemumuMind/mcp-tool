@@ -1,0 +1,1 @@
+import{t as c}from"./tracker.CNsEyEsq.js";document.querySelectorAll("[data-link-type]").forEach(t=>{t.addEventListener("click",()=>{const e=t.dataset.linkType||"";c("click_submit_link",{linkType:e})})});
