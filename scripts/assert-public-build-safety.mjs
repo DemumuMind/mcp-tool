@@ -26,6 +26,10 @@ const FORBIDDEN_HTML_DISCLOSURE_SNIPPETS = [
   "Operational reference",
 ];
 
+const FORBIDDEN_JSON_DISCLOSURE_SNIPPETS = [
+  "\"trackedLinks\"",
+];
+
 function walk(dir, visitor) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
@@ -79,6 +83,15 @@ export function assertPublicBuildSafety(distDir) {
 
     if (/\.html$/i.test(entry.name)) {
       for (const snippet of FORBIDDEN_HTML_DISCLOSURE_SNIPPETS) {
+        if (content.includes(snippet)) {
+          errors.push(`forbidden disclosure snippet "${snippet}" found in ${relativePath}`);
+        }
+      }
+      return;
+    }
+
+    if (/\.json$/i.test(entry.name)) {
+      for (const snippet of FORBIDDEN_JSON_DISCLOSURE_SNIPPETS) {
         if (content.includes(snippet)) {
           errors.push(`forbidden disclosure snippet "${snippet}" found in ${relativePath}`);
         }

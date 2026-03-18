@@ -132,4 +132,18 @@ describe("public build safety", () => {
       /Tracked outbound links|Clearance status|Operational reference/,
     );
   });
+
+  it("rejects presskit artifacts that expose tracked link registry data", () => {
+    const dir = makeDist({
+      "presskit/tool-compass/presskit.json": JSON.stringify({
+        slug: "tool-compass",
+        trackedLinks: [{ id: "tool-compass-hn", channel: "hackernews" }],
+      }),
+    });
+
+    assert.throws(
+      () => assertPublicBuildSafety(dir),
+      /trackedLinks|presskit\.json/i,
+    );
+  });
 });
